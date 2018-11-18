@@ -1,0 +1,109 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<input type="hidden" id="id" name="id" />
+
+<div class="box-content">
+    <div class="control-row col-2">
+        <div class="control-group">
+            <label class="control-label">标题</label>
+            <div class="controls">
+                   <input type="text" name="title" id="title" class="form-control required" />                       
+                               
+            </div>       
+        </div>
+        <div class="control-group js_tax_parsent">
+            <label class="control-label">库存量</label>
+            <div class="controls">
+                <input data-dataType="amount" type="text" name="total_stock" id="total_stock" class="form-control required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">币种</label>
+            <div class="controls">
+                <select name="coin_id" id="coin_id" class="required form-control">                
+                    {volist name="coin_list" id="vo"}
+                    <option value="{$vo.id}">{$vo.coin_name}</option>
+                    {/volist}
+                </select>                   
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">理财时长</label>
+            <div class="controls">
+                <input type="number" placeholder="必须大于0" data-datatype="positive_integer" name="duration" id="duration" class="form-control required" />                       
+                <span class="tips">天 请输入整数</span>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label">最低投保个数</label>
+            <div class="controls">
+                <input type="number" placeholder="必须大于0" name="min" id="min" class="form-control required" />                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">最高投保个数</label>
+            <div class="controls">
+                <input type="number" placeholder="必须大于0" name="max" id="max" class="form-control required" />                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                时间限制</label>
+            <div class="controls">
+                <span><input data-actionid="0" style="width: 100px" type="text" readonly="readonly" name="start_date" id="start_date" class="Wdate form-control required" /></span>
+                至
+                <span><input data-actionid="0" style="width: 100px" type="text" readonly="readonly" name="end_date" id="end_date" class="Wdate form-control required" /></span>
+            </div>
+        </div> 
+         <div class="control-group">
+            <label class="control-label">
+                起息日</label>
+            <div class="controls">
+                <span><input data-actionid="0" style="width: 100px" type="text" readonly="readonly" name="start_rate_date" id="start_rate_date" class="Wdate form-control required" /></span>
+            </div>
+        </div> 
+        
+        <div class="control-group js_tax_parsent">
+            <label class="control-label">总收益</label>
+            <div class="controls">
+                <input data-dataType="amount" data-dataTypeMsg="不是有效的比率" type="text" name="rate" id="rate" class="form-control required" size="3" /><span class="tips">%</span>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript">
+function chkForm(){
+    var min = $("#min").val();
+    parseFloat(min);
+    if(min <= 0){
+        msg('最小值必须大于0');
+        return false;
+    }
+
+    return true;
+}
+
+$(function () {
+    $("#start_date").click(function () {
+        WdatePicker({onpicked: function () {
+                $dp.$('end_date').focus();
+            }, minDate: '%y-%M-%d'});
+    });
+    $("#end_date").click(function () {
+        WdatePicker({minDate: "#F{ $dp.$D('start_date'); }"});
+    });
+    $("#start_rate_date").click(function () {
+        WdatePicker({minDate: '%y-%M-%d'});
+    });
+    
+});
+    
+
+</script>
+{/block}

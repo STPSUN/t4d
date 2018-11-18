@@ -1,0 +1,74 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/easyui/themes/custom/easyui.css" />    
+<style type="text/css">
+    .panel-header, .panel-body {
+        border-color: #f2a654;
+    }    
+    .img_upload_wrp .img_upload_box{
+        width:375px;
+        height:175px;
+    }
+    .preview_photo{
+        width:375px !important;
+        height:175px !important;
+    }
+</style>  
+<div class="box-content">
+    <input type="hidden" id="id" name="id" />  
+    <div id="js_main_header">
+        <div class="control-group">
+            <label class="control-label">
+                运营商类型</label>
+            <div class="controls">
+                <select name="type" id="type" class="form-control required">
+                    <option value="1">互亿无线</option>
+                </select>                    
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                是否启用</label>
+            <div class="controls">
+                <select name="is_allow" id="is_allow" class="form-control required">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>                    
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label">
+                接口地址</label>
+            <div class="controls">
+                <input style="width:250px" type="text" name="api_url" id="api_url" class="form-control required" />                       
+                <span class="tips">格式:http://www.xxx.com/api/xxx</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                用户账号</label>
+            <div class="controls">
+                <input style="width:250px" type="text" name="api_id" id="api_id" class="form-control required" />                       
+                <span class="tips">接口账号</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                apiKey</label>
+            <div class="controls">
+                <input style="width:250px" type="text" name="api_key" id="api_key" class="form-control required" />                       
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+
+</script>
+{/block}

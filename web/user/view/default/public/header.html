@@ -1,0 +1,160 @@
+<style type="text/css">   
+.li0{background-color:#96c}.li1{background-color:#69f}.li2{background-color:#926dde}.li3{background-color:#57c7d4}.li4{background-color:#62a8ea}.li5{background-color:#926dde}.li6{background-color:#959801}.li7{background-color:#7C51D1}.li8{background-color:#5166D6}.li9{background-color:#47B8C6}.li10{background-color:#3AA99E}.li11{background-color:#A2CAEE}.li12{background-color:#465BD4}.li13{background-color:#5166D6}.li14{background-color:#46BE8A}.li15{background-color:#178D81}.li16{background-color:#79D1C9}.li17{background-color:#3583CA}.li18{background-color:#A2CAEE}
+.notise{padding: 0 5px}
+.notise a{color:#ff0000}
+.notise a:hover{color:#ff0000}
+@media(max-width: 1000px){ .notise{display: none}}
+</style>
+<div id="header">
+    <div class="navbar-header">                 
+        <span class="mystyle-brand"><i class="icon wb-home"></i></span>
+        <a class="navbar-console" id='console'>管理控制台</a>
+    </div>
+    <div class="nav">      
+        <ul id="js_nav_menu" class="navLeft">
+            {php}
+                $m = new \web\common\model\sys\UserNavMenuModel();
+                $categorys= $m->getCategoryParentMenu(0);                  
+                foreach($categorys as $cate1){            
+                echo '<li id="act_'.$cate1['id'].'" class="nav-menu"><a class="menu-title" href="javascript:;">'.$cate1['title'].'</a>';
+                {/php}
+                <div class="sub-nav-container">                                                                        
+                    <div class="sub-nav-category">
+                        <div class="sub-nav-item">
+                            {php}
+                            $i=0;
+                            $categorys2= $m->getCategoryParentMenu($cate1['id']);                  
+                            foreach($categorys2 as $cate2){                                                     
+                            echo '<a class="js_pan li'.$i.' '.$cate2['target'].'" data-width="'.$cate2['dialog_width'].'" data-height="'.$cate2['dialog_height'].'" id="menu_'.$cate2['id'].'" href="'.getUrl($cate2['controller'].'/'.$cate2['action'],'',$cate2['addon']).'">'.$cate2['title'].'</a>';  
+                            $i++;
+                            }
+                            {/php}
+                        </div>
+                    </div>
+                </div>
+                {php}echo '</li>';}{/php}
+            </li>
+        </ul>
+        </ul>
+        <ul class="navRight">
+            <li class="nav-menu">
+                <a class="sub_menu" href="javascript:;">您好，{$login_user_name}</a>
+                <div class="mContent">
+                    <a href="javascript:;" id="js_edit_pwd">修改登录密码</a>
+                </div>
+            </li>
+            <li class="logout"><a title="退出系统" href="javascript:;" class="sub_menu js_logout">
+                    <i class="icon wb-power"></i>&nbsp;退出</a></li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/jquery/jquery.pjax.js"></script>
+<script type="text/javascript">
+    var _module_name = null;
+    var _controller_name = null;
+    var _addon_name = null;
+    function getURL(action, param, addon) {
+        var m = "{:MODULE_NAME}";
+        var c = "{$_CONTROLLER_NAME}";
+        var a = "{$_ADDON_NAME}";
+        if (_module_name != null)
+            m = _module_name;
+        if (_controller_name != null)
+            c = _controller_name;
+        var arr = action.split('/');
+        var url = "";
+        if (arr.length == 3) {
+            url = action;
+        } else if (arr.length == 2) {
+            url = "/" + m + "/" + action;
+        } else {
+            url = "/" + m + "/" + c + "/" + action;
+        }
+        if (addon != null)
+            a = addon;
+        else if (_addon_name != null)
+            a = _addon_name;
+        if (a != "")
+            url += "/addon/" + a;
+        if (param != null && param != "") {
+            var ref = "";
+            if (typeof param === 'string') {
+                ref = param;
+            } else if (typeof param === 'object') {
+                for (var key in param) {
+                    if (ref != "")
+                        ref += "&";
+                    ref += key + "=" + param[key];
+                }
+            }
+            if (ref != "") {
+                if (url.indexOf("?") == -1)
+                    url += "?";
+                else
+                    url += "&";
+                url += ref;
+            }
+        }
+        return url;
+    }
+
+    $(function () {
+        $(document).pjax('a.pjax', '#main_container', {timeout: 5000});
+        $("#js_nav_menu").on('pjax:click', function (e, obj) {
+        });
+        $(document).on('pjax:beforeReplace', function (event, data, xhr) {
+            _module_name = data.module;
+            _controller_name = data.controller;
+            _addon_name = data.addon;
+            $("#curMenu").val('menu_' + _addon_name + '_' + _controller_name);
+        });
+        $(document).on('pjax:success', function (event, data, xhr) {
+            $(event.relatedTarget).parent().parent().parent().hide();            
+        });
+        //dialog
+        $("#js_nav_menu .dialog").click(function (e, obj) {
+            var url = $(this).attr("href");
+            var title = $(this).text();
+            var width = $(this).data("width");
+            var height = $(this).data("height");
+            openBarWin(title, width, height, url, function (index) {
+                layer.close(index);
+            }, ['保存', '取消']);
+            e.preventDefault();
+            return;
+        });
+        $('.nav-menu').hover(
+                function () {
+                    $("#js_nav_menu").find(".sub-nav-container").hide();
+                    var left = $(this).offset().left;
+                    var window_width = $(window).outerWidth();
+                    var container = $(this).find(".sub-nav-container");
+                    var container_width = container.outerWidth();
+                    if (window_width - left < container_width)
+                        container.css("right", 0);
+                    container.show();
+                    $(this).addClass('active');
+                },
+                function () {
+                     $("#js_nav_menu").find(".sub-nav-container").hide();
+                    $(this).removeClass('active');
+                });
+    });
+    $("#console").click(function() {
+        location.href = '{:url("/user/index")}';
+    });
+    $(".js_logout").click(function () {
+        confirm("确认要退出登录吗？", function () {
+            $.getJSON('{:url("/user/login/logout")}', function () {
+                location.href = '{:url("/user/login/index")}';
+            });
+        });
+    });
+    $("#js_edit_pwd").click(function () {
+        var url = getURL('index/edit_pwd');
+        openBarWin('修改登录密码', 400, 300, url, function (index) {
+            layer.close(index);
+        }, ['保存', '取消']);
+    });
+
+</script>

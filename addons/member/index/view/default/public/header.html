@@ -1,0 +1,111 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">
+                <!--公版-->
+                <img src="__IMG__/logo.png" alt="" style="width:10rem">
+            </a>
+        </div>
+        <div class="navbar-collapse collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                <li><a id="to_f3d" class="f3d">F3D</a></li>
+                <li><a id="to_p3d" class="p3d">P3D</a></li>
+                <li><a id="to_otc" class="otc">场外交易</a></li>
+            </ul>
+            {if condition="$username eq ''"}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a id="login" style="cursor: pointer;">登录</a></li>
+                <li><a id="register" style="cursor: pointer">注册</a></li>
+            </ul>
+            {else /}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a id="username" style="cursor: pointer;">欢迎回来: {$username}</a></li>
+                <li><a style="cursor: pointer" id="logout">[退出]</a></li>
+            </ul>
+            {if condition="CONTROLLER_NAME eq 'key_game'"}
+            <ul class="nav nav-tabs w-100 text-light no-mobile data-show">
+                <div style="min-width: 11rem; margin-right: 10px;" class="col-auto youreths">
+                    <svg class="svg-inline--fa fa-ethereum fa-w-10 icon-purp" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
+                        <path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                    </svg>
+                    <span class="lead small f3d-balance">0.0000</span>
+                    <span id="js_refresh" class="refresh" style="font-size: 12px;">刷新</span>
+                </div>
+                <div style="padding-right: 10px;" class="col-auto yourkeys">
+                    <svg class="svg-inline--fa fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                        <path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path>
+                    </svg><!-- <i class="fas fa-key"></i> -->
+                    <span class="lead small keycount">0.0000</span>
+                </div>
+                <div style="min-width: 7rem" class="col-auto airdrop">
+                    <svg class="svg-inline--fa fa-parachute-box fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="parachute-box" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M511.9 175c-9.1-75.6-78.4-132.4-158.3-158.7C390 55.7 416 116.9 416 192h28.1L327.5 321.5c-2.5-.6-4.8-1.5-7.5-1.5h-48V192h112C384 76.8 315.1 0 256 0S128 76.8 128 192h112v128h-48c-2.7 0-5 .9-7.5 1.5L67.9 192H96c0-75.1 26-136.3 62.4-175.7C78.5 42.7 9.2 99.5.1 175c-1.1 9.1 6.8 17 16 17h8.7l136.7 151.9c-.7 2.6-1.6 5.2-1.6 8.1v128c0 17.7 14.3 32 32 32h128c17.7 0 32-14.3 32-32V352c0-2.9-.9-5.4-1.6-8.1L487.1 192h8.7c9.3 0 17.2-7.8 16.1-17z"></path></svg><!-- <i class="fas fa-parachute-box"></i> -->
+                    <span class="airdropcounter lead small">0% (0.01 ETH)</span>
+                </div>
+            </ul>
+            {/if}
+            {/if}
+        </div>
+    </div>
+</div>
+<script>
+    $('#to_f3d').on('click', function(){
+        var url = getURL('key_game/index','','fomo');
+        window.location.href = url;
+    });
+    $('#to_p3d').on('click', function(){
+        var url = getURL('token_game/index','','fomo');
+        window.location.href = url;
+    });
+    $('#to_otc').on('click', function(){
+        var url = getURL('otc/index','','otc');
+        window.location.href = url;
+    });
+    $('#logout').on('click', function(){
+        var url =  getURL('login/out','','member');
+        confirm('您确定要退出登录吗？', function(){
+            $.ajax({
+                url: url,
+                success: function(data){
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        msg(data.message);
+                    }
+                }
+            })
+        })
+    });
+    $('#login').on('click', function () {
+        var url = getURL('login/index', '', 'member');
+        openBarWin('登录', layerWidth, 250, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $('#register').on('click', function () {
+        var url = getURL('register/index', '', 'member');
+        location.href = url;return;
+        openBarWin('注册', layerWidth, 500, url, function () {
+            alert('注册成功!')
+        }, ['提交', '取消']);
+    });
+    
+    $("#js_refresh").on('click',function() {
+        showLoading('刷新余额中...');
+        var url = getURL('getEthOrders');
+        $.getJSON(url,{coin_id,coin_id},function(data){
+            hideLoading();
+            if(data.success){
+                // todo 重新加载用户余额
+                getBalance(); 
+            }else{
+                msg(data.message)
+            }
+        })
+    })
+</script>

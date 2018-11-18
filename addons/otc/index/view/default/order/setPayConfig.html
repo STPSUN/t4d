@@ -1,0 +1,182 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<style>
+    body{
+        background-color: rgb(46, 51, 56)!important;
+    }
+    .form-box{
+        width: 100%;
+        padding: 20px 10px;
+        overflow: hidden;
+    }
+    .form-box .input-box{
+        position: relative;
+        width: 100%;
+        margin-bottom: 15px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+    .form-box .input-box .input{
+        width: 100%;
+        padding: 0 20px;
+        height: 40px;
+        font-size: 14px;
+        color: #333;;
+        text-align: center;
+        background: none;
+        border: none;
+    }
+    .form-box .input-box .btn{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;;
+        padding: 0 5px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+    }
+    .form-group label{
+        color: #fff;
+    }
+</style>
+</head>
+<body style="background-color: #2e3338">
+
+<div class="container">
+    <div class="form-box">
+        {if $type == 3}
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" class="form-control" id="name" name="name" value="{$info.name}" placeholder="请输入您的真实姓名">
+            </div>
+            <div class="form-group">
+                <label for="bankname">银行名称</label>
+                <input type="text" class="form-control" id="bank" name="bank_address" value="{$info.bank_address}" placeholder="请输入银行名称">
+            </div>
+            <div class="form-group">
+                <label for="account">银行卡号</label>
+                <input type="text" class="form-control" id="card" name="account" value="{$info.account}" placeholder="请输入银行卡号">
+            </div>
+        {elseif $type == 2}
+            <div class="form-group">
+                <label for="account">支付宝账号</label>
+                <input type="text" class="form-control" name="account" value="{$info.account}" placeholder="请输入您的支付宝账号">
+            </div>
+        {elseif $type == 1}
+            <div class="form-group">
+                <label for="account">微信账号</label>
+                <input type="text" class="form-control" name="account" value="{$info.account}" placeholder="请输入您的微信账号">
+            </div>
+        {/if}
+
+        {if $type != 3}
+            <div style="color:white">
+                <div class="form-group">
+                    <input type="hidden" id="imgUrl" name="file">
+                    <div  id="uploadFile">
+                        <i class="fa fa-paperclip"></i> 上传收款二维码
+                    </div>
+                </div>
+                <div class="form-group" id="file_container">
+                    <input type="file"  id="imgBase64" >
+                </div>
+                <div>
+                    <img style="max-height: 300px; height: 8em; min-width:8em;display: none" id="img">
+                </div>
+            </div>
+        {/if}
+    </div>
+    <input type="hidden" value="{$type}" name="type">
+    <input type="hidden" value="{$info.id}" name="id">
+</div>
+{/block}
+
+<script type="text/javascript" src="__JS__/leftTime.min.js"></script>
+{block name="script"}
+<!--script-->
+<script>
+    var curHref = window.location.href;
+    if(curHref.indexOf('from') > -1){
+        var fromVal = curHref.split('from=')[1];
+        if(fromVal === 'f3d'){
+            $('.btn').addClass('btn-purp');
+        } else {
+            $('.btn').addClass('btn-gren');
+        }
+    }
+    //图片上传
+    $('#imgBase64').change(function(){
+        run(this, function (data) {
+            uploadImage(data);
+        });
+    });
+
+    function run(input_file, get_data) {
+        /*input_file：文件按钮对象*/
+        /*get_data: 转换成功后执行的方法*/
+        if (typeof (FileReader) === 'undefined') {
+            alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
+        } else {
+            try {
+                /*图片转Base64 核心代码*/
+                var file = input_file.files[0];
+                //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+                if (!/image\/\w+/.test(file.type)) {
+                    alert("请确保文件为图像类型");
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    get_data(this.result);
+                }
+                reader.readAsDataURL(file);
+            }
+            catch (e) {
+                alert('图片转Base64出错啦！' + e.toString())
+            }
+        }
+    }
+
+    function uploadImage(img) {
+        //判断是否有选择上传文件
+        var imgPath = $("#imgBase64").val();
+        if (imgPath == "") {
+            alert("请选择上传图片！");
+            return;
+        }
+        //判断上传文件的后缀名
+        var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+        if (strExtension != 'jpg' && strExtension != 'gif'
+            && strExtension != 'png' && strExtension != 'bmp' && strExtension != 'jpeg') {
+            alert("请选择图片文件");
+            return;
+        }
+        $("#imgUrl").val(img);
+        file = img;
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/home/Order/base64_upload",
+        //     data: {file: img},    //视情况将base64的前面字符串data:image/png;base64,删除
+        //     cache: false,
+        //     success: function(data) {
+        //         console.log(data)
+        //         data = JSON.parse(data);
+        //         $("#img").attr('src', data.data.path);
+        //         $("#imgUrl").val(data.data.path);
+        //         $("#img").show();
+        //     },
+        //     error: function(XMLHttpRequest, textStatus, errorThrown) {
+        //         alert("上传失败，请检查网络后重试");
+        //     }
+        // });
+    }
+</script>
+
+{/block}

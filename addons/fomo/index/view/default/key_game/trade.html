@@ -1,0 +1,323 @@
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-margin">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#buy" data-toggle="tab">{:lang('purchase')}</a></li>
+        <li><a href="#gold" data-toggle="tab">{:lang('vault')}</a></li>
+        <li><a href="#recommend" data-toggle="tab">{:lang('invite')}</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="buy">
+            <form id="form1" class="ui-form" method="post">
+                <input type="hidden" name="game_id" id="game_id" value=""/>
+                <input type="hidden" name="team_id" id="team_id" value=""/>
+                <div class="p3d-buy">
+                    <div class="question">
+                        <svg class="svg-inline-sm fa-question-circle fa-w-16" aria-hidden="true" data-prefix="far" data-icon="question-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg>
+                        <div class="popover fade top in my-popover" style="left:-200px;">
+                            <div class="arrow" style="left: 50%;"></div>
+                            <h3 class="popover-title">{:lang('buy the key')}</h3>
+                            <div class="popover-content game_text" style="word-break: break-all; word-wrap:break-word;">
+
+                            </div>
+                        </div>
+                    </div>
+                    <h3>{:lang('Now hang your key ring')}</h3>
+                    <hr style="border-top: 1px solid rgba(0,0,0,.1);">
+                    <!--<p>{:lang('content1')}</p>-->
+
+                    <div class="input-box">
+                        <div class="input-icon"><svg class="input-svg fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg></div>
+                        <div class="input">
+                            <input type="text" value="0" name="key_num" id="js_key_num" />
+                        </div>
+                        <div class="input-count">key =@ <span id="key_num">0.0000</span> ITTM</div>
+                    </div>
+                    <div class="choose-box" id="choose_add">
+                        <a data-val="1">+1 {:lang('key')}</a>
+                        <a data-val="2">+2 {:lang('key')}</a>
+                        <a data-val="5">+5</a>
+                        <a data-val="10">+10</a>
+                        <a data-val="100">+100</a>
+                    </div>
+
+                    <div class="btn-row">
+                        <div class="col" style="padding: 0;">
+                            <button type="button" style="background: #fc4cca" id="ethSend" class="btn btn-block my-btn-primary btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="支付ITTM" style=""> 支付ITTM</trans></button>
+                        </div>
+                    </div>
+                    <div class="btn-row" style="margin-top: 6px;">
+                        <div class="col" style="padding: 0;">
+                            <button type="button" style="background: #fc4cca" id="copy_address_btn" data-clipboard-text="{$address}" data-clipboard-action="copy"   data-address="{$address}" class="btn btn-block my-btn-primary btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="支付ETH" style=""> 复制充值地址</trans></button>
+                        </div>
+                    </div>
+                    <!--<div class="btn-row">-->
+                        <!--<div class="col">-->
+                            <!--<button type="button" id="ethSend" class="btn btn-block btn-purp btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="支付ETH" style=""> {:lang('pay')}ETH</trans></button>-->
+                            <!--<button type="button" id="copy_address_btn" data-clipboard-text="{$address}" data-clipboard-action="copy"   data-address="{$address}" class="btn btn-block btn-purp btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="{:lang('Copy the recharge address')}" style=""> {:lang('Copy the recharge address')}</trans></button>-->
+                        <!--</div>-->
+
+                    <!--</div>-->
+                    <div class="buy-tips">
+                        {:lang('content2')}
+                    </div>
+                    <hr style="border-top: 1px solid rgba(0,0,0,.1);">
+                </div>
+                <!--<div class="p3d-buy" style="margin-top: -40px;">-->
+                    <!--<div class="question">-->
+                        <!--<svg class="svg-inline-sm fa-question-circle fa-w-16" aria-hidden="true" data-prefix="far" data-icon="question-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg>-->
+                        <!--<div class="popover fade top in my-popover" style="left:-200px;">-->
+                            <!--<div class="arrow" style="left: 50%;"></div>-->
+                            <!--<h3 class="popover-title">{:lang('team description')}</h3>-->
+                            <!--<div class="popover-content team_text" style="word-break: break-all; word-wrap:break-word;">-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                <!--</div>-->
+            </form>
+        </div>
+        
+        <div class="tab-pane fade" id="gold">
+            <div class="p3d-buy">
+                <h3>{:lang('My vault')}</h3>
+                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                    <div class="box">
+                        <div class="item">
+                            <div class="item-left">{:lang('Bonus share out bonus')}</div>
+                            <div class="item-right">
+                                <div class="f3d-reward">0.0000 ETH</div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="item-left">{:lang('Invitation bonus')}</div>
+                            <div class="item-right">
+                                <div class="f3d-invite">0.0000 ETH</div>
+                            </div>
+                        </div>
+                        <hr style="border-top: 1px solid rgba(0,0,0,.1);">
+                            <div class="item">
+                                <div class="item-left">{:lang('The total balance')}</div>
+                                <div class="item-right">
+                                    <div class="f3d-balance">0.0000 ETH</div>
+                                    <!--<p><span>≙ <span class="user_total_amount">0.0000</span> USDT</span></p>-->
+                                </div>
+                            </div>
+                        <!--<div class="col" style="padding: 10px 0;">-->
+                            <!--<button type="button" id="withdraw" class="btn btn-block my-btn-primary btn-lg ticketProcess"><img src="__IMG__/icon_pickup.png"> <trans oldtip=" Reinvest" newtip="提取" style=""> 提取</trans></button>-->
+                        <!--</div>-->
+                            <div class="col" style="padding: 10px 0;">
+                                <button style="background: #fc4cca" type="button" id="withdraw" class="btn btn-block btn-outline-purp btn-lg ticketProcess"><img src="__IMG__/icon_pickup.png"><trans oldtip=" Reinvest" newtip="{:lang('extract')}" style=""> {:lang('extract')}</trans></button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="recommend">
+            <div class="p3d-buy">
+                <h3>{:lang('content3')}</h3>
+                <hr style="border-top: 1px solid rgba(0,0,0,.1);" />
+                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                    {if condition="$address eq ''"}
+                    <div class="box">
+                        <p style="margin-bottom: 0; margin-top: 20px; font-size: 14px;">{:lang('content4')}</p>
+                        <div class="col" style="padding: 10px 0;">
+                            <button type="button" id="register_btn" class="btn btn-block btn-purp btn-lg ticketProcess"><svg class="svg-inline-sm fa-check fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"></path>
+                                </svg><trans oldtip=" Reinvest" newtip="{:lang('content5')}" style=""> {:lang('content5')}</trans></button>
+                        </div>
+                    </div>
+                    {else /}
+                    <div class="box">
+                        <p style="margin-bottom: 0; margin-top: 20px; font-size: 14px;">{:lang('Invite link')}:</p>
+                        <span style="color:#fff" id="address_content">{php}echo 'http://'.$_SERVER['SERVER_NAME'].'/index/register/index/addon/member?inv='.$invite_code; {/php}</span>
+                        <a href="javascript:;" id="copy_btn" class="f-r tac" data-clipboard-text="{php}echo 'http://'.$_SERVER['SERVER_NAME'].'/index/register/index/addon/member?inv='.$invite_code; {/php}" data-clipboard-action="copy" style="display: block; width: 100%; text-align: center;">{:lang('Click and copy link')}</a>
+                        <p style="margin-bottom: 0; margin-top: 20px; font-size: 14px; text-align: center;">{:lang('Invite qr code')}
+                            <div class="erweima_content" style="margin:0 auto 1rem; text-align:center;">
+                               <span class="qrcode" id="qrcode"></span>
+                            </div>
+                            <div style="color:#fff; font-size:14px; text-align:center;">{:lang('Screenshot save qr code')}</div>
+                        </p>
+
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src="__STATIC__/jquery/jquery.qrcode.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        getHelper();
+        form1 = $("#form1").bindForm();
+        $('#qrcode').qrcode({
+          text :  "http://{$_SERVER['SERVER_NAME']}"+getURL('register/index', '', 'member')+"?inv={$invite_code}",
+          width : "200",
+          height : "200"
+        });
+    });
+
+    $('#register_btn').on('click', function () {
+        var url = getURL('register/index', '', 'member');
+
+        location.href =url;return;
+        openBarWin("{:lang('register')}", layerWidth, 500, url, function () {
+            alert("{:lang('Registered successfully!')}")
+        }, ["{:lang('submit')}", "{:lang('cancel')}"]);
+    });
+
+//    $('#copy_btn').click(function(){
+//        var values = $('#address_content').html();
+//        var oInput = document.createElement('input');
+//        oInput.value = values;
+//        document.body.appendChild(oInput);
+//        oInput.select(); // 选择对象
+//        document.execCommand("Copy"); // 执行浏览器复制命令
+//        oInput.className = 'oInput';
+//        oInput.style.display='none';
+//        alert('复制成功');
+//    })
+    var code = '{$invite_code}';
+    var clipboard = new Clipboard("#copy_btn");
+    clipboard.on('success', function(e) {
+        alert("{:lang('replicated')}");
+    });
+
+    clipboard.on('error', function(e) {
+        alert("{:lang('replicated')}");
+    });
+    var clipboardAds = new Clipboard("#copy_address_btn");
+    clipboardAds.on('success', function(e) {
+        alert("{:lang('replicated')}");
+    });
+
+    clipboardAds.on('error', function(e) {
+        alert("{:lang('replicated')}");
+    });
+    $('#copy_address_btn').click(function(){
+        var values = $(this).data('address');
+        var oInput = document.createElement('input');
+        oInput.value = values;
+        document.body.appendChild(oInput);
+        oInput.select(); // 选择对象
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        oInput.className = 'oInput';
+        oInput.style.display='none';
+        alert('复制成功');
+    })
+    function getHelper(){
+        var url = getURL('getHelperText');
+        $.getJSON(url,{},function(data){
+            if(data.success){
+                data = data.data
+                for(var i in data){
+                    $('.'+data[i].field).html(data[i].parameter_val)
+                }
+            }else{
+                msg(data.message)
+            }
+        })
+    }
+    
+    var price = '', teamId = '',inc = "{$inc}";
+    // 加键
+    $('#choose_add').find('a').on('click', function () {
+        console.log(111);
+        var keyVal = 0;
+        if($('#js_key_num').val() && parseFloat($('#js_key_num').val()) > 0){
+            keyVal = parseInt($('#js_key_num').val());
+        } else {
+            keyVal = 0;
+        }
+
+        var aVal = parseInt($(this).attr('data-val'));
+        thisVal = keyVal + aVal;
+//        debugger
+        $('#js_key_num').val(thisVal);
+        var totalVal = sumTotalVal(price,thisVal);
+        $("#key_num").text(totalVal);
+    });
+    // 键值变化
+    $('input[name=key_num]').on('keyup', function(){
+        var thisVal = $(this).val();
+        if (thisVal && parseFloat(thisVal) > 0) {
+            var totalVal = sumTotalVal(price,thisVal);
+            $('#key_num').text(totalVal);
+        } else {
+            $('#key_num').text('0.0000');
+        }
+
+    });
+    // 选择战队
+    $('#choose_team').find('.item').on('click', function(){
+        teamId = $(this).attr('data-id');
+        $("#team_id").val(teamId)
+        $(this).siblings().removeClass('active');
+        $(this).addClass('active');
+    });
+    
+    function isInteger(obj) {
+        return typeof obj === 'number' && obj%1 === 0
+    }
+    
+    function sumTotalVal(base ,num){
+//        debugger
+        var s = (num - 1) * num / 2 * inc + base * num;
+        return s;
+    }
+    
+    function chkForm(){
+        var amount = $('input[name=key_num]').val();
+        var game_id = $("#game_id").val();
+        if(!game_id){
+            msg("{:lang('The game ID is empty')}");
+            return false;
+        }
+        amount = parseInt(amount);
+        if (amount <= 0) {
+            msg("{:lang('Please enter the number of keys')}");
+            return false;
+        } else if (!isInteger(amount)) {
+            msg("{:lang('Please enter the valid number of keys')}");
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    $("#ethSend").click(function(){
+        var f = form1.valid();
+        if (f) {
+            if (typeof (chkForm) != 'undefined') {
+                if (!chkForm())
+                    return false;
+            }
+            _isClickSave = true;
+            
+            form1.ajaxSubmit({
+                url:getURL('buy'),
+                beforeSubmit: function () {
+                    showLoading("{:lang('Data submission')}...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (res.success) {
+                        location.reload();
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                            
+                    }else{
+                        msg(res.message);
+                        return;
+                    }
+                    alert("{:lang('Submitted successfully')}");
+                    setTimeout(function(){
+                        location.reload();
+                    },1000)
+
+                }
+            })
+        }
+    })
+</script>

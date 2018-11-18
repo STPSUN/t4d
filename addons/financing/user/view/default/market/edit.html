@@ -1,0 +1,84 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<input type="hidden" id="id" name="id" />
+
+<div class="box-content">
+    <div class="control-row col-2">
+        <div class="control-group">
+            <label class="control-label">币种名称</label>
+            <div class="controls">
+                <input type="text" name="coin_name" id="coin_name" class="form-control required" onkeyup="this.value=this.value.toUpperCase()" />                                  
+            </div>       
+        </div>
+        <div class="control-group js_tax_parsent">
+            <label class="control-label">支付币种</label>
+            <div class="controls">
+                <input type="text" name="pay_coin_name" id="pay_coin_name" class="form-control required" onkeyup="this.value=this.value.toUpperCase()" />
+                <span class="tips">例如:ETH,USDT</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">是否显示</label>
+            <div class="controls">
+                <select name="is_allow" id="is_allow" class="form-control">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">起伏</label>
+            <div class="controls">
+                <input type="text" name="rate" id="rate" class="form-control" /><span class="tips">%</span>
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">人民币价格</label>
+            <div class="controls">
+                <input type="text" name="cny" id="cny" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">交易量</label>
+            <div class="controls">
+                <input type="text" name="amount" id="amount" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">当前成交价</label>
+            <div class="controls">
+                <input type="text" name="close" id="close" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">24小时最高价</label>
+            <div class="controls">
+                <input type="text" name="high" id="high" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">24小时最低价</label>
+            <div class="controls">
+                <input type="text" name="low" id="low" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">24小时交易笔数</label>
+            <div class="controls">
+                <input type="text" name="count" id="count" class="form-control" />
+            </div>       
+        </div>
+        <div class="control-group">
+            <label class="control-label">24小时成交额</label>
+            <div class="controls">
+                <input type="text" name="vol" id="vol" class="form-control" />
+            </div>       
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+
+</script>
+{/block}

@@ -1,0 +1,51 @@
+
+<script type="text/javascript">
+    var _module_name = null;
+    var _controller_name = null;
+    var _addon_name = null;
+    function getURL(action, param, addon) {
+        var m = "{:MODULE_NAME}";
+        var c = "{$_CONTROLLER_NAME}";
+        var a = "{$_ADDON_NAME}";
+        if (_module_name != null)
+            m = _module_name;
+        if (_controller_name != null)
+            c = _controller_name;
+        var arr = action.split('/');
+        var url = "";
+        if (arr.length == 3) {
+            url = action;
+        } else if (arr.length == 2) {
+            url = "/" + m + "/" + action;
+        } else {
+            url = "/" + m + "/" + c + "/" + action;
+        }
+        if (addon != null)
+            a = addon;
+        else if (_addon_name != null)
+            a = _addon_name;
+        if (a != "")
+            url += "/addon/" + a;
+        if (param != null && param != "") {
+            var ref = "";
+            if (typeof param === 'string') {
+                ref = param;
+            } else if (typeof param === 'object') {
+                for (var key in param) {
+                    if (ref != "")
+                        ref += "&";
+                    ref += key + "=" + param[key];
+                }
+            }
+            if (ref != "") {
+                if (url.indexOf("?") == -1)
+                    url += "?";
+                else
+                    url += "&";
+                url += ref;
+            }
+        }
+        return url;
+    }
+   
+</script>

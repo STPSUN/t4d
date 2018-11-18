@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>{:lang('register')}</title>
+
+    <link href="__CSS__/bootstrap.min.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="__CSS__/font-awesome.min.css">-->
+    <!--<link rel="stylesheet" href="__CSS__/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" href="__CSS__/style.css">-->
+    <style>
+        body{
+            background: url('__IMG__/bg_f3d.jpg') 50% no-repeat;
+            background-size: cover;
+        }
+        *{
+            color: #ffffff;
+        }
+        .reg_input{
+            text-align: left;height: 2rem
+        }
+        .country-name{
+            color: #000!important;
+        }
+        .get-code ,.submit_btn{background: #05bdee !important;border:none !important;}
+    </style>
+</head>
+<body>
+
+{include file="$PUBLIC_HEADER"/}
+<div class="container">
+    <div style="margin: 10% auto 1rem;color:#fff" id="back_content">
+        <!-- 消息提示div -->
+        <div class="toast_div text-center" style="margin:10% auto 0"></div>
+
+        <span class="glyphicon glyphicon-menu-left"></span>
+        <a class="text-white" onclick="closePage()">{:lang('return')}</a>
+    </div>
+    <div style="position: relative;" class="mg-t-2">
+        <form id="form1" class="ui-form" method="post">
+            <div class="col-xs-12 col-md-6 mg-ct" id="list_content" style="position: absolute;left: 50%;transform: translateX(-50%);">
+                <div class="bg-white radius-5 mg-ct-1" style="box-shadow: 0 1px 1px rgba(0, 0, 0, .05);border: 1px solid #D1D1D9;">
+
+                    <div class="pd-2 flex-box flex-ver-ct flex-align-jtf  " style="border-bottom: 1px solid #D1D1D9">
+                        <div class="size-3">{:lang('Register an account')}</div>
+                        <div>{:lang('or')} <a class="js_login" style="color: #05bdee !important;">{:lang('login')}</a></div>
+                    </div>
+                    <div class="pd-2">
+                        <div>
+                            <div>{:lang('User name')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input type="text" id="username" name="username" placeholder="{:lang('Please enter the user name')}" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/yes.png" class="iconimg hide" >-->
+                            </div>
+                        </div>
+                        <div class="mg-t-1">
+                            <div>{:lang('Password')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input type="password" id="password" name="password" placeholder="{:lang('Please enter the password')}" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
+                            </div>
+                        </div>
+                        <div class="mg-t-1">
+                            <div>{:lang('Confirm password')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input type="password" id="password1" name="password1" placeholder="{:lang('Please confirm the password')}" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
+                            </div>
+                        </div>
+                        <div class="mg-t-1">
+                            <div>{:lang('Trade password')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input type="password" id="pay_password" name="pay_password" placeholder="{:lang('content6')}" maxlength="6" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
+                            </div>
+                        </div>
+                        <div class="mg-t-1">
+                            <div>{:lang('Referral Code')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input value="{$invite_code}" type="text" id="invite_code" name="inviter_code" placeholder="{:lang('Please enter the referral code')}" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/yes.png" class="iconimg hide" >-->
+                            </div>
+                        </div>
+
+                        <div class="mg-t-1">
+                            <div>{:lang('Phone number')}</div>
+                            <div class="get_auth_code">
+                                <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                    <input type="tel" id="phone" name="phone" placeholder="{:lang('Please enter the phone number')}" class="w-90 size-105 reg_input">
+                                    <!--<img src="__IMG__/yes.png" class="iconimg hide" >-->
+                                </div>
+                                <div class="get_auth_code_btn get-code" id="get_auth_code_btn" onclick="getSms(this)">{:lang('Get verification code')}</div>
+                            </div>
+                        </div>
+                        <div class="mg-t-1">
+                            <div>{:lang('Phone verification code')}</div>
+                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                                <input type="number" id="code" name="verify_code" placeholder="{:lang('content7')}" class="w-90 size-105 reg_input">
+                                <!--<img src="__IMG__/yes.png" class="iconimg hide" >-->
+                            </div>
+                        </div>
+                        <div class="btn btn-block btn-lg btn-primary mg-t-2 submit_btn">{:lang('register')}</div>
+                        <div id="msg" class="toast"></div>
+
+                        <input type="hidden" id="area" name="area" value="86" class="w-90 size-105 reg_input">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="__STATIC__/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/js/intlTelInput.js"></script>
+<script type="text/javascript">
+    var isWaiting = false;
+    var countyCode = 86;
+    var smsCode = '';
+    var time = "{$time}";
+    $(function(){
+        var clientHeight = $('#list_content').height();
+        var back_content_height = $('#back_content').height();
+        var height = clientHeight + back_content_height + 8 *16 + 'px'
+        $('body').css('height',height)
+        form = $(".ui-form").bindForm();
+    })
+
+    $(".js_login").click(function(){
+        location.href = "{:url('index/index')}";
+    })
+
+    function onShowPass(el){
+        var src = $(el).attr("src");
+        var isHidePass = function(){
+            return src.indexOf("hide")>=0;
+        }
+        src = isHidePass() ? src.replace("hide","open") : src.replace("open","hide");
+        $(el).prev().attr('type',isHidePass()?"password":"text")
+        $(el).attr('src',src)
+    }
+    $("#phone").intlTelInput({
+        preferredCountries: [ "cn" ]
+    });
+    $("#phone").on("countrychange", function(e, countryData) {
+        console.log(countryData);
+        countyCode = countryData.dialCode;
+        $("#area").val(countryData.dialCode);
+    });
+    $("#phone").blur(function(){
+        var phone = $("#phone").val();
+        if ( !isPhone(phone) ) return;
+
+    })
+    function verifyPhone(phone){
+        var _data = {
+            phone:phone,
+            time:"{$time}",
+            area :countyCode
+        };
+        var flag = false;
+        $.ajax({
+            type: "GET",
+            url: getURL('Register/hasReg'),
+            data: _data,
+            async: false,
+            success: function (res) {
+                if(res.data > 0){
+                    msg("{:lang('This phone number has been registered')}")
+                    flag = false;
+                }
+                flag = true;
+            }
+        })
+        return flag;
+    }
+
+    function remainTime(el){
+        var set_time = time;
+        var interval = setInterval(function(){
+            $(el).text((set_time--) +"{:lang('seconds later to get')}");
+            if ( set_time < 0 ) {
+                clearInterval(interval);
+                $(el).text("{:lang('Get verification code')}");
+                isWaiting = false;
+            }
+        },1000)
+    }
+    function getSms(el){
+        var phone = $("#phone").val();
+        // if ( !isPhone(phone) ) return;
+        if(!verifyPhone(phone))
+            return;
+        if (isWaiting) return;
+        var _el=el;
+        var area = $("#area").val();
+
+        telephone = {
+            phone:phone,
+            time:"{$time}",
+            area :countyCode
+        }
+        $.ajax({
+            url :getURL('Register/sms'),
+            data:telephone,
+            type:'POST',
+            success : function(ret){
+                if (ret.success) {
+                    isWaiting = true;
+                    remainTime(_el);
+                    return msg(ret.message);
+                }else{
+                    return msg(ret.message);
+                }
+            },
+            err: function(ret){
+                return msg(ret.message);
+
+            }
+        })
+    }
+
+    $(".submit_btn").click(function(){
+        var f = form.valid();
+        if (f) {
+            if (typeof (chkForm) != 'undefined') {
+                if (!chkForm())
+                    return false;
+            }
+            _isClickSave = true;
+            form.ajaxSubmit({
+                beforeSubmit: function () {
+                    showLoading("{:lang('Data upload')}...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (!res.success) {
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                        else
+                            msg(res.message);
+                        return;
+                    }
+                    msg("{:lang('Registered successfully')}");
+                    location.href = "{:url('index/index')}";
+                }
+            })
+        }
+    })
+
+
+
+    /**
+     * 验证
+     * @returns {undefined}
+     */
+    function chkForm(){
+        var code = $('#code').val();
+        var phone = $('#phone').val();
+        var password = $('#password').val();
+        var password1 = $('#password1').val();
+        var pay_password = $('#pay_password').val();
+        if(pay_password.length != 6){
+            msg("{:lang('Trading passwords do not meet 6 digits')}");
+            return false;
+        }
+        if(password != password1){
+            msg("{:lang('The passwords entered do not match')}");
+            return false;
+        }
+        var username = $('#username').val();
+        if ( !isPhone(phone) )
+            return false;
+        if ( !username ) {
+            msg("{:lang('The username cannot be empty')}")
+            return false;
+        }
+        if(username.length > 8){
+            msg("{:lang('The user name should not be longer than 8 bits')}")
+            return false;
+        }
+        if ( !code ) {
+            msg("{:lang('The captcha cannot be empty')}")
+            return false;
+        }
+        if ( !/^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,16}$/.test(password) ) {
+            msg("{:lang('content8')}");
+            return false;
+        }
+        return true;
+    }
+
+
+    function isPhone(phone){
+        var is = true;
+        return is;
+        if ( !/(13\d|14[57]|15[^4,\D]|17[13678]|18\d)\d{8}|170[0589]\d{7}/.test(phone) ) {
+            msg("{:lang('Please enter the correct phone number')}");
+            is = false;
+        }
+        return is;
+    }
+
+    function closePage(){
+        location.href = "{:url('index/index')}";
+    }
+</script>
+</html>

@@ -1,0 +1,20 @@
+{extend name="$BASE_POPUP" /}
+{block name="body"}
+    <div class="box-content"> 
+        {volist name="data" id="asset"}
+        <div class="control-group">
+            <label class="control-label">{$asset.candy_name}</label>
+            <div class="controls">
+                <botton class="btn btn-success">{$asset.num}</botton>                                      
+            </div>
+        </div>
+        {/volist}
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+</script>
+{/block}
+
+

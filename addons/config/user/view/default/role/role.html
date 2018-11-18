@@ -1,0 +1,106 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<link rel="stylesheet" href="__STATIC__/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<style type="text/css">
+    .brand_box div{margin:2px 0;}
+    .left_tree_wrap{min-height:300px;}        
+    .ztree{overflow:auto}
+    .ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+    .ztree li ul.level0 {padding:0; background:none;}
+    .ztree li span.button.pIcon01_ico_open, .ztree li span.button.pIcon01_ico_close{margin-right:2px; background: url(__IMG__/1_open.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}
+    .ztree li span.button.icon01_ico_docu{display:none} 
+    .ztree li span.button.pIcon01_ico_docu{display:none}     
+    .ztree li span.button.icon01_ico_open, .ztree li span.button.icon01_ico_close{display:none};    
+</style>
+<input type="hidden" id="id" name="id" /> 
+<input type="hidden" id="addon_ids" name="addon_ids" />     
+<div style="padding-top:5px">     
+    <table border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="291" valign="top">   
+                角色名称
+                <input type="text" name="name" id="name" class="form-control required" />       
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" valign="top" class="brand_box">
+                <fieldset class="control-fieldset" style="float:left;width:220px;">
+                    <legend style="margin-left:10px;">&nbsp;管理权限&nbsp;</legend>  
+                    <ul id="treePopedom" style="height:435px;overflow:auto" class="ztree"></ul>  
+                </fieldset>
+            </td>
+        </tr>    
+    </table>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="__STATIC__/zTree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript">
+    var popedomSetting = {
+        check: {
+            enable: true,
+            setChkDisabled: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    }
+    
+    var zPopedomTree = null;
+    function loadPopedomTree() {
+        $.getJSON(getURL('getPopedomForTree'), {}, function (data) {
+            if (data.length > 0) {
+                var rootNode = [{id: 0, pId: 0, name: "所有", open: true, iconSkin: "pIcon01"}];
+                data = rootNode.concat(data);
+            }
+            zPopedomTree = $.fn.zTree.init($("#treePopedom"), popedomSetting, data);
+            var popedom_codes = $("#addon_ids").val();
+            if (popedom_codes != "") {
+                var ids = popedom_codes.split(',');
+                var len = ids.length;
+                for (var i = 0; i < len; i++) {
+                    var node = zPopedomTree.getNodeByParam('id', ids[i]);
+                    zPopedomTree.checkNode(node);
+                }
+            }
+            zPopedomTree.expandAll(true);
+        });
+    }
+
+    $(function () {
+        loadPopedomTree();
+    });
+    function onLoadDataSuccess() {
+        loadPopedomTree();
+    }
+    function parseTree() {
+        var zPopedomTree = $.fn.zTree.getZTreeObj("treePopedom");
+        var nodes = zPopedomTree.getCheckedNodes(true);
+        var ids = '';
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].id !="") {
+                if (ids != '')
+                    ids += ',';
+                ids += nodes[i].id;
+            }
+        }
+        if(ids == ""){
+            alert("请勾选操作权限");
+            return false;
+        }
+        return ids;
+    }
+    function chkForm() {
+        var ids = parseTree();
+        if(!ids){
+            return false;
+        }
+        $("#addon_ids").val(ids);
+        return true;
+    }
+</script>
+{/block}

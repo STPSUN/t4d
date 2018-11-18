@@ -1,0 +1,268 @@
+{extend name="$BASE_INDEX" /}
+{block name="body"}
+<style>
+  .s-acitve{
+    color: #555555!important;
+    background-color: #fff!important;
+    border: 1px solid #ddd!important;
+    border-bottom-color: transparent!important;
+    cursor: default!important;
+  }
+  #order_list{
+    min-height:575px;
+    background-color: white;
+
+  }
+</style>
+<body>
+
+<div class="warpper otc-bg-white">
+  {include file="public/header" /}
+
+  <div class="container no-padding page-space">
+    <div class="row">
+      <div class="col-md-9 col-md-push-3">
+        <div class="offers-show">
+          <ul id="myTab" class="nav nav-tabs otc-nav-tabs">
+            <li class="s-acitve status-tab" data-status="0,2,3" data-status="4"><a>进行中</a></li>
+            <li class="status-tab" data-status="4" data-status="4"><a >已完成</a></li>
+            <li class="status-tab" data-status="-1" data-status="4"><a  >已取消</a></li>
+          </ul>
+          <div id="myTabContent" >
+            <div class="tab-pane fade active in" id="complete">
+              <div class="my-order">
+                <div class="group clearfix">
+                  <div class="long-solution-list">
+                    <hr style="margin-bottom: 10px; margin-top: 0;">
+                    <ul class="list-head">
+                      <li class="user-name-head">交易金额</li>
+                      <li class="user-trust-head">交易数量</li>
+                      <li class="payment-type-head">单价</li>
+                      <li class="minimum-amount-head">交易时间</li>
+                      <li class="price-head">订单状态</li>
+                      <li class="buy-button-head">操作</li>
+                    </ul>
+                    <div id="order_list"></div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <nav class="pagination-sm">
+                    <div class="pageTest text-center"></div>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-3 col-md-pull-9">
+        <div class="trade-desc">
+          <h4>交易说明：</h4>
+          <p>1.订单有效期为15分钟，请您及时在有效期内付款并点击[标记付款已完成]按钮，我才可以释放数字币给您</p>
+          <p>2.如果您无法在15分钟内完成付款，请点击[延长订单有效期]按钮</p>
+          <p>3.开始交易后数字币由系统锁定托管，请放心下单</p>
+          <br />
+          <h4>交易备注：</h4>
+          <p>请勿在汇款备注内填写比特币、BTC、OTC等任何数字币有关字眼，防止您的汇款被银行拦截</p>
+          <p>银行账号：XXXX XXXX XXXX XXXX</p>
+          <p>支付宝账号：XXXXXX</p>
+          <p>微信账号：XXXX</p>
+          <p>下单后可以直接加我微信跟我联系，我会尽快回复。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    $(function(){
+        $te = $(".status-tab").click(function(){
+            if(!flag){
+                msg("数据加载中，请稍候");
+                return;
+            }
+            flag = false;
+            $(".status-tab").removeClass("s-acitve");
+            $(this).addClass("s-acitve");
+            var status = $(this).data('status');
+            getDataInit(4,status);
+        });
+        console.log($te);
+    })
+    var bodyWidth = $('body').width(),layerWidth;
+    console.log(bodyWidth)
+    if(bodyWidth >= 450){
+        layerWidth = '50%';
+    }else{
+        layerWidth = '80%';
+    }
+
+    $("[data-toggle='popover']").popover();
+    $('#login').on('click', function(){
+        layer.open({
+            title: '登录',
+            type: 2,
+            area: [layerWidth, '250px'],
+            content: './login.html?from=f3d'
+        });
+    });
+    $('#register').on('click', function(){
+        layer.open({
+            title: '将您的名字注册在区块链上',
+            type: 2,
+            shade: 0.4,
+            area: [layerWidth, '470px'],
+            content: './register.html?from=f3d'
+        });
+    });
+    $('#register_btn').on('click', function(){
+        layer.open({
+            title: '将您的名字注册在区块链上',
+            type: 2,
+            shade: 0.4,
+            area: [layerWidth, '470px'],
+            content: './register.html?from=f3d'
+        });
+    });
+    $('#withdraw').on('click', function(){
+        layer.open({
+            title: '提取',
+            type: 4,
+            shade: 0.4,
+            area: [layerWidth, '220px'],
+            content: './withdraw.html?from=f3d'
+        });
+    });
+    // 加键
+    $('#choose_add').find('a').on('click', function(){
+        var keyVal = parseInt($('#input_key').val());
+        var aVal = parseInt($(this).attr('data-val'));
+        $('#input_key').val(keyVal + aVal);
+    })
+    // 选择战队
+    $('#choose_team').find('.item').on('click', function(){
+        $(this).siblings().removeClass('active');
+        $(this).addClass('active');
+        var teamType = $(this).attr('data-type'); // 战队名称
+        console.log(teamType);
+    });
+    // 倒计时
+    $.leftTime("2018/08/15 18:00:00",function(date){
+        if(date.status){
+            var $dateShow1 = $(".date_show");
+            $dateShow1.find(".day").html(date.d);
+            $dateShow1.find(".hour").html(date.h);
+            $dateShow1.find(".minute").html(date.m);
+            $dateShow1.find(".second").html(date.s);
+        }
+    });
+
+
+    var flag = true;
+    var type = 4;
+    var status = [0,2,3];
+    var pageSize = 10;
+    function getDataInit(type,status) {
+        $('#order_list').html('');
+        type = type;
+        status = status;
+        $.ajax({
+            url: getURL('otc/loadList','','otc'),
+            data:{
+                type: 4,
+                status: status,
+                page: 1,
+                rows: pageSize,
+            },
+            success: function(response){
+                var data = response;
+                getDataList(data.rows);
+                pageEvent(data.total);
+            }
+        });
+    }
+    function getData(page) {
+        $.ajax({
+            url: getURL('otc/loadList','','otc'),
+            data:{
+                type: 4,
+                status: status,
+                page: page,
+                rows: pageSize
+            },
+            success: function(response){
+                var data = response;
+                console.log(data.rows)
+                getDataList(data.rows);
+            }
+        });
+    }
+    function getDataList(data) {
+        console.log(data);
+        var html = '';
+        if (data && data.length > 0) {
+            var i = 0, len = data.length;
+            for (i;i<len;i++){
+                html += '<ul class="list-content">\
+                            <li class="user-name">\
+                            <strong>'+ data[i].total_cny +' CNY</strong>\
+                        </li>\
+                        <li class="user-trust">\
+                            '+data[i].amount+' ITTM\
+                        </li>\
+                        <li class="payment-type">\
+                            '+ data[i].price +' CNY\
+                        </li>\
+                        <li class="minimum-amount">\
+                            '+ data[i].deal_time +'\
+                        </li>\
+                        <li class="buy-button">';
+                switch (data[i].status){
+                    case 0 :
+                        html += '上架中 ' +
+                            '</li>';
+                        break;
+                    case -1 :
+                        html += ' 已关闭' +
+                            '</li>';
+                        break;
+                    case 2 :
+                        html +=  '待付款\
+                            </li>';
+                        break;
+                    case 3 :
+                        html +=  '待确认\
+                            </li>';
+                        break;
+                    case 4 :
+                        html +=  '已完成\
+                            </li>';
+                        break;
+                }
+                html += '<li class="buy-button"><a onclick="toDetail('+data[i].id+')">查看详情</a></li>';
+                html += '</ul>';
+            }
+            $('#order_list').html(html);
+        }
+        flag = true;
+    }
+    function toDetail(id){
+      location.href = getURL("orderDetail")+ "?id="+id;
+    }
+
+    function pageEvent (total) {
+        $('.pageTest').page({
+            leng: Math.ceil(total/pageSize),//分页总数
+            activeClass: 'active', //active 类样式定义
+            clickBack: function (page) {
+                getData(page);
+            }
+        })
+    }
+    getDataInit(1,status);
+
+
+</script>
+{/block}

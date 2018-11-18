@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>注册</title>
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <link rel="stylesheet" href="__CSS__/style.css">
+    <style>
+        .form-box{
+            width: 100%;
+            padding: 20px 10px;
+            overflow: hidden;
+        }
+        .form-box .input-box{
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .form-box .input-box .input{
+            width: 100%;
+            padding: 0 20px;
+            height: 40px;
+            font-size: 14px;
+            color: #333;;
+            text-align: center;
+            background: none;
+            border: none;
+        }
+        .form-box .input-box .btn{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;;
+            padding: 0 5px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background-color: #2e3338">
+{include file="$PUBLIC_HEADER"/}
+<div class="container">
+    <div style="margin: 10% auto 1rem;color:#fff" id="back_content">
+        <!-- 消息提示div -->
+        <div class="toast_div text-center" style="margin:10% auto 0"></div>
+
+        <span class="glyphicon glyphicon-menu-left"></span>
+        <a class="text-white" onclick="closePage()">{:lang('return')}</a>
+    </div>
+    <div class="form-box">
+        <form id="form1" class="ui-form"  method="post">
+
+        <div class="input-box">
+            <input type="text" id="username" name="username" placeholder="{:lang('Please enter the user name')}" class="input">
+        </div>
+        <div class="input-box">
+            <input type="text" id="phone" name="phone" placeholder="{:lang('Please enter the phone number')}" class="input">
+        </div>
+        <div class="input-box">
+            <input type="text" id="code"  name="verify_code" placeholder="{:lang('content7')}" class="input">
+            <a class="btn btn-purp" style="width: 100px" id="get_auth_code_btn" onclick="getSms(this)">获取验证码</a>
+        </div>
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder="{:lang('Please enter the password')}" class="input">
+        </div>
+        <div class="input-box">
+            <input type="password" id="password1" name="password1" placeholder="{:lang('Please confirm the password')}" class="input">
+        </div>
+            <div class="input-box">
+                <input type="password" id="pay_password" name="pay_password" placeholder="{:lang('content6')}" class="input">
+            </div>
+        <div class="input-box">
+            <input value="{$invite_code}" type="text" id="inviter_code" name="inviter_code" placeholder="{:lang('Please enter the referral code')}" class="input">
+        </div>
+            <button type="button" style="background: #d5cfcf;" class="btn btn-block btn-lg ticketProcess submit_btn"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip="register" newtip="注册"> 注册</trans></button>
+            <input type="hidden" id="area" name="area" value="86" class="w-90 size-105 reg_input">
+        </form>
+    </div>
+</div>
+<!--script-->
+<!--<script src="__JS__/jquery.min.js"></script>-->
+<!--<script src="__JS__/bootstrap.min.js"></script>-->
+<script type="text/javascript" src="__STATIC__/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/js/intlTelInput.js"></script>
+<script type="text/javascript" src="__STATIC__/jquery/jquery.form.js"></script>
+<script>
+    var curHref = window.location.href;
+    if(curHref.indexOf('from') > -1){
+        var fromVal = curHref.split('from=')[1];
+        if(fromVal === 'f3d'){
+            $('.btn').addClass('btn-purp');
+        } else {
+            $('.btn').addClass('btn-gren');
+        }
+    }
+
+    var isWaiting = false;
+    var countyCode = 86;
+    var smsCode = '';
+    var time = "{$time}";
+    $(function(){
+        var clientHeight = $('#list_content').height();
+        var back_content_height = $('#back_content').height();
+        var height = clientHeight + back_content_height + 8 *16 + 'px'
+        $('body').css('height',height)
+        form = $(".ui-form").bindForm();
+    })
+
+    $(".js_login").click(function(){
+        location.href = "{:url('index/index')}";
+    })
+
+    function onShowPass(el){
+        var src = $(el).attr("src");
+        var isHidePass = function(){
+            return src.indexOf("hide")>=0;
+        }
+        src = isHidePass() ? src.replace("hide","open") : src.replace("open","hide");
+        $(el).prev().attr('type',isHidePass()?"password":"text")
+        $(el).attr('src',src)
+    }
+    $("#phone").intlTelInput({
+        preferredCountries: [ "cn" ]
+    });
+    $("#phone").on("countrychange", function(e, countryData) {
+        console.log(countryData);
+        countyCode = countryData.dialCode;
+        $("#area").val(countryData.dialCode);
+    });
+    $("#phone").blur(function(){
+        var phone = $("#phone").val();
+        if ( !isPhone(phone) ) return;
+
+    })
+    function verifyPhone(phone){
+        var _data = {
+            phone:phone,
+            time:"{$time}",
+            area :countyCode
+        };
+        var flag = false;
+        $.ajax({
+            type: "GET",
+            url: getURL('Register/hasReg'),
+            data: _data,
+            async: false,
+            success: function (res) {
+                if(res.data > 0){
+                    msg("{:lang('This phone number has been registered')}")
+                    flag = false;
+                }
+                flag = true;
+            }
+        })
+        return flag;
+    }
+
+    function remainTime(el){
+        var set_time = time;
+        var interval = setInterval(function(){
+            $(el).text((set_time--) +"{:lang('seconds later to get')}");
+            if ( set_time < 0 ) {
+                clearInterval(interval);
+                $(el).text("{:lang('Get verification code')}");
+                isWaiting = false;
+            }
+        },1000)
+    }
+    function getSms(el){
+        var phone = $("#phone").val();
+        console.log('phone'+phone);
+        // if ( !isPhone(phone) ) return;
+        if(!verifyPhone(phone))
+            return;
+        if (isWaiting) return;
+        var _el=el;
+//        var area = $("#area").val();
+
+        telephone = {
+            phone:phone,
+            time:"{$time}",
+            area :countyCode
+        };
+        $.ajax({
+            url :getURL('Register/sms'),
+            data:telephone,
+            type:'POST',
+            success : function(ret){
+                if (ret.success) {
+                    isWaiting = true;
+                    remainTime(_el);
+                    return msg(ret.message);
+                }else{
+                    return msg(ret.message);
+                }
+            },
+            err: function(ret){
+                return msg(ret.message);
+
+            }
+        })
+    }
+
+    $(".submit_btn").click(function(){
+        var f = form.valid();
+        if (f) {
+            if (typeof (chkForm) != 'undefined') {
+                if (!chkForm())
+                    return false;
+            }
+            _isClickSave = true;
+            form.ajaxSubmit({
+                beforeSubmit: function () {
+                    showLoading("{:lang('Data upload')}...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (!res.success) {
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                        else
+                            msg(res.message);
+                        return;
+                    }
+                    msg("{:lang('Registered successfully')}");
+                    location.href = "{:url('index/index')}";
+                }
+            })
+        }
+    });
+
+
+
+    /**
+     * 验证
+     * @returns {undefined}
+     */
+    function chkForm(){
+        var code = $('#code').val();
+        var phone = $('#phone').val();
+        var password = $('#password').val();
+        var password1 = $('#password1').val();
+        var pay_password = $('#pay_password').val();
+        if(pay_password.length != 6){
+            msg("{:lang('Trading passwords do not meet 6 digits')}");
+            return false;
+        }
+        if(password != password1){
+            msg("{:lang('The passwords entered do not match')}");
+            return false;
+        }
+        var username = $('#username').val();
+        if ( !isPhone(phone) )
+            return false;
+        if ( !username ) {
+            msg("{:lang('The username cannot be empty')}")
+            return false;
+        }
+        if(username.length > 8){
+            msg("{:lang('The user name should not be longer than 8 bits')}")
+            return false;
+        }
+        if ( !code ) {
+            msg("{:lang('The captcha cannot be empty')}")
+            return false;
+        }
+        if ( !/^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,16}$/.test(password) ) {
+            msg("{:lang('content8')}");
+            return false;
+        }
+        return true;
+    }
+
+
+    function isPhone(phone){
+        var is = true;
+        return is;
+        if ( !/(13\d|14[57]|15[^4,\D]|17[13678]|18\d)\d{8}|170[0589]\d{7}/.test(phone) ) {
+            msg("{:lang('Please enter the correct phone number')}");
+            is = false;
+        }
+        return is;
+    }
+
+    function closePage(){
+        location.href = "{:url('index/index')}";
+    }
+</script>
+</body>
+</html>

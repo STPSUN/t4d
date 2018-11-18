@@ -1,0 +1,408 @@
+{extend name="$BASE_INDEX" /}
+{block name="body"}
+{include file="public/header" /}
+<<div class="offers-common-width">
+  <div class="container no-padding page-space">
+    <div class="row">
+      <div class="col-md-9 col-md-push-3">
+        <div class="offers-show">
+          <div class="my-order">
+            <div class="group clearfix">
+              <div id="pc_group_content" class="long-solution-list">
+                <div class="order-title">
+                  {if condition="$detail.user_id neq $user_id"}
+                  您向 {$detail.username} <em class="text-primary">购买</em> ITTM
+                  {else /}
+                  {$detail.buy_username}向您<em class="text-primary">购买</em> ITTM
+                  <!--我的订单详情-->
+                  {/if}
+                  <span>订单编号：{$detail.id}</span>
+                </div>
+                <hr style="margin-bottom: 10px; margin-top: 0;">
+                <ul class="list-head">
+                  <li class="user-name-head" >交易金额</li>
+                  <li class="user-trust-head" >交易数量</li>
+                  <li class="payment-type-head" >单价</li>
+                  <li class="minimum-amount-head">信用</li>
+                  <li class="price-head">交易</li>
+                  <li class="buy-button-head">订单状态</li>
+                </ul>
+
+
+                <ul class="list-content">
+                  <li class="user-name" >
+                    <strong>{$detail.total_cny} CNY</strong>
+                  </li>
+                  <li class="user-trust">
+                    {$detail.amount} ITTM
+                  </li>
+                  <li class="payment-type">
+                    {$detail.price}  CNY
+                  </li>
+                  <li class="minimum-amount">
+                    {$detail.id}
+                  </li>
+                  <li class="price">
+                    {$detail.id}
+                  </li>
+                  <li class="buy-button" >
+                    {if condition ="$detail.status eq -1"} 交易关闭
+                    {elseif condition="$detail.status eq 2 " /}  待打款
+                    {elseif condition="$detail.status eq 3 " /}  待确认
+                    {elseif condition="$detail.status eq 4 " /}  已成交
+                    {elseif condition="$detail.status eq 1 " /}  已撤单
+                    {else /}挂单中
+                    {/if}
+                  </li>
+                </ul>
+              </div>
+              <div class="my-order-tfoot">
+                <!--<div class="tfoot-left">-->
+                <!--交易手续费：免费 <i class="glyphicon glyphicon-question-sign service-tips" data-toggle="tooltip" title="手续费介绍"></i>-->
+                <!--</div>-->
+                <div class="tfoot-right">
+                  <div>
+                    <p>总额：<span class="text-primary">{$detail.total_cny} CNY</span></p>
+                    <p>兑换：<em>{$detail.amount} ITTM</em></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pay-account">
+            {if condition="$detail.user_id eq $user_id"}
+            <div class="pay-title">我的收款账号</div>
+            {else /}
+            <div class="pay-title">卖家收款账号</div>
+            {/if}
+            <div class="pay-list">
+              {volist name="$detail.pay_data" id ="vo"}
+                {if condition="$vo.type eq 3"}
+                  <span>
+                      <img src="__IMG__/payment_card.png"> 银行账号
+                      <div class="popover fade top in my-popover" style=""><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">银行账号</h3><div class="popover-content">
+                          <p>姓名：{$vo.name}</p>
+                          <p>银行卡号：{$vo.account}</p>
+                          <p>手机号：{$detail.phone}</p>
+                          <p>开户行地址：{$vo.bank_address}</p>
+                      </div></div>
+                  </span>
+                {/if}
+                {if condition="$vo.type eq 1"}
+                  <span>
+                      <img src="__IMG__/payment_wechat.png"> 微信
+                      <div class="popover fade top in my-popover" style=""><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">微信支付</h3><div class="popover-content">
+                          <p>姓名：{$vo.name}</p>
+                          <p>账号：{$vo.account}</p>
+                          <p><img src="{$vo.qrcode}"> </p>
+                      </div></div>
+                  </span>
+                {/if}
+                {if condition="$vo.type eq 2"}
+                <span>
+                      <img src="__IMG__/payment_alipay.png"> 支付宝
+                      <div class="popover fade top in my-popover" style=""><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">支付宝支付</h3><div class="popover-content">
+                          <p>姓名：{$vo.name}</p>
+                          <p>账号：{$vo.account}</p>
+                          <p><img src="{$vo.qrcode}"> </p>
+                      </div></div>
+                  </span>
+                {/if}
+              {/volist}
+            </div>
+            <hr>
+            <div class="pay-desc">
+              <p>订单数字币已经由系统锁定托管。</p>
+              <p><span>使用微信、银行卡转账时，请<em class="text-second">不要添加任何备注内容</em>！！！否则可能会被支付系统拦截。</span></p>
+            </div>
+            <hr>
+            {if condition="($detail.status eq 2) and ($user_id eq $detail.buy_user_id)"}
+            <!--上传图片-->
+            <div>
+              <div class="form-group">
+                <input type="hidden" id="imgUrl">
+                <div  id="uploadFile">
+                  <i class="fa fa-paperclip"></i> 上传凭证附件
+                </div>
+              </div>
+              <div class="form-group" id="file_container">
+                <input type="file" name="file" id="imgBase64" >
+              </div>
+              <div>
+                <img style="max-height: 300px; height: 8em; min-width:8em;display: none" id="img">
+              </div>
+            </div>
+            {/if}
+            <div class="chat-widget" id="chat-room-modal">
+            </div>
+            {if condition= " $detail.status eq 3"}
+            <div>
+              <label>交易凭证:</label>
+              <img src="{$detail.pic}">
+            </div>
+            {/if}
+            <div class="confirm-btn">
+              {if condition="$detail.user_id neq $user_id"}
+              {if condition="$detail.status eq 0"}
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="checkBuy()" data-toggle="modal" {if condition ="$user_id neq null"} data-target="#enterPwd" {/if}  >
+              确认购买
+              </button>
+              {elseif condition="$detail.status eq 2"}
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="uploadProof()">
+                上传凭证
+              </button>
+              {/if}
+              {elseif condition="$detail.status eq 0"}
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="orderClean()">
+                撤单
+              </button>
+              {/if}
+              {if condition="$detail.user_id eq $user_id and $detail.status eq 3"}
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="confirmOrder()">
+                确认订单
+              </button>
+              {/if}
+            </div>
+            <div style="padding: 10px 10px 30px; overflow:hidden;">
+              <div class="my-tips">
+                <p>· 您不需要提供钱包地址给卖家，交易完成后数字货币将自动转入您的账户钱包上</p>
+                <p>· 若长时间未收到卖家的回复，或卖家未释放数字货币，您可以联系客服人员协助处理</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-md-pull-9">
+        <div class="trade-desc">
+          <h4>交易说明：</h4>
+          <p>1.订单有效期为8小时，请您及时在有效期内付款并点击[标记付款已完成]按钮，我才可以释放数字币给您</p>
+          <p>2.如果您无法在8小时内完成付款，系统将自动关闭订单</p>
+          <p>3.开始交易后数字币由系统锁定托管，请放心下单</p>
+          <br />
+          <h4>交易备注：</h4>
+          <p>请勿在汇款备注内填写比特币、BTC、ETH等任何数字币有关字眼，防止您的汇款被银行拦截</p>
+          <p>银行账号：XXXX XXXX XXXX XXXX</p>
+          <p>支付宝账号：XXXXXX</p>
+          <p>微信账号：XXXX</p>
+          <p>下单后可以直接加我微信跟我联系，我会尽快回复。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-from-dom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-from-dom-label"
+     aria-hidden="true">
+
+</div>
+
+<!-- 支付密码模态框（Modal） -->
+<div class="modal fade" id="enterPwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">请输入支付密码</h4>
+      </div>
+      <div class="modal-body">
+        <input id="password" name="password" type="password" class="form-control" placeholder="请输入密码" >
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="doBuy()">确认购买</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__JS__/leftTime.min.js"></script>
+
+<script>
+    $(function () {
+
+        $("[data-toggle='tooltip']").tooltip();
+        $(window).load(function(){
+            $('#myModal').modal('show');
+        })
+        $('#myModal_hide').on('click', function(){
+            $('#myModal').modal('hide');
+        });
+    });
+    function checkBuy()
+    {
+        var userId = "{$user_id}";
+        if (userId == ''){
+            msg('请先登录');
+            return false;
+        }
+    }
+    var file = '';
+    //购买
+    function doBuy() {
+        var flag =  true;
+        var userId = "{$user_id}";
+        var payPassWord = $("#password").val();
+        if(userId == ''){
+            msg("请先登录！");
+            location.href = '/home/Login/index';
+            flag = false;
+        }
+        if(payPassWord == ''){
+            msg("请输入支付密码");
+            flag = false;
+        }
+        var orderId = "{$detail.id}";
+        if(flag){
+            $.post("",{orderId:orderId,payPassWord:payPassWord},function(result){
+                console.log(result);
+                var data = JSON.parse(result);
+                if(data.success == false){
+                    msg(data.message);
+                }else {
+                    msg(data.message);
+                    location.href = data.data;
+                }
+            });
+        }
+
+    }
+    //上传凭证
+    function uploadProof() {
+        var flag =  true;
+        var userId = "{$user_id}";
+        if(userId == ''){
+            location.href = '/home/Login/index';
+            flag = false;
+        }
+        var orderId = "{$detail.id}";
+        // var proofImg = $("#imgUrl").val();
+        var proofImg = file;
+        if (proofImg == ''){
+            msg('请上传凭证');
+            flag = false;
+        }
+        if(flag == true){
+            $.post(getURL('order/uploadProof'),{order_id:orderId,file:proofImg},function(result){
+                console.log(result);
+                var data = JSON.parse(result);
+                if(data.success == false){
+                    msg(data.message);
+                }else {
+                    msg("上传成功");
+                    location.href = data.data;
+                }
+            });
+        }
+    }
+    //撤单
+    function orderClean() {
+
+        {if condition="$detail.user_id neq $user_id"}
+          var url =  getURL('order/cancel_trade');
+        {else /}
+            var url =  getURL('order/cancel');
+        {/if}
+        confirm('您确定要关闭该交易吗？', function(){
+            var orderId = "{$detail.id}";
+            $.post(url,{order_id:orderId},function(result){
+                console.log(result);
+                var data = JSON.parse(result);
+                if(data.success == false){
+                    msg(data.message);
+                }else {
+                    location.reload();
+                }
+            });
+        })
+
+    }
+    //确认订单
+    function confirmOrder() {
+        var url =  getURL('order/confirm');
+        confirm('您确定要完成该交易吗？', function(){
+            var orderId = "{$detail.id}";
+            $.post(url,{order_id:orderId},function(result){
+                console.log(result);
+                var data = JSON.parse(result);
+                if(data.success == false){
+                    msg(data.message);
+                }else {
+                    msg("确认成功");
+                    location.reload();
+                }
+            });
+        })
+
+    }
+    //图片上传
+    $('#imgBase64').change(function(){
+        run(this, function (data) {
+            uploadImage(data);
+        });
+    });
+
+    function run(input_file, get_data) {
+        /*input_file：文件按钮对象*/
+        /*get_data: 转换成功后执行的方法*/
+        if (typeof (FileReader) === 'undefined') {
+            alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
+        } else {
+            try {
+                /*图片转Base64 核心代码*/
+                var file = input_file.files[0];
+                //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+                if (!/image\/\w+/.test(file.type)) {
+                    alert("请确保文件为图像类型");
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    get_data(this.result);
+                }
+                reader.readAsDataURL(file);
+            }
+            catch (e) {
+                alert('图片转Base64出错啦！' + e.toString())
+            }
+        }
+    }
+
+    function uploadImage(img) {
+        //判断是否有选择上传文件
+        var imgPath = $("#imgBase64").val();
+        if (imgPath == "") {
+            alert("请选择上传图片！");
+            return;
+        }
+        //判断上传文件的后缀名
+        var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+        if (strExtension != 'jpg' && strExtension != 'gif'
+            && strExtension != 'png' && strExtension != 'bmp' && strExtension != 'jpeg') {
+            alert("请选择图片文件");
+            return;
+        }
+        file = img;
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/home/Order/base64_upload",
+        //     data: {file: img},    //视情况将base64的前面字符串data:image/png;base64,删除
+        //     cache: false,
+        //     success: function(data) {
+        //         console.log(data)
+        //         data = JSON.parse(data);
+        //         $("#img").attr('src', data.data.path);
+        //         $("#imgUrl").val(data.data.path);
+        //         $("#img").show();
+        //     },
+        //     error: function(XMLHttpRequest, textStatus, errorThrown) {
+        //         alert("上传失败，请检查网络后重试");
+        //     }
+        // });
+    }
+
+
+</script>
+{/block}

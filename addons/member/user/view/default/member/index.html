@@ -1,0 +1,158 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+<div class="right-main">
+    <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+    <ul class="tab_navs" id="js_tab_navs">
+        <li class="{if condition='$is_auth eq 0'}current{/if}"><a class="pjax" href="{:getUrl('index','is_auth=0')}">未认证</a></li>            
+        <li class="{if condition='$is_auth eq 1'}current{/if}"><a class="pjax" href="{:getUrl('index','is_auth=1')}">已认证</a></li>
+        <li class="{if condition='$is_auth eq 2'}current{/if}"><a class="pjax" href="{:getUrl('index','is_auth=2')}">待认证</a></li>
+        <li class="{if condition='$is_auth eq -1'}current{/if}"><a class="pjax" href="{:getUrl('index','is_auth=-1')}">不通过</a></li>  
+    </ul>
+    <div id="js_main_header" class="ui-form main_header">
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="请输入用户名称" value="" class="frm_input" />
+        </span>
+    </div>
+    <table id="grid-table">
+        <thead frozen="true">
+        <th data-options="field:'id',width:100,align:'center'">id</th>
+        <th data-options="field:'username',width:100,align:'center'">用户名</th>
+        <th data-options="field:'invite_user_name',width:100,align:'center'">上级用户名称</th>
+        </thead>
+        <thead>
+            <tr>
+                <th data-options="field:'phone',width:150, align:'center'">手机号</th>
+                <th data-options="field:'real_name',width:100, align:'center'">真实姓名</th>
+                <th data-options="field:'card_no',width:160, align:'center'">身份证号</th>
+                <th data-options="field:'address',width:300, align:'center'">地址</th>
+                <th data-options="field:'balance',width:150, align:'center'">余额</th>
+                <th data-options="field:'reward_total',width:150, align:'center'">历史分红</th>
+                <th data-options="field:'now_key_num',width:150, align:'center'">当前key持有量</th>
+                <th data-options="field:'key_total',width:150, align:'center'">历史key持有量</th>
+                <th data-options="field:'recommend1',width:150, align:'center'">直推人数</th>
+                <th data-options="field:'recommend2',width:150, align:'center'">二级人数</th>
+                <th data-options="field:'game_count',width:150, align:'center'">参与局数</th>
+                <th data-options="field:'is_frozen',width:100,align:'center', formatter:formatStatus">是否冻结</th>
+                <th data-options="field:'register_time',width:150, align:'center'">注册时间</th>
+                <th data-options="field:'_oper',width:250,halign:'center',formatter: formatOper">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    var is_auth = "{$is_auth}";
+    
+    function formatOper(value, row, index) {
+        var html = '<span class="grid-operation">';
+        html += '<button type="button" onclick="edit(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>拨币</button>';
+        if(row['is_frozen'] == 1)
+            html += '<button type="button" onclick="change_frozen(' + row['id'] + ',0)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>解冻</button>';
+        else
+            html += '<button type="button" onclick="change_frozen(' + row['id'] + ',1)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>冻结</button>'
+        if(row['is_auth'] == 2)
+            html += '<button type="button" onclick="auth(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>认证</button>';
+        
+        html += '<button type="button" onclick="del(' + row['id'] + ')" class="btn btn-xs btn-default del-btn"><i class="icon wb-close"></i>删除</button>';
+        html += '</span>';
+        return html;
+    }
+    
+    function formatStatus(value,row,index){
+        var text = '<span style="color:red">否</span>';
+        if(value == '1')
+            text = '<span style="color:green">是</span>';
+        return text;
+    }
+    
+    $(function () {
+        $('#grid-table').datagrid({
+            url: getURL('loadList','is_auth='+is_auth),
+            method: "GET",
+            height: getGridHeight(),
+            rownumbers: true,
+            singleSelect: true,
+            remoteSort: false,
+            multiSort: true,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            pageSize: 20
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+    
+    function formatAuth(value,row,index){
+        var text = '<span style="color:red">未认证</span>';
+        if(value == '1'){
+            text = '<span style="color:green">已认证</span>';
+        }else if(value == '2'){
+            text = '<span style="color:#ff9b00">待认证</span>';
+        }else if(value =='-1'){
+            text = '<span style="color:red">不通过</span>';
+        }
+        return text;
+    }
+    
+    function change_frozen(id,status){
+        var title = '确认要解冻此用户吗?';
+        if(status == 1)
+            title = '确认要冻结此用户吗?';
+        confirm(title, function () {
+            var url = getURL('change_frozen');
+            $.getJSON(url, {id: id,status:status}, function (json) {
+                if (json.success)
+                    reload();
+                else
+                    alert(json.message);
+            });
+        });
+    }
+    
+    function edit(id) {
+        var url = getURL('add_coin_stock', 'id=' + id);
+        openBarWin('拨币', 400, 200, url, function () {
+            reload();
+        }, ['确定','取消']);
+    }
+
+    function auth(id) {
+        var url = getURL('auth', 'id=' + id);
+        openBarWin('认证用户', 1000, 400, url, function () {
+            reload();
+        }, ['确定','取消']);
+    }
+    
+    function del(id) {
+        confirm("确认要删除此会员吗？", function () {
+            var url = getURL('del');
+            $.getJSON(url, {id: id}, function (json) {
+                if (json.success)
+                    reload();
+                else
+                    alert(json.message);
+            });
+        });
+    }
+
+    $("#js_search").click(function () {
+        reload();
+    });
+    function reload() {
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword});
+    }
+    $("#type").change(function () {
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword});
+    });
+</script>
+{/block}

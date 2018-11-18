@@ -1,0 +1,102 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+<div class="right-main">
+    <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+
+    <div id="js_main_header" class="ui-form main_header">
+        <span>
+            <select name="coin_id" id="coin_id" class="form-control" style="width:130px">
+                <option value="0">选择币种</option>
+                {volist name="coins" id="game"}
+                <option value="{$game.id}">{$game.coin_name}</option>
+                {/volist}
+            </select>
+        </span>
+        <span>
+            <select name="type" id="type" class="form-control" style="width:130px">
+                <option value="-1">选择分红类型</option>
+                <option value="99">全网分红</option>
+                <option value="3">推荐投注分红</option>
+                <option value="4">最后投资分红</option>
+                <option value="5">大赢家分红</option>
+                <option value="6">奖金池触手分红</option>
+            </select>
+        </span>
+
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="请输入名称" value="" class="frm_input"/>
+        </span>
+    </div>
+    <table id="grid-table">
+        <thead frozen="true">
+        <th data-options="field:'username',width:100,align:'center'">用户名称</th>
+        </thead>
+        <thead>
+        <tr>
+            <th data-options="field:'coin_name',width:200, align:'center'">分红币种</th>
+            <th data-options="field:'amount',width:200, align:'center'">分红值</th>
+            <th data-options="field:'remark',width:140, align:'center'">分红类型</th>
+            <th data-options="field:'update_time',width:140, align:'center'">更新时间</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    var type = "{$type}";
+
+    $(function () {
+        $('#grid-table').datagrid({
+            url: getURL('loadList', "type=" + type),
+            method: "GET",
+            height: getGridHeight(),
+            rownumbers: true,
+            singleSelect: true,
+            remoteSort: false,
+            multiSort: true,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            showFooter:true,
+            pageSize: 20,
+            onLoadSuccess:function(data) {
+                $('#grid-table').datagrid('reloadFooter', [
+                    {
+                        coin_name: '统计',
+                        amount: data.count_total
+                    }
+                ]);
+            }
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+
+    $("#js_search").click(function () {
+        reload();
+    });
+
+    function reload() {
+        var keyword = $("#js_keyword").val();
+        var type = $("#type").val();
+        var coin_id = $("#coin_id").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword, type: type, coin_id: coin_id});
+    }
+
+    $("#coin_id").change(function () {
+        reload()
+    });
+
+    $("#type").change(function () {
+        reload()
+    });
+
+</script>
+{/block}

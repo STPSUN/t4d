@@ -1,0 +1,153 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" >
+                <!--公版-->
+                <img id="to_f3d" src="__IMG__/logo.png" alt="" style="height:26px;">
+            </a>
+            <!--<a class="navbar-brand" id="to_otc"  style="color: white;font-size:15px;">场外交易</a>-->
+            <a class="navbar-brand" style="color: white;font-size: 15px" id="to_my_order">我的订单</a>
+            <a class="navbar-brand" style="color: white; font-size: 15px;" id="to_sold">挂单卖出</a>
+            <!--<a class="navbar-brand hidden-sm">FOMO3D</a>-->
+        </div>
+        <div class="navbar-collapse collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                <!--<li><a id="to_f3d" class="f3d">T3D</a></li>-->
+                <!--<li><a id="to_p3d" class="p3d">P3D</a></li>-->
+                <!--<li><a id="to_otc" class="otc">场外交易</a></li>-->
+            </ul>
+            <ul class="nav navbar-nav navbar-right hidden-sm">
+                <!--<li id="to_my_order"><a>我的订单</a></li>-->
+                <!--<li id="to_sold"><a>挂单卖出</a></li>-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">设置付款方式<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" id="to_uniopay">银联账号</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="to_alipay">支付宝账号</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="to_wechatpay">微信账号</a></li>
+                    </ul>
+                </li>
+                {if $username }
+                <li>
+                    <a><img src=" __IMG__/logo1.png  " style="height: 30px; border-radius: 100%; vertical-align: top; margin-top: -5px;"> {$username}</a>
+
+                </li>
+                <!--<li class="log-in-btn">-->
+                    <!--<a class="log-in-btn" onclick="loginOut()">注销</a>-->
+                <!--</li>-->
+                {else}
+                    <!--<li><a id="login" style="cursor: pointer;">登录</a></li>-->
+                    <!--<li><a id="register" style="cursor: pointer">注册</a></li>-->
+                {/if}
+
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    $('#to_f3d').on('click', function(){
+        var url = getURL('key_game/index','','fomo');
+        window.location.href = url;
+    });
+    $('#to_p3d').on('click', function(){
+        var url = getURL('token_game/index','','fomo');
+        window.location.href = url;
+    });
+    $('#to_otc').on('click', function(){
+        var url = getURL('otc/index','','otc');
+        window.location.href = url;
+    });
+    $('#to_my_order').on('click', function(){
+        var url = getURL('otc/myOrder','','otc');
+        window.location.href = url;
+    });
+    function loginOut(){
+        var url =  getURL('login/out','','member');
+        confirm('您确定要退出登录吗？', function(){
+            $.ajax({
+                url: url,
+                success: function(data){
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        msg(data.message);
+                    }
+                }
+            })
+        })
+    }
+
+    var bodyWidth = $('body').width(),layerW = 0;
+    console.log(bodyWidth)
+    if(bodyWidth >= 450){
+        layerW = '500';
+    }else{
+        layerW = '300';
+    }
+    $("[data-toggle='popover']").popover();
+    $('#login').on('click', function () {
+        var url = getURL('login/index', '', 'member');
+        openBarWin('登录', parseInt(layerW), 250, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $('#register').on('click', function () {
+        var url = getURL('register/index', '', 'member');
+        openBarWin('注册', parseInt(layerW), 500, url, function () {
+            alert('注册成功!')
+        }, ['提交', '取消']);
+    });
+    $('#register_btn').on('click', function(){
+        layer.open({
+            title: '将您的名字注册在区块链上',
+            type: 2,
+            shade: 0.4,
+            area: [parseInt(layerW), '470px'],
+            content: './register.html?from=f3d'
+        });
+    });
+    $('#withdraw').on('click', function(){
+        layer.open({
+            title: '提取',
+            type: 2,
+            shade: 0.4,
+            area: [parseInt(layerW), '220px'],
+            content: './withdraw.html?from=f3d'
+        });
+    });
+    $('#to_uniopay').on('click', function () {
+        var url = getURL('order/setPayConfig', '', 'otc')+"?type=3";
+        openBarWin('设置银联账号', parseInt(layerW), 370, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $('#to_alipay').on('click', function () {
+        var url = getURL('order/setPayConfig', '', 'otc')+"?type=2";
+        openBarWin('设置支付宝账号', parseInt(layerW), 210, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $('#to_wechatpay').on('click', function () {
+        var url = getURL('order/setPayConfig', '', 'otc')+"?type=1";
+        openBarWin('设置微信账号', parseInt(layerW), 210, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $('#to_sold').on('click', function () {
+        console.log(parseInt(layerW))
+        var url = getURL('order/postSaleOrder', '', 'otc');
+        openBarWin('挂单卖出', parseInt(layerW), 700, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+
+</script>

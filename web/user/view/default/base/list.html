@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{$SYS_TITLE}</title>        
+        <link rel="stylesheet" type="text/css" href="__STATIC__/web-icons/css.css" />   
+        <link rel="stylesheet" type="text/css" href="__STATIC__/easyui/themes/custom/easyui.css" />  
+        <link rel="stylesheet" type="text/css" href="__CSS__/style.css" />           
+        <script type="text/javascript" src="__STATIC__/jquery/jquery.min.js"></script>
+    </head>
+    <body>
+        {include file="$PUBLIC_HEADER"/}
+        <input type="hidden" id="curMenu" value="menu_{$_ADDON_NAME}_{$_CONTROLLER_NAME}"/><!--当前菜单项-->      
+        <div id="main_container">
+            {block name="body"}{/block}
+        </div>
+
+
+        <script type="text/javascript" src="__STATIC__/jquery/jquery.form.ui.js"></script>
+        <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+        <script type="text/javascript" src="__JS__/common.js"></script>        
+        <script type="text/javascript" src="__STATIC__/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="__STATIC__/easyui/locale/easyui-lang-zh_CN.js"></script>        
+        <script type="text/javascript">
+            var page = "{$page}";
+            var filter = "{$filter}";
+            var main_header_height = 0;
+            function getGridHeight() {
+                var win_height = $(window).height();
+                var header_height = $("#header").outerHeight(true);
+                var page_nav_height = $("#js_page_nav").outerHeight(true);
+                main_header_height = $("#js_main_header").outerHeight(true);
+                if (!main_header_height)
+                    main_header_height = 0;
+                var active_status = $(".active_status").outerHeight(true);
+                if (!active_status)
+                    active_status = 0;
+                var height = win_height - header_height - page_nav_height - main_header_height - active_status - 10;
+                return height;
+            }
+            $(function () {
+                pcInit();
+            });
+            var form = null;
+            function pcInit() {
+                form = $(".ui-form").ui().render();
+                //回车自动提交
+                $('.search').keyup(function (event) {
+                    if (event.keyCode === 13) {
+                        $("#js_search").click();
+                    }
+                });
+                if (typeof initAfter != 'undefined')
+                    initAfter();
+            }
+            $(window).resize(function () {
+                setSideNavHeight(null);
+                resizeGridHeight(null);
+                if (typeof resize != 'undefined')
+                    resize();
+            });
+            function resizeGridHeight(height) {
+                if ($('#grid-table').length > 0) {
+                    if (!height)
+                        height = getGridHeight();
+                    $('#grid-table').datagrid('resize', {
+                        height: height
+                    });
+                }
+            }
+            function setSideNavHeight(height) {
+                var _$js_side_content = $("#js_side_content");
+                if (_$js_side_content.length > 0) {
+                    if (!height) {
+                        height = $(window).height();
+                        var header_height = $("#header").outerHeight(true);
+                        height -= header_height;
+                        var _$js_nav_title = _$js_side_content.find(".js_nav_title");
+                        var len = _$js_nav_title.length;
+                        if (len > 0) {
+                            var nav_title_height = _$js_nav_title.eq(0).outerHeight(true);
+                            height = (height - nav_title_height * len) / len;
+                        }
+                    }
+                    _$js_side_content.find(".js_sidebar_nav").height(height);
+                }
+            }
+            $("#main_container").on("click", "#js_side_content li", function () {
+                if ($(this).hasClass("active"))
+                    return;
+                $(this).parent().parent().parent().find("li").removeClass("active");
+                $(this).addClass("active");
+                if (typeof clickSideNav != 'undefined') {
+                    clickSideNav.call(this, $(this).attr("data-id"), $(this).attr("data-data"));
+                }
+            });
+            /*左侧导航栏显示隐藏功能*/
+            $("#main_container").on("click", "#js_side_content .subNav", function () {
+                /*显示*/
+                if ($(this).find("span:first-child").attr('class') == "title-icon icon wb-triangle-right") {
+                    $(this).find("span:first-child").removeClass("icon wb-triangle-right");
+                    $(this).find("span:first-child").addClass("icon wb-triangle-down");
+                }
+                /*隐藏*/
+                else {
+                    $(this).find("span:first-child").removeClass("icon wb-triangle-down");
+                    $(this).find("span:first-child").addClass("icon wb-triangle-right");
+                }
+                // 修改数字控制速度， slideUp(500)控制卷起速度
+                $(this).next(".navContent").slideToggle(300).siblings(".navContent").slideUp(300);
+            });
+        </script>
+        {block name="script"}{/block}
+    </body>
+</html>

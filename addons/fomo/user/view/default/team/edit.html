@@ -1,0 +1,124 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}  
+<div class="box-content">
+    <input type="hidden" id="id" name="id" />  
+    <div class="control-row col-2">
+        <div class="control-group">
+            <label class="control-label">
+                战队名称</label>
+            <div class="controls">
+                <input type="text" name="name" id="name" class="form-control required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                战队简介</label>
+            <div class="controls">
+                <input type="text" name="detail" id="detail" class="form-control required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                是否开启</label>
+            <div class="controls">
+                <select name="coin_id" id="coin_id" class="form-control">                
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select> 
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                奖池比率</label>
+            <div class="controls">
+                <input type="number" name="pool_rate" id="poll_rate" class="form-control required" />                       
+                <span class="tips">%(投注时)</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                f3d分红比率</label>
+            <div class="controls">
+                <input type="number" name="f3d_rate" id="f3d_rate" class="form-control required" />                       
+                <span class="tips">%(投注时)</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                p3d分红比率</label>
+            <div class="controls">
+                <input type="number" name="p3d_rate" id="p3d_rate" class="form-control" />                       
+                <span class="tips">%(投注时)</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                下一局比率</label>
+            <div class="controls">
+                <input type="number" name="to_next_rate" id="to_next_rate" class="form-control required" />                       
+                <span class="tips">%(结束时)</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                f3d分红比率</label>
+            <div class="controls">
+                <input type="number" name="end_f3d_rate" id="end_f3d_rate" class="form-control required" />                       
+                <span class="tips">%(结束时)</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                p3d分红比率</label>
+            <div class="controls">
+                <input type="number" name="end_p3d_rate" id="end_p3d_rate" class="form-control" />                       
+                <span class="tips">%(结束时)</span>
+            </div>
+        </div>
+
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            LOGO
+        </label>
+        <div class="controls">
+            <div id="js_upload_wrp">
+                <input type="hidden" id="pic" name="pic" value="" class="" />
+                {:hook('picResource',array('name'=>'pic','folder'=>'fomo','tips'=>'建议尺寸：800x600像素。仅支持.jpg .png格式长方形照片。','callback'=>'uploadImgCallback'))}
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            选中后LOGO
+        </label>
+        <div class="controls">
+            <div id="js_upload_wrp">
+                <input type="hidden" id="select_pic" name="select_pic" value="" class="" />
+                {:hook('picResource',array('name'=>'select_pic','folder'=>'fomo','tips'=>'','callback'=>'uploadSelectImgCallback'))}
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+/**
+ * 添加图片
+ */
+function uploadImgCallback(path) {
+    $("#pic").val(path);
+}
+function uploadSelectImgCallback(path) {
+    $("#select_pic").val(path);
+}
+
+function onLoadDataSuccess(data) {
+    setPicValue("pic", data['pic']);
+    setPicValue("select_pic", data['select_pic']);
+}
+
+</script>
+{/block}

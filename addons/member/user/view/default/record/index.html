@@ -1,0 +1,99 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+ 
+<div class="right-main">
+    <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+    <div id="js_main_header" class="ui-form main_header">
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="请输入用户名称" value="" class="frm_input" />
+        </span>
+    </div>
+    <table id="grid-table">
+        <thead>
+            <tr>
+                <th data-options="field:'username',width:120, align:'center',sortable: true">用户名</th>
+                <th data-options="field:'to_username',width:120, align:'center',sortable: true">对方用户名</th>
+                <th data-options="field:'coin_name',width:100, align:'center',sortable: true">币种</th>
+                <th data-options="field:'change_type',width:120, align:'center',formatter:fromatChangeType">变更类型</th>
+                <th data-options="field:'type',width:120, align:'center',formatter:fromatType">记录类型</th>
+                <th data-options="field:'before_amount',width:140, align:'center',sortable: true">变更前余额</th>
+                <th data-options="field:'amount',width:140, align:'center',sortable: true">金额</th>
+                <th data-options="field:'after_amount',width:140, align:'center',sortable: true">变更后余额</th>
+                <th data-options="field:'to_address',width:320, align:'center'">转入地址</th>
+                <th data-options="field:'from_address',width:320, align:'center'">转出地址</th>
+                <th data-options="field:'remark',width:200, align:'center',sortable: true">备注</th>
+                <th data-options="field:'update_time',width:200, align:'center',sortable: true">更新时间</th>
+            
+            </tr>
+        </thead>
+    </table>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    $("#js_search").click(function () {
+        reload();
+    });
+    $(function () {
+        $('#grid-table').datagrid({
+            url: getURL('loadList'),
+            method: "GET",
+            height: getGridHeight(),
+            rownumbers: true,
+            singleSelect: true,
+            remoteSort: false,
+            multiSort: true,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            pageSize: 20
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+    //0=转账，1=OTC交易，2=外网转入，3=提现转出，4=购买理财，
+    //5=购买矿机,6=后台拨币，7=私募可用，8=私募冻结释放
+    function fromatType(value, row, index){
+        var text = '转账'
+        if(value == 1)
+            text = 'OTC交易'
+        else if(value == 2)
+            text = '外网转入'
+        else if(value == 3)
+            text = '提现'
+        else if(value == 4)
+            text = '购买理财'
+        else if(value == 5)
+            text = '购买矿机'
+        else if(value == 6)
+            text = '后台拨币'
+        else if(value == 7)
+            text = '私募可用'
+        else if(value == 8)
+            text = '私募冻结释放'
+        return text;
+    }
+    
+    function fromatChangeType(value, row, index){
+        var text = '<span style="color:#46be8a">减少</span>'
+        if(value == 1)
+            text = '<span style="color:#ff0000">增加</span>'
+        return text;
+    }
+
+    
+    function reload() {
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {
+            keyword: keyword,
+        });
+    }
+
+</script>
+{/block}

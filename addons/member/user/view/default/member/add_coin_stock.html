@@ -1,0 +1,30 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+    <div class="box-content"> 
+        <input type="hidden" name="id" id="id" value="{$id}"/>
+        <div class="control-group">
+            <label class="control-label">选择币种</label>
+            <div class="controls">
+                <select name="coin_id" id="coin_id" class="form-control required">
+                    {volist name="coins" id="vo"}
+                        <option value="{$vo.id}">{$vo.coin_name}</option>
+                    {/volist}
+                </select>    
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">数量</label>
+            <div class="controls">
+                <input type="text" name="amount" class="form-control required" />   
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+</script>
+{/block}
+
+

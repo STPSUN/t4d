@@ -1,0 +1,299 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    /* 轮播样式 */
+    .notice_bar {
+        width: 100%;
+        border: 1px solid #1d2637;
+        border-radius: .5rem;
+        color: #bababa;
+        font-size: .9rem;
+        height: 3rem;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    .swiper-container {
+        width: 100%;
+        line-height: 2rem !important;
+    }
+    .notice_icon {
+        height:3rem;
+        float:left;
+    }
+    .swiper-slide {
+        width: 100%;
+        height: 3rem !important;
+        line-height: 3rem !important;
+    }
+
+    /* 头部轮播 */
+    .notice_content .swiper-slide{
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+            align-items: center;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+        color: #ffffff;
+    }
+    .notice_bar .notice_word{
+        font-size:2rem;
+        color:#fff;
+        white-space: nowrap;
+        display: block;
+        -o-text-overflow: ellipsis;
+           text-overflow: ellipsis;
+        overflow: hidden;
+
+    }
+    .swiper-slide 
+    .balance_content{
+        display: block;
+        width: 3rem;
+        overflow: hidden;
+        white-space: nowrap;
+        -o-text-overflow: ellipsis;
+           text-overflow: ellipsis;
+    }
+    .svg-inline--fa.fa-w-14 {
+        width: 0.875em;
+    }
+    .svg-inline--fa {
+        display: inline-block;
+        font-size: inherit;
+        height: 1em;
+        overflow: visible;
+        vertical-align: -.125em;
+    }
+    svg:not(:root).svg-inline--fa {
+        overflow: visible;
+    }
+    .tabs-border-adjust {
+        border-bottom: 1px solid #343a40;
+    }
+    .text-light {
+        color: #f8f9fa!important;
+    }
+    .w-100 {
+        width: 100%!important;
+    }
+    .nav {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+    }
+    .col-auto {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: auto;
+        max-width: none;
+    }
+    .refresh{
+        border: 1px solid #fff;
+        padding:2px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+</style>
+<div class="f3d-fonts">
+    <h2 class="top-title">{:lang('win a big prize')}</h2>
+    <h1><span class="f3d-number pool_total_amount" style="word-break: break-all;">0.0</span> <svg class="svg-inline--fa fa-ethereum fa-w-10 icon-purp" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg></h1>
+    <div class="f3d-time">
+        <span class="date_show"><em class="hour">00</em>:<em class="minute">00</em>:<em class="second">00</em>
+        </span>
+    </div>
+    <a href="javascript:void(0)" class="buyOneTicket btn btn-lg btn-block btn-purp pulse marginb" style="text-align: inherit"> <div class="row"> <div class="col-sm-11"> <span style="margin-right: 1rem;margin-left: -1rem; float: left;" class="only-mobile mobile-text">1x <svg class="svg-inline-sm fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg></span><trans oldtip=" Why aren't you at the top? " newtip="" style="letter-spacing: 0!important;">{:lang('She was there, one key short')}</trans></div> </div> </a>
+    <div class="notice_bar flex-box flex-ali-center swiper_content">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5MjgwQTcxQjlDNEIxMUU4OTZDMzk3QTIyRkRDQkQ4MSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5MjgwQTcxQzlDNEIxMUU4OTZDMzk3QTIyRkRDQkQ4MSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjkyODBBNzE5OUM0QjExRTg5NkMzOTdBMjJGRENCRDgxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjkyODBBNzFBOUM0QjExRTg5NkMzOTdBMjJGRENCRDgxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+06PRjQAAAdlJREFUeNrsmMsrBXEUx+/I40rdyHvpsSCPpYhcCyNESog8VsrGH0CxEwtLW3kUeaREytUoFpRsLVhQNrq5WUjKYzO+vzpq+jXTnZl7Z+7vdudbn5rf/M50T+fcc85vRlJV1Sey0nyCy3PQczDRSudvKIqSUIdkWU7tFOeAZfAMOg1sJDAHwqDScopjUBCsgXJa94EQZ5MFVsHYf0bBo9MRZFFbARca55gCnF0BONc4dwt2nE4xi8AdmKbUGakK3IAWWh+ANvDulIN5lM4zUGbC/ghU0PUSGAJfttqMCXWATVBi4ZlP8AumwEZMfVCjUdANMjT3CkGrjcj3gFxwH3Oj1ohVmz9OFR4m4toH/T4BlHyz2EEFqYIzdfZYf5xJtIPjoMlgr14EB9dBNY07XiERUnwNmlPqRP0tehVP6kySYhr4ViNf6sQk2SZ4ddE8LbLwOyeg1s4stvMfPAV1dGQyqwD1P1bJi1GOZnEpkggYBCPgzYR9L3ii61mwD7LdqOJdSt1hFLsH0AiuaD0ALkG+G23mFfSDYS6aH5wd22sHW7RuoIOra31wD9RQYTFnjnVsfsAEmAcv7DXc7cNCRPNSZCT2vW+BSP5JInkfMD0HPQc9B53VnwADAP+1TxMg+RfVAAAAAElFTkSuQmCC" alt="notice_icon" class="notice_icon">
+        <div class="swiper-container top-swiper">
+            <div class="swiper-wrapper" id="swiper-wrapper">
+                <div class="swiper-slide">
+                    <marquee style="display: inline-block; width: 90%;"><span class="notice_word">{:lang('No announcement')}.</span></marquee>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        getNotice();
+        getRunGame();
+        setInterval(function(){
+            getRunGame();
+            getBalance();
+        },5000);
+    });
+    var game_id = 0,coin_id = 2,coin_name='ITTM';
+    function getRunGame(){
+        var url = getURL('getGame');
+        $.getJSON(url,{},function(data){
+            if(data.success){
+                data = data.data;
+                if(data){
+                    if(data.status == 2 &&  data.last_winner){
+                      var last_winner = data.last_winner[0];
+                      if(last_winner){
+//                          $(".top-title").html((last_winner ? last_winner.username : '')  + "{:lang('gain')}"+ (last_winner ? last_winner.amount : 0 ));
+                          $(".top-title").html(last_winner.username + "获得第一名");
+                      }else{
+                          $(".top-title").html("等待下一局开启");
+                      }
+                    }
+                    $('.pool_total_amount').html(data.pool_total_amount);   //奖池
+                    $(".airdropcounter").html(data.drop_total_amount);
+                    $(".pool_total_cny").html(data.pool_total_cny);         //奖池usdt
+                    $(".release_total_cny").html(data.release_total_cny);   //已发奖金usdt
+                    $(".release_total_amount").html(data.release_total_amount); //已发奖金
+                    $(".game_total_keys").html(data.game_total_keys);   //key总数
+                    $(".total_amount").html(data.total_amount);   //总投资额度ETH
+                    $(".total_amount_usdt").html(data.total_amount_usdt);   //总投资额度usdt
+//                    $(".game_total_keys_usdt").html(data.total_amount_usdt);   //总投资额度usdt
+                    $(".total_keys").html(data.total_keys);
+                    $(".total_buy_seconds").html(data.total_buy_seconds);   //已购时间
+
+                    $(".f3d-total-amount").html(data.total_amount);
+//                    $(".f3d-money").html(data.release_total_amount)
+                    coin_id = data.coin_id
+                    game_id = data.id
+                    coin_name = data.coin_name
+                    $("#game_id").val(game_id)
+                    $(".game_id").html(game_id)
+                    var end_game_time = data.end_game_time;
+                    if(data.status==1){
+                        var time = toTime(end_game_time * 1000);
+                        var curTime = localStorage.getItem('cout_time');
+                        setCountDown(time);
+                    }
+                    getPrice();
+//                    getTeamTotal();
+                    getKeyNum();
+                    getRank();
+                }
+            }else{
+                $(".top-title").html(data.message)
+            }
+            getBalance();
+        })
+    }
+//    setInterval(function(){
+//        getRunGame();
+//    },5000)
+    
+    function getNotice(){
+        var url = getURL('getNotice');
+        $.getJSON(url,{},function(data){
+            if(data.success){
+                data = data.data
+                $(".notice_word").html(data.content)
+            }
+        })
+    }
+
+    //获取排名
+    function getRank(){
+        var url = getURL('getRank');
+        $.getJSON(url,{game_id:game_id,coin_id:coin_id},function(data){
+            if(data.success){
+                var data = data.data;
+                $('.winner_list').empty();
+                var htmls = [];
+                for (var i = 0; i < data.length; i++)
+                {
+                    htmls.push('<div class="item">');
+                    htmls.push('<div class="item-left">'+data[i]['rank']+'</div>');
+                    htmls.push('<div class="item-right"><p>'+data[i]['username']+'</p></div>');
+                    htmls.push('</div>');
+                }
+
+                $('.winner_list').append(htmls.join(''));
+            }
+        })
+    }
+    
+    //获取key数量
+    function getKeyNum(){
+        var url = getURL('getKeys');
+        $.getJSON(url,{game_id:game_id,coin_id:coin_id},function(data){
+            if(data.success){
+                var key_num = data.data.key_num;
+                var current_game_total_reward = data.data.current_game_total_reward;
+                $(".keycount").html(key_num);   //我的keys
+//                $(".current_game_total_reward").html(current_game_total_reward);
+            }
+        })
+    }
+    
+    function getBalance(){
+        var url = getURL('getBalance');
+        $.getJSON(url,{coin_id:coin_id,game_id:game_id},function(data){
+            if(data.success){
+                data = data.data;
+                $(".f3d-reward").html(data.other_reward  +' '+ coin_name);
+                $(".f3d-invite").html(data.invite_reward +' '+ coin_name);
+                $(".f3d-balance").html(data.balance +' '+ coin_name);
+                $(".my-earnings").html(data.all_reward );   //我的收益
+                $(".my-earnings-cny").html(data.all_reward_cny );   //我的收益
+            }
+        })
+    }
+    
+    //获取价格
+    function getPrice(){
+        var url = getURL('getPrice');
+        $.getJSON(url,{game_id:game_id},function(data){
+            if(data.success){
+                price = data.data
+            }
+        })
+    }
+    
+    //获取战队总额
+    function getTeamTotal(){
+        var url = getURL('getTeamTotal');
+        $.getJSON(url,{game_id:game_id},function(data){
+            if(data.success){
+                data = data.data;
+                $('.team_total').each((index,item) => {
+                    $(item).html(data[index].total_amount)
+                })
+            }
+        })
+    }
+    
+    // 倒计时
+    function setCountDown(time){
+        $.leftTime(time, function (date) {
+            if (date.status) {
+                var $dateShow1 = $(".date_show");
+                $dateShow1.find(".day").html(date.d);
+                $dateShow1.find(".hour").html(date.h);
+                $dateShow1.find(".minute").html(date.m);
+                $dateShow1.find(".second").html(date.s);
+            }
+        });
+    }
+    function  toTime(times) {
+        var time = new Date(parseInt(times));
+        var y = time.getFullYear();
+        var m = time.getMonth() + 1;
+        m = m < 10 ? "0" + m : m;
+        var d = time.getDate();
+        d = d < 10 ? '0' + d : d;
+        var h = time.getHours();
+        h = h < 10 ? '0' + h : h;
+        var mi = time.getMinutes();
+        mi = mi < 10 ? '0' + mi : mi;
+        var s = time.getSeconds();
+        s = s < 10 ? '0' + s : s;
+        return y + '/' + m + '/' + d + ' ' + h + ':' + mi + ':' + s;
+    }
+    
+</script>

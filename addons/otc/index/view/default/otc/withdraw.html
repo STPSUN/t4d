@@ -1,0 +1,77 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<style>
+    body{
+        background-color: rgb(46, 51, 56)!important;
+    }
+    .withdraw-box{
+        width: 100%;
+        padding: 20px 10px;
+        overflow: hidden;
+    }
+    .withdraw-box p{
+        font-size: 14px;
+        color: #fff;
+    }
+    .withdraw-box .input-box{
+        position: relative;
+        width: 100%;
+        margin-bottom: 15px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+    .withdraw-box .input-box .input{
+        width: 100%;
+        padding: 0 20px;
+        height: 40px;
+        font-size: 14px;
+        color: #333;;
+        text-align: center;
+        background: none;
+        border: none;
+        padding-left: 80px;
+    }
+    .withdraw-box .input-box .btn{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 80px;
+        padding: 0 5px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+<div class="container">
+    <div class="withdraw-box">
+        <p>当前可提取：0.000ITTM</p>
+        <form action="" method="post">
+            <div class="input-box">
+                <input type="text" placeholder="请输入提取金额" class="input">
+                <a class="btn">全部提取</a>
+            </div>
+            <button type="button" class="btn btn-block btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip="register" newtip="提取" style=""> 提取</trans></button>
+        </form>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    var curHref = window.location.href;
+    if(curHref.indexOf('from') > -1){
+        var fromVal = curHref.split('from=')[1];
+        if(fromVal === 'f3d'){
+            $('.btn').addClass('btn-purp');
+        } else {
+            $('.btn').addClass('btn-gren');
+        }
+    }
+</script>
+
+{/block}

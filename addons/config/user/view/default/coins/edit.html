@@ -1,0 +1,73 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<input type="hidden" id="id" name="id" />
+
+<div class="box-content">
+    <div class="control-row col-2">
+    <div class="control-group">
+        <label class="control-label">币种名称</label>
+        <div class="controls">
+            <input type="text" name="coin_name" id="coin_name" class="form-control required" />    
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">是否为代币</label>
+        <div class="controls">
+            <label>
+                <input type="radio" id="is_token" name="is_token" checked value="1" /> 是</label>
+            &nbsp;&nbsp;
+            <label>
+                <input type="radio" id="is_token1" name="is_token" value="0" /> 否</label>
+        </div>     
+    </div>
+    <div class="control-group">
+        <label class="control-label">字节数</label>
+        <div class="controls">
+            <input type="number" name="byte" id="byte" class="form-control required" />    
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">最低提现额度</label>
+        <div class="controls">
+            <input type="number" name="without_min" id="without_min" class="form-control required" />    
+        </div>
+    </div>   
+    <div class="control-group">
+        <label class="control-label">提现手续费比率</label>
+        <div class="controls">
+            <input type="number" name="without_rate" id="without_rate" class="form-control required" />
+            <span class="tips">%</span>
+        </div>
+    </div>  
+    <div class="control-group">
+        <label class="control-label">
+            图标
+        </label>
+        <div class="controls">
+            <div id="js_upload_wrp">
+                <input type="hidden" id="pic" name="pic" value="" class="required" />
+                {:hook('picResource',array('name'=>'pic','folder'=>'coins','tips'=>'仅支持.jpg .png格式照片。','callback'=>'uploadImgCallback'))}
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+
+/**
+ * 添加图片
+ */
+function uploadImgCallback(path) {
+    $("#pic").val(path);
+}
+function onLoadDataSuccess(data) {
+    setPicValue("pic", data['pic']);
+}
+
+
+
+</script>
+{/block}

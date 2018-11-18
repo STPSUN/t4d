@@ -1,0 +1,234 @@
+{extend name="$BASE_INDEX" /}
+{block name="body"}
+{include file="public/header" /}
+<div class="warpper otc-bg-white">
+  <div class="container no-padding page-space">
+    <div class="row">
+      <div class="col-md-9 col-md-push-3">
+        <div class="offers-show">
+          <div class="offers-show-info" style="overflow: visible;">
+            <div class="row">
+              <form novalidate="" class="simple_form new_order" id="new_order" action="" accept-charset="UTF-8" method="post">
+                <div class="col-md-12">
+                  <div class="price">
+                    <ul class="user-info">
+                      <li class="user-name">
+                        <span class="user-info-head">用户名</span>
+                        <div class="user-name-warrper">
+                          <a  class="user-name-warrper--gray" h>{$detail.username}</a>
+                          <span class="status light grow light-success"></span>
+                        </div>
+                      </li>
+                    </ul>
+
+
+                    <ul class="price-info-head">
+                      <li class="make-offers">浮动单价</li>
+                      <li class="trading-limit">交易限额</li>
+                      <li class="payment-type">交易方式</li>
+                      <li class="payment-time">付款期限</li>
+                      <li class="payment-status">状态</li>
+                    </ul>
+
+                    <ul class="price-info">
+                      <li class="make-offers">
+                        <span class="make-offers-head-mobile">交易价格</span>
+                        {$detail.price}CNY/ITTM
+                      </li>
+
+                      <li class="trading-limit">
+                        <span class="trading-limit-head-mobile">交易数量</span>
+                        {$detail.amount}ITTM
+                      </li>
+
+                      <li class="payment-type">
+                        <span class="payment-type-head-mobile">交易方式</span>
+                        <span class="payment-icon"><img src="__IMG__/payment_alipay.png" alt="Payment alipay"></span>
+                        <span class="payment-icon"><img src="__IMG__/payment_card.png" alt="Payment card"></span>
+                      </li>
+                      <li class="payment-time">
+                        <span class="payment-time-head-mobile">付款期限</span>
+                        15 分钟
+                      </li>
+
+                      <li class="payment-status">
+                        <span class="payment-status-head-mobile">状态</span>
+                        {if $detail.status == 0}
+                        上架中
+                        {else}
+                        已下架
+                        {/if}
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
+
+                <div class="col-md-12 text-right">
+                  <span class="transaction-amount-title">交易数额</span>
+                  <div class="transaction-amount">
+                    <span id="transaction-fiat_currency_amount">{$detail.total_cny}</span>
+                    <span>CNY</span>
+                    <i class="fa fa-exchange" aria-hidden="true"></i>
+                    <span id="transaction-crypto_currency_amount">{$detail.amount}</span>
+                    <span>ITTM</span>
+                  </div>
+                </div>
+
+
+                <div class="col-md-8 col-md-offset-4">
+                  {if $username == null }
+                    <div class="reminder">
+                      <span class="reminder-text">进行交易前，请您先登录</span><a class="reminder-link" id="to_login">点击登录</a>
+                    </div>
+                  {/if}
+
+                </div>
+                {if $detail.status == 0}
+                <div class="col-md-4 col-md-offset-8 actions-button">
+                  <button type="button" class="btn btn-success btn-lg btn-block" onclick="checkBuy()" ">
+                    确认购买
+                  </button>
+                </div>
+                {/if}
+              </form></div>
+
+
+
+            <div class="back-to-offer-link"></div>
+            <hr>
+            <div class="offers-tips-content">
+              <ul>
+                <li>
+                  1. 交易发起前，请您确认已阅读并同意卖家提出的条款，并再次确认交易内容无误后，再点击购买按钮。
+                </li>
+                <li>
+                  2. 交易发起后，请您于付款期限截止前转帐至指定账户，并<b>标记已付款完毕</b>，逾期系统将自动取消交易。
+                </li>
+                <li>
+                  3. 交易发起后，系统会自动将卖家的数字货币锁定，待卖家确认收到您的转帐后，将会释放数字货币至您的账户中。
+                </li>
+                <li>
+                  4. 建议您在交易前先查看卖家信息，检视相关交易记录及评价，以減少交易纠纷。
+                </li>
+                <li>
+                  5. 交易过程请使用平台的聊天系统进行沟通，平台外的对话记录将无法作为交易纠纷的依据。
+                </li>
+                <li>
+                  6. 温馨提示：超过三笔取消订单，将被冻结当天下单权限。
+                </li>
+                <li>
+                  7. <span class="text-highlight">下单后请履行契约精神，恶意抬价或者是反悔，被投诉将冻结账户 3-14 天不等。</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-md-pull-9">
+        <div class="trade-desc">
+          <h4>交易说明：</h4>
+          <p>1.订单有效期为15分钟，请您及时在有效期内付款并点击[标记付款已完成]按钮，我才可以释放数字币给您</p>
+          <p>2.如果您无法在15分钟内完成付款，请点击[延长订单有效期]按钮</p>
+          <p>3.开始交易后数字币由系统锁定托管，请放心下单</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="modal-from-dom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-from-dom-label" aria-hidden="true">
+
+</div>
+
+<!-- 支付密码模态框（Modal） -->
+<div class="modal fade" id="enterPwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">请输入支付密码</h4>
+      </div>
+      <div class="modal-body">
+        <input id="password" name="password" type="password" class="form-control" placeholder="请输入密码">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="doBuy()">确认购买</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<input type="hidden" id="username" value="{$username}">
+<input type="hidden" id="order_id" value="{$detail.id}">
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__JS__/leftTime.min.js"></script>
+<script type="text/javascript">
+
+    var bodyWidth = $('body').width(), layerWidth;
+    if (bodyWidth >= 450) {
+        layerWidth = '50%';
+    } else {
+        layerWidth = '80%';
+    }
+    $('#to_login').on('click', function () {
+        var url = getURL('login/index', '', 'member');
+        openBarWin('登录', parseInt(layerW), 250, url, function () {
+            location.reload();
+        }, ['提交', '取消']);
+    });
+    $("[data-toggle='popover']").popover();
+
+    $('#withdraw').on('click', function () {
+        var url = getURL('fomobase/withdraw', {coin_id:coin_id}, 'fomo');
+        openBarWin('提取', layerWidth, 250, url, function (data) {
+            if(data.success){
+                location.reload();
+            }else{
+                msg(data.message)
+            }
+        }, ['提交', '取消']);
+    });
+    function checkBuy()
+    {
+        var username = $("#username").val();
+        if(!username){
+            msg('请先登录');
+            return false;
+        }
+        $("#enterPwd").modal('show');
+    }
+    //购买
+    function doBuy() {
+        var flag =  true;
+        var username = $("#username").val();
+        if(!username){
+            msg('请先登录');
+            return false;
+        }
+        var payPassWord = $("#password").val();
+        if(payPassWord == ''){
+            msg("请输入支付密码");
+            flag = false;
+        }
+        var order_id = $("#order_id").val();
+        if(flag){
+            $.post(getURL('order/placeOrder'),{order_id:order_id,payPassWord:payPassWord},function(result){
+                console.log(result);
+                var data = JSON.parse(result);
+                if(data.success == false){
+                    msg(data.message);
+                }else {
+                    msg(data.message);
+                    location.href = data.data;
+                }
+            });
+        }
+
+    }
+
+
+</script>
+{/block}

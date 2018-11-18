@@ -1,0 +1,247 @@
+{extend name="$BASE_INDEX" /}
+{block name="body"}
+<div class="f3d-bg"></div>
+<div class="warpper">
+    {include file="public/header" /}
+    <div class="container">
+        {include file="key_game/body_top" /}
+        <div class="p3d-trade mt-80">
+            <div class="row">
+                {include file="key_game/trade" /}
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-margin">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#round" data-toggle="tab">{:lang('The current paper')}</a></li>
+                        <!--<li><a href="#team" data-toggle="tab">{:lang('team')}</a></li>-->
+                        <li><a href="#trove" data-toggle="tab">奖金池</a></li>
+                        <li><a href="#count" data-toggle="tab">{:lang('statistical')}</a></li>
+                        <li><a href="#candidate" data-toggle="tab">头号玩家候选人</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="round">
+                            <div class="p3d-buy">
+                                <h3>{:lang('the')} <span class="game_id">1</span> {:lang('round')}</h3>
+                                <hr style="border-top: 1px solid rgba(0,0,0,.1);" />
+                                <div class="f3d-game-time">
+                                    <p>{:lang('Countdown to the end of the game')}</p>
+                                    <p><span class="date_show"><em class="hour">00</em> : <em class="minute">00</em> : <em class="second">00</em>
+                                        </span></p>
+                                </div>
+                                <div class="progress-f3d">
+                                    <div class="progress-bar boxglow" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                                    <div class="box f3d-box">
+                                        <div class="item">
+                                            <div class="item-left">{:lang('Ultimate prize pool')}</div>
+                                            <div class="item-right">
+                                                <div class="f3d-money-purp"><span class="pool_total_amount" style="font-size:3rem">0.00</span> ITTM <svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
+                                                        <path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                                                    </svg></div>
+                                                <!--<span >≙<span class="pool_total_cny">0.00</span> USDT</span>-->
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="item-left">{:lang('My Keys')}</div>
+                                            <div class="item-right">
+                                                <div class="userkeybum"><span class="keycount" style="font-size:3rem"> 0 </span> <svg class="svg-f3d-md fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                                                        <path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path>
+                                                    </svg></div>
+                                                <span>total: <span class="game_total_keys">0</span> Keys</span>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="item-left">{:lang('My earnings')}</div>
+                                            <div class="item-right">
+                                                <div><span class="my-earnings" style="font-size:3rem">0.00000000</span> ITTM <svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
+                                                        <path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                                                    </svg></div>
+                                                <!--<span>≙<span class="my-earnings-cny">0.00</span> USDT</span>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade in" id="trove">
+                            <div class="trove">
+                                <h3>奖金池</h3>
+                                <div class="balance-box"><span class="pool_total_amount"></span> ITTM</div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade in" id="count">
+                            <div class="p3d-buy">
+                                <!--<h3>第 4 轮统计（当前）</h3>-->
+                                <h3>{:lang('the')} <span class="game_id">1</span> {:lang('round')}</h3>
+                                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                                    <div class="box f3d-box">
+                                        <div class="item">
+                                            <div class="item-left">总投资额：</div>
+                                            <div class="item-right">
+                                                <div class="f3d-money-purp " style="font-size:16px"><span class="total_amount" style="font-size:18px"></span> ITTM<svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
+                                                    <path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                                                </svg></div>
+                                                <!--<div>≙ <span class="total_amount_usdt">3</span> USDT</div>-->
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="item-left">已发奖金：</div>
+                                            <div class="item-right">
+                                                <div class="f3d-money"><span class="release_total_amount"></span> <svg class="svg-f3d-md fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                                                    <!--<path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path>-->
+                                                    <path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                                                </svg></div>
+                                                <!--<p>≙<span class="release_total_cny"></span> USDT </p>-->
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="item-left">已购时间：</div>
+                                            <div class="item-right">
+                                                <!--<div class="f3d-money">0月 <svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">-->
+                                                    <!--<path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>-->
+                                                <!--</svg></div>-->
+                                                <p> <span class="total_buy_seconds"></span> Seconds</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade in" id="candidate">
+                            <div class="p3d-buy">
+                                <h3>排行榜</h3>
+                                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                                    <div class="box f3d-box winner_list">
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第一名</div>-->
+                                            <!--<div class="item-right"><p>第暗示法扫除</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第二名</div>-->
+                                            <!--<div class="item-right"><p>SSSD</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第三名</div>-->
+                                            <!--<div class="item-right"><p>青龙</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第四名</div>-->
+                                            <!--<div class="item-right"><p>白虎</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第五名</div>-->
+                                            <!--<div class="item-right"><p>朱雀</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第六名</div>-->
+                                            <!--<div class="item-right"><p>第暗示法扫除</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第七名</div>-->
+                                            <!--<div class="item-right"><p>第暗示法扫除</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第八名</div>-->
+                                            <!--<div class="item-right"><p>SSSD</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第九名</div>-->
+                                            <!--<div class="item-right"><p>青龙</p></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">第十名</div>-->
+                                            <!--<div class="item-right"><p>白虎</p></div>-->
+                                        <!--</div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="tab-pane fade in" id="count">-->
+                            <!--<div class="p3d-buy">-->
+                                <!--<h3>{:lang('the')} <span class="game_id">1</span> {:lang('round statistics (current)')}</h3>-->
+                                <!--<div class="p3d-gold" style="padding-left: 0; padding-right: 0;">-->
+                                    <!--<div class="box f3d-box">-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">{:lang('the total amount of investment')}：</div>-->
+                                            <!--<div class="item-right">-->
+                                                <!--<div class="f3d-total-amount">0.000 <svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">-->
+                                                        <!--<path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>-->
+                                                    <!--</svg></div>-->
+                                                <!--&lt;!&ndash;<p>≙ 270,473.86 USDT</p>&ndash;&gt;-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">{:lang('have bonus')}：</div>-->
+                                            <!--<div class="item-right">-->
+                                                <!--<div class="f3d-money">0.000 <svg class="svg-f3d-md fa-key fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="key" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">-->
+                                                        <!--<path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path>-->
+                                                    <!--</svg></div>-->
+                                                <!--&lt;!&ndash;<p>≙212,444.46 USDT </p>&ndash;&gt;-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="item">-->
+                                            <!--<div class="item-left">{:lang('already bought time')}：</div>-->
+                                            <!--<div class="item-right">-->
+                                                <!--<div class="f3d-seconds"><span class="total_buy_seconds" style="font-size:3rem">0</span>{:lang('seconds')} -->
+<!--&lt;!&ndash;                                                    <svg class="svg-f3d-md fa-ethereum fa-w-10 ethglow" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">-->
+                                                        <!--<path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>-->
+                                                    <!--</svg>&ndash;&gt;-->
+                                                <!--</div>-->
+                                                <!--&lt;!&ndash;<p> 720 Seconds</p>&ndash;&gt;-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__JS__/leftTime.min.js"></script>
+<script type="text/javascript">
+    var bodyWidth = $('body').width(), layerWidth;
+    if (bodyWidth >= 450) {
+        layerWidth = '50%';
+    } else {
+        layerWidth = '80%';
+    }
+
+    $("[data-toggle='popover']").popover();
+    
+    {if condition="$username neq ''"}
+//    $('#withdraw').on('click', function(){
+//        var url = getURL('fomobase/withdraw', {coin_id:coin_id}, 'fomo');
+//        layer.open({
+//            title: '提取',
+//            type: 2,
+//            shade: 0.4,
+//            area: [layerWidth, '220px'],
+//            content: url
+//        });
+//    });
+
+    $('#withdraw').on('click', function () {
+        var url = getURL('fomobase/withdraw', {coin_id:coin_id}, 'fomo');
+        openBarWin('提取', layerWidth, 250, url, function (data) {
+            if(data){
+                location.reload();
+            }else{
+                alert(data.message)
+            }
+        }, ['提交', '取消']);
+    });
+    {/if}
+    
+    
+
+</script>
+{/block}

@@ -1,0 +1,103 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+    <div class="box-content"> 
+        <input type="hidden" name="id" id="id" value="{$id}"/>
+        <div class="control-row col-2">
+            <div class="control-group">
+                <label class="control-label">挂单用户</label>
+                <div class="controls">
+                    <input type="text" id="username" name="username" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">下单用户</label>
+                <div class="controls">
+                    <input type="text" id="buy_username" name="buy_username" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">数量</label>
+                <div class="controls">
+                    <input type="text" id="amount" name="amount" class="form-control" disabled="disabled" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">单价</label>
+                <div class="controls">
+                    <input type="text" id="price" name="price" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">成交额</label>
+                <div class="controls">
+                    <input type="text" id="pay_amount" name="pay_amount" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">订单类型</label>
+                <div class="controls">
+                    <select name="status" id="" class="form-control" disabled="disabled" />
+                        <option value="0">卖出</option>
+                        <option value="1">买入</option>
+                    </select>                                     
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">收款类型</label>
+                <div class="controls">
+                    <select name="pay_type" id="" class="form-control" disabled="disabled" />
+                        <option value="1">微信</option>
+                        <option value="2">支付宝</option>
+                        <option value="3">银行卡</option>
+                    </select>                                     
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">创建时间</label>
+                <div class="controls">
+                    <input type="text" id="add_time" name="add_time" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+        </div>
+            
+        </div>
+        <div class="control-group">
+            <label class="control-label">收款账号</label>
+            <div class="controls">
+                <input type="text" style="width:550px" id="pay_detail" name="pay_detail" class="form-control" disabled="disabled" />                                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">备注</label>
+            <div class="controls">
+                <input type="text" style="width:550px" id="remark" name="remark" class="form-control" disabled="disabled" />                                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">凭证</label>
+            <div class="controls">
+                <img style="width:350px" id="pic" src="" />                   
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+    function onLoadDataSuccess(data){
+        $("#pic").attr('src',data.pic);
+        if(data.pay_detail_json){
+//            var pay_detail = JSON.parse(data.pay_detail_json);
+//            var str ='';
+//            for(var i in pay_detail){
+//                if(str != '')
+//                    str += ' '
+//                str += pay_detail[i]
+//            }
+            $("#pay_detail").val(data.pay_detail_json);
+        }
+    }
+</script>
+{/block}
+
+

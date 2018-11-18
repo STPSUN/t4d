@@ -1,0 +1,61 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<style>
+    .edui-editor, .edui-editor-iframeholder {
+        width: 790px !important;
+    }
+</style>
+<div class="box-content">   
+    <input type="hidden" id="id" name="id" value="{$id}"/>
+    <div class="control-row col-2">
+        <div class="control-group">
+            <label class="control-label">账号</label>
+            <div class="controls">
+                <input type="text" id="username" name="username" placeholder="请使用数字与英文字母组合" class="form-control required" />                                      
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">角色</label>
+            <div class="controls">
+                <select name="role_id" id="role_id" class="form-control required">
+                    {volist name="role" id="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">联系人</label>
+            <div class="controls">
+                <input type="text" id="lxr" name="lxr" class="form-control required" />    
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">电话号码</label>
+            <div class="controls">
+                <input type="text" id="mobile" name="mobile" class="form-control required" /> 
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">密码</label>
+            <div class="controls">
+                <input type="password" id="password" name="password" class="form-control required" /> 
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">确认密码</label>
+            <div class="controls">
+                <input type="password" id="password1" name="password1" class="form-control required" /> 
+            </div>
+        </div>
+        
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+
+</script>
+{/block}
+
+

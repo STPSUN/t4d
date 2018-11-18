@@ -1,0 +1,185 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+<div class="right-main">
+    <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+    
+    <div id="js_main_header" class="ui-form main_header">
+        <ul class="tab_navs" id="js_tab_navs">
+            <li class="{if condition='$type eq 0'}current{/if}"><a class="pjax" href="{:getUrl('index','type=0')}">T3D</a></li>
+            <!--<li class="{if condition='$type eq 1'}current{/if}"><a class="pjax" href="{:getUrl('index','type=1')}">P3D</a></li>  -->
+        </ul>
+        {if condition="$type eq 0"}
+        <span>
+            <select name="game_id" id="game_id" class="form-control" style="width:130px">
+                <option value="">指定游戏</option>
+                {volist name="games" id="game"}
+                <option value="{$game.id}">{$game.name}</option>
+                {/volist}
+            </select>
+        </span>
+        <span>
+            <select name="rank" id="rank" class="form-control" style="width:130px">
+                <option value="">指定排序</option>
+                <option value="1">持有key数量</option>
+                <option value="2">更新时间</option>
+            </select>
+        </span>
+        {/if}
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="请输入用户名称" value="" class="frm_input" />
+        </span>
+       
+    </div>
+    <table id="grid-table">
+        <thead frozen="true">
+        <th data-options="field:'username',width:100,align:'center'">用户名称</th> 
+        </thead>
+        <thead>
+            <tr>
+                {if condition="$type eq 0"}
+                    <th data-options="field:'game_name',width:120, align:'center'">游戏名称</th>
+                    <th data-options="field:'status',width:120, align:'center',formatter:formatGameStatus">游戏状态</th>
+                    <!--<th data-options="field:'team_name',width:120, align:'center'">战队名称</th>-->
+                    <th data-options="field:'key_num',width:120, align:'center'">持有key数量</th>
+                    <th data-options="field:'before_num',width:120, align:'center'">更新前key数量</th>
+                    <th data-options="field:'winner',width:120, align:'center',formatter:formatStatus">指定大赢家</th>
+                    <th data-options="field:'update_time',width:140, align:'center'">更新时间</th>
+                    <th data-options="field:'_oper',width:280,halign:'center',formatter: formatOper">设置大赢家</th>
+                {else/}
+                    <!-- p3d -->
+                    <th data-options="field:'token',width:120, align:'center'">持有令牌数量</th>
+                    <th data-options="field:'before_token',width:120, align:'center'">更新前令牌数量</th>
+                    <th data-options="field:'update_time',width:140, align:'center'">更新时间</th>
+                {/if}
+            </tr>
+        </thead>
+    </table>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    var type = "{$type}";
+    function formatOper(value, row, index) {
+        if(row['id']){
+            var html = '<span class="grid-operation">';
+            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 1)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第一名</button>';
+            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 2)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第二名</button>';
+            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 3)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第三名</button>';
+            html += '<button type="button" onclick="setCancel(' + row['id'] + ', 9)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>撤销</button>';
+//            html += '<button type="button" onclick="del(' + row['id'] + ')" class="btn btn-xs btn-default del-btn"><i class="icon wb-close"></i>删除</button>';
+            html += '</span>';
+            return html;
+        }
+    }
+    
+    function formatStatus(value,row,index){
+        if(row['id']){
+            var text = '<span style="color:red">否</span>';
+            if(row['winner'] == '1')
+                text = '<span style="color:green">第一名</span>';
+            else if(row['winner'] == '2')
+                text = '<span style="color:green">第二名</span>';
+            else if(row['winner'] == '3')
+                text = '<span style="color:green">第三名</span>';
+            return text;
+        }
+    }
+    //    游戏状态：0=未开始，1=已开始，2=已结束'
+    function formatGameStatus(value,row,index){
+        if(row['id']){
+            var text = '未开始'
+            if(value == '1')
+                text = '<span style="color:green">进行中</span>';
+            if(value == '2')
+                text= '<span style="color:red">已结束</span>'
+            return text;
+        }
+    }
+    
+    
+    $(function () {
+        $('#grid-table').datagrid({
+            url: getURL('loadList',"type="+type),
+            method: "GET",
+            height: getGridHeight(),
+            rownumbers: true,
+            singleSelect: true,
+            remoteSort: false,
+            multiSort: true,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            showFooter: true,
+            pageSize: 20,
+            onLoadSuccess: function (data) {
+                
+                $('#grid-table').datagrid('reloadFooter', [
+                    {
+                        {if condition="$type eq 0"}
+                        team_name: '统计',
+                        key_num: data.count_total,
+                        {else/}
+                        username:'统计',
+                        token:data.count_total
+                        {/if}
+                    }
+                ]);
+            }
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+    
+    function setWinner(id,rank) {
+        confirm("同局多次设置赢家以最后一次设置的为准,确认要设置此用户为本局赢家吗?", function () {
+            var url = getURL('set_winner');
+            $.getJSON(url, {id: id,rank: rank}, function (json) {
+                if (json.success){
+                    reload();
+                }
+                else
+                    alert(json.message);
+            });
+        });
+    }
+
+    function setCancel(id,rank) {
+        confirm("撤销后,需重全部重新指定，确认要撤销吗?", function () {
+            var url = getURL('set_winner');
+            $.getJSON(url, {id: id,rank: rank}, function (json) {
+                if (json.success){
+                    reload();
+                }
+                else
+                    alert(json.message);
+            });
+        });
+    }
+
+
+    $("#js_search").click(function () {
+        reload();
+    });
+    function reload() {
+        var keyword = $("#js_keyword").val();
+        var game_id = $("#game_id").val();
+        var rank = $("#rank").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword,game_id:game_id,rank:rank});
+    }
+    
+    $("#game_id").change(function () {
+        reload()
+    });
+    
+    $("#rank").change(function () {
+        reload()
+    });
+    
+</script>
+{/block}

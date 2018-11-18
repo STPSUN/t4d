@@ -1,0 +1,62 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+    <style>
+        body{
+            background-color: rgb(46, 51, 56)!important;
+        }
+        .form-box{
+            width: 100%;
+            padding: 20px 10px;
+            overflow: hidden;
+        }
+        .form-box .input-box{
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .form-box .input-box .input{
+            width: 100%;
+            padding: 0 20px;
+            height: 40px;
+            font-size: 14px;
+            color: #333;;
+            text-align: center;
+            background: none;
+            border: none;
+        }
+        .form-box .input-box .btn{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;;
+            padding: 0 5px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group label{
+            color: #fff;
+        }
+    </style>
+</head>
+<body style="background-color: #2e3338">
+<div class="container">
+    <div class="form-box">
+        <div class="form-group">
+            <label for="name">微信账号</label>
+            <input type="text" class="form-control" id="name" placeholder="请输入您的微信账号">
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<!--script-->
+{/block}

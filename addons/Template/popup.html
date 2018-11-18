@@ -1,0 +1,190 @@
+{extend name="$BASE_POPUP" /}
+{block name="body"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/easyui/themes/custom/easyui.css" />
+<div id="main_content" class="ui-form main_header"> 
+    <div id="js_main_header" class="main_header">
+        <select id="js_card_type" name="js_card_type" class="form-control" style="width:150px">
+            <option value="">所有</option>                       
+            <option value="2">折扣券</option>
+            <option value="3">礼品券</option>
+            <option value="4">代金券</option>             
+        </select>
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="卡券名称" value="" class="frm_input" />
+        </span>
+        <span class="right">
+            <button type="button" id="createBtn" class="btn btn-primary" {if condition='$permission[1] neq 1'}disabled="disabled"{/if}><i class="icon wb-plus"></i> 创建卡券</button>
+        </span>
+    </div>
+    <table id="grid-table" class="easyui-datagrid">
+        <thead>
+            <tr>
+                <th data-options="field:'id',width:120, align:'center',checkbox:true"></th>
+                <th data-options="field:'card_type',width:150,align:'center',sortable: true,formatter:formatType">卡券类型</th>          
+                <th data-options="field:'title',width:150,align:'center',sortable: true">卡券名称</th>
+                <th data-options="field:'_yxq',width:160,align:'center',sortable: true,formatter:formatYxq">卡券有效期</th>
+                <th data-options="field:'quantity',width:100,align:'center',sortable: true">库存</th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui/locale/easyui-lang-zh_CN.js"></script> 
+<script type="text/javascript">
+    var filter_ids = '{$filter_ids}';
+    var is_put = '{$is_put}';
+    var single = "{$singleSelect}";
+    var singleSelect = false;
+    function formatType(value, row, index) {
+        var type = "卡券";
+        if (value == "2")
+            type = "折扣券";
+        else if (value == "3")
+            type = "礼品券";
+        else if (value == "4")
+            type = "代金券";
+        return type;
+    }
+    function formatYxq(value, row, index) {
+        var result = "";
+        if (row['effective_type'] == 'DATE_TYPE_FIX_TIME_RANGE')
+            result = row['start_date'] + "至" + row['end_date'];
+        else {
+            result = "领取后";
+            if (row['fixed_begin_term'] == "0")
+                result += "当天";
+            else
+                result += row['fixed_begin_term'] + "天";
+            result += "生效" + row['fixed_term'] + "天有效";
+        }
+        return result;
+    }
+
+    var is_first_load = true;
+    $(function () {
+        if (single == "1")
+            singleSelect = true;
+        $('#grid-table').datagrid({
+            url: getURL('loadCardList', {filter_ids: filter_ids}),
+            method: "GET",
+            height: getGridHeight(),
+            singleSelect: singleSelect,
+            remoteSort: false,
+            multiSort: true,
+            SelectOnCheck: false,
+            CheckOnSelect: false,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            pageSize: 20,
+            onLoadSuccess: function () {
+                form.ui().render();
+                if (is_first_load && !singleSelect) {
+                    var _this = this;
+                    $(".datagrid-header-check").click(function () {
+                        //全选checkbox 被单击
+                        var checked = $(this).find("input[type='checkbox']")[0].checked;
+                        if (checked)
+                            $(_this).datagrid('selectAll');//全选
+                        else
+                            $(_this).datagrid('unselectAll');//全取消                        
+                    });
+                }
+                is_first_load = false;
+            },
+            onSelect: function (index, data) {
+                var tr = $(".datagrid-btable tr");
+                tr.eq(index).find(".checkbox-item-label .checkbox-item").addClass("checked");
+                var len = tr.find("input[type='checkbox']:checked").length;
+                if ($(this).datagrid("getData").total == len)
+                    $(".datagrid-header-check").find(".checkbox-item").addClass("checked");
+            },
+            onUnselect: function (index, data) {
+                $(".datagrid-btable tr").eq(index).find(".checkbox-item-label .checkbox-item").removeClass("checked");
+                $(".datagrid-header-check").find(".checkbox-item").removeClass("checked");
+            },
+            onSelectAll: function (rows) {
+                $(".datagrid-header-check").find(".checkbox-item").addClass("checked");
+                for (var i = 0; i < rows.length; i++) {
+                    var tr = $(".datagrid-btable tr").eq(i);
+                    tr.find(".checkbox-item-label .checkbox-item").addClass("checked");
+                }
+            },
+            onUnselectAll: function (rows) {
+                $(".datagrid-header-check").find(".checkbox-item").removeClass("checked");
+                for (var i = 0; i < rows.length; i++) {
+                    $(".datagrid-btable tr").eq(i).find(".checkbox-item-label .checkbox-item").removeClass("checked");
+                }
+            }
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+    $("#js_card_type").change(function () {
+        reload();
+    });
+    $("#js_search").click(function () {
+        reload();
+    });
+    function reload() {
+        var card_type = $("#js_card_type").val();
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {
+            keyword: keyword,
+            card_type: card_type
+        });
+        $("#js_keyword").val("");
+    }
+    var _isClickSave = false;
+
+    $("#createBtn").click(function () {
+        var url = getURL('coupon_card_type');
+        openBarWinParent('创建卡券', 500, 350, url, function (card_type) {
+            console.log(card_type);
+            var url = getURL('coupon_create', "card_type=" + card_type);
+            openBarWinParent('创建活动卡券', 800, 600, url, function () {
+                reload();
+            });
+        }, ['确定', '取消']);
+    });
+
+    var _isClickSave = false;
+
+    function saveData(callback, layer_index, autoClose) {
+        if (_isClickSave)
+            return;
+        var rows = $('#grid-table').datagrid('getChecked');
+        if (!autoClose && rows.length == 0) {
+            alert('请选择卡券！');
+        } else {
+            _isClickSave = true;
+            if (singleSelect)
+                callback(rows[0]);
+            else
+                callback(rows);
+            _isClickSave = false;
+            if (autoClose) {
+                this.close(layer_index);
+            } else {
+                for (var i = 0; i < rows.length; i++) {
+                    if (filter_ids != '')
+                        filter_ids += ',';
+                    filter_ids += rows[i].id;
+                    var rowIndex = $('#grid-table').datagrid('getRowIndex', rows[i]);
+                    $('#grid-table').datagrid('deleteRow', rowIndex);
+                }
+                $('#grid-table').datagrid('uncheckAll');
+            }
+        }
+    }
+</script>
+{/block}

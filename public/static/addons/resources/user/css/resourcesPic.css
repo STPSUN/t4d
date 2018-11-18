@@ -1,0 +1,123 @@
+ul li{ list-style:none}
+.pic_head {
+    height:35px;    
+}
+
+
+.pageNavigator{margin:20px 20px; clear:both;}
+/* pages style */
+.pages{padding:3px;margin:3px;text-align:center;}
+.pages a{border:#eee 1px solid;padding:2px 5px;margin:2px;color:#036cb4;text-decoration:none;}
+.pages a:hover{border:#999 1px solid;color:#666;}
+.pages a:active{border:#999 1px solid;color:#666;}
+.pages .current{border:#036cb4 1px solid;padding:2px 5px;font-weight:bold;margin:2px;color:#fff;background-color:#036cb4;}
+.pages .disabled{border:#eee 1px solid;padding:2px 5px;margin:2px;color:#ddd;}
+
+.img_pick {
+    width:100%;
+    display:block;
+    overflow:hidden;           
+    margin:0px;
+    padding:0px;    
+}
+.img_pick ul{
+    margin:0px;
+    padding:0px;
+    display: block;
+    overflow:hidden;    
+}
+
+.img_pick ul li {
+    float: left;
+    border: 1px solid #e7e7eb;
+    width: 117px;
+    height: 142px;
+    margin: 5px;
+    position: relative;
+}
+
+.img_box {
+    margin:0px;
+    padding:0px;
+    width: 117px;
+    height: 110px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #e7e7eb;
+}
+
+.img_box img {
+    width: 100%;
+    height: 100%;
+}
+
+.lbl_content {         
+    display:block;
+    float:left;    
+    width: 80px;
+    padding: 0 2px;
+    height: 32px;
+    line-height: 32px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.js_delete {
+    margin:6px 2px 0px 0px;
+}
+
+.selected .selected_mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.selected .selected_mask_inner {
+    width: 118px;
+    height: 143px;
+    -moz-opacity: .6;
+    -khtml-opacity: .6;
+    opacity: .6;
+    background-color: #000;
+    filter: alpha(opacity=60);
+}
+
+.selected .selected_mask_icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent url(../img/icon_card_selected.png) no-repeat 0 0;
+    width: 117px;
+    height: 143px;
+    vertical-align: middle;
+    display: inline-block;
+    background-position: 50% 50%;
+}
+
+
+.webuploader-pick {   
+    float:left;
+    margin:0px;
+    display: inline-block;
+    cursor: pointer;
+    background: #00b7ee;
+    padding: 2px 5px;
+   
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    overflow: hidden;
+}
+#_tips{
+    font-size:12px; 
+    margin-left: 10px;
+    color: #8d8d8d;
+    height:25px;
+    line-height:25px;
+    display: inline-block;    
+    padding: 1px 5px;    
+}

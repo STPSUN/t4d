@@ -1,0 +1,48 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<style>
+    .edui-editor, .edui-editor-iframeholder {
+        width: 790px !important;
+    }
+</style>
+<div class="box-content">   
+    <input type="hidden" id="id" name="id" value="{$id}"/>
+    <div class="control-row col-2">
+        <div class="control-group">
+            <label class="control-label">标题</label>
+            <div class="controls">
+                <input style="width:150px" type="text" id="title" name="title" placeholder="在此输入标题" class="form-control required" />
+            </div>
+        </div> 
+    </div>
+    <div class="control-row col-4">
+        <div class="control-group">
+            <label class="control-label">类型</label>
+            <div class="controls">
+                <select name="type" id="" class="form-control required">
+                    <option value="1">商学院</option>
+                    <option value="2">游戏规则</option>
+                    <option value="3">常见问题</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">新闻资讯内容</label>
+        <div class="controls">
+            <textarea id="content" name="content"></textarea>
+            {:hook('editor', array('height'=>'','id'=>"$id",'name'=>'content'))}
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    function onLoadDataSuccess(data) {
+        if (typeof (onLoadSuccess) !== "undefined")
+            onLoadSuccess();
+    }  
+</script>
+{/block}
+
+

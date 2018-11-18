@@ -1,0 +1,183 @@
+{extend name="$BASE_POPUP" /}
+{block name="body"}
+<link rel="stylesheet" type="text/css" href="{:ADDON_PUBLIC}/css/css.css" />
+
+
+<div class="pic_head">
+    <span id="filePicker" class="webuploader-pick">上传图片</span>                                                           
+    <span id="_tips"></span>       
+</div>
+<div class="pic_resources">
+    <div class="img_pick" id="js_grid">               
+    </div>
+</div>       
+<div class="pagination-box" id="js_pagination">
+    <span class="pagination-info">显示 <span class="js_from">0</span> 到 <span class="js_to">0</span> 项，共 <span class="js_total">0</span> 项</span>
+    <div id="js_page" style="text-align:center"></div>
+</div> 
+
+
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/jquery/jquery.twbsPagination.js"></script>   
+<script type="text/javascript" src="__STATIC__/webuploader/webuploader.js"></script>
+<script type="text/javascript">
+    var folder = "{$folder}";
+    var checktype = "{$checktype}"; 
+    var is_cut="{$is_cut}";
+    function ok() {
+        var r = $(".img_pick ul li.selected");
+        var path = "";
+        for (var i = 0; i < r.length; i++) {
+            if (i > 0)
+                path += ",";
+            path += $(r[i]).find("img").attr("data-path");
+        }
+        return path;
+    }
+    $("#js_grid").on("click", ".js_delete", function (e) {
+        var that = this;
+        confirm("删除后不可恢复，确认要删除吗？", function () {            
+            var url = getURL("del");
+            var id=$(that).attr("data-id");
+            $.getJSON(url, {id: id}, function (json) {                
+                if (json.success)
+                    location.reload();
+                else
+                    alert(json.message);
+            });
+        });
+        e.stopPropagation();
+    });
+    $(".img_pick").on("click", " ul li", function () {
+        if (checktype == "2") {
+            if ($(this).hasClass("selected"))
+                $(this).removeClass("selected");
+            else
+                $(this).addClass("selected");
+        } else {
+            $(".img_pick ul li").removeClass("selected");
+            $(this).addClass("selected");
+        }
+    });
+    window.onload = function () {
+        var tips = parent._upload_tips;
+        if (tips) {
+            $("#_tips").html(tips);
+        }
+    };
+    // 初始化Web Uploader
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        // swf文件路径
+        swf: '__STATIC__/webuploader/Uploader.swf',
+        // 文件接收服务端。
+        server: getURL("upload"),
+        formData: {
+            "folder": folder,
+            "is_cut":is_cut,
+            "checktype": checktype},
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+        {eq name="is_cut" value="1"}
+        ,compress: {
+            // 压缩后的尺寸
+            width: 800,
+            height: 600,
+            // 图片质量，只有type为image/jpeg的时候才有效。
+            quality: 90,
+            // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false
+            allowMagnify: false,
+            // 是否允许裁剪
+            crop: true,
+            // 是否保留头部meta信息
+            preserveHeaders: true,
+            // 如果发现压缩后文件大小比原来还大，则使用原来图片，此属性可能会影响图片自动纠正功能
+            noCompressIfLarger: false,
+            // 单位字节，如果图片大小小于此值，不会采用压缩
+            compressSize: 0
+        }
+        {/eq}
+    });
+    uploader.on('uploadBeforeSend', function () {
+        showLoading("上传文件中...");
+    });
+    uploader.on('uploadSuccess', function (file, json) {
+        if (json.success)
+            location.reload();
+        else
+            alert(json.message);
+    });
+    uploader.on('uploadError', function (file, json) {
+        alert(json.message);
+    });
+    uploader.on('uploadComplete', function (file) {
+        hideLoading();
+    });
+
+    var pageSize = 18;
+    var first = true;
+    $(function () {
+        loadData(1);
+    });
+    function loadData(page) {
+        showLoading("加载数据中...");
+        var url = getURL("loadList");
+        $.getJSON(url, {page: page, pageSize: pageSize, folder: folder}, function (json) {
+            bindData(page, json);
+            if (first) {
+                var totalPage = Math.ceil(json.total / pageSize);
+                $('#js_page').twbsPagination({
+                    totalPage: totalPage,
+                    visiblePage: 5,
+                    onPageClick: function (event, page) {
+                        if (!first)
+                            loadData(page);
+                    }
+                });
+                first = false;
+            }
+            hideLoading();
+        });
+    }
+
+    function bindData(page, data) {
+        var html = '';
+        if (data.total > 0) {
+            html += '<ul>';
+            var len = data.rows.length;
+            for (var i = 0; i < len; i++) {
+                var pic = data.rows[i];
+                html += '<li>';
+                html += '<div class="img_box"><img data-path="' + pic['file_path'] + '" src="'+pic['file_path'] + '"/></div>';
+                html += '<span class="lbl_content">' + pic['file_name'] + '</span>';
+                html += ' <a href="javascript:;" data-id="' + pic['id'] + '" class="del_pic"><i data-id="' + pic['id'] + '" class="icon wb-trash js_delete right"></i></a>';
+                html += '<div class="selected_mask"><div class="selected_mask_inner"></div><div class="selected_mask_icon"><i class="icon wb-check"></i></div></div>';
+                html += '</div>';
+                html += '</li>';
+            }
+            html += '</ul>';
+            $("#js_pagination").show();
+            var from = (parseInt(page) - 1) * parseInt(pageSize) + 1;
+            var to = from + len - 1;
+            if (data.total < 1)
+                from = to = 0;
+            $(".js_from").html(from);
+            $(".js_to").html(to);
+            $(".js_total").html(data.total);
+        } else {
+            $("#js_pagination").hide();
+            html = ' <div style="text-align:center;margin-top:100px">无相关素材信息!</div>';
+        }
+        $("#js_grid").html(html);
+    }
+</script>
+{/block}

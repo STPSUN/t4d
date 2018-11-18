@@ -1,0 +1,71 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+  
+<div class="box-content">
+    <input type="hidden" id="id" name="id" />  
+    <div class="control-row">
+        <div class="control-group">
+            <label class="control-label">
+                名称</label>
+            <div class="controls">
+                <input type="text" name="name" id="name" class="form-control required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                币种</label>
+            <div class="controls">
+                <select name="coin_id" id="coin_id" class="required form-control">                
+                    {volist name="coin_list" id="vo"}
+                    <option value="{$vo.id}">{$vo.coin_name}</option>
+                    {/volist}
+                </select> 
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">
+                时长</label>
+            <div class="controls">
+                <input type="number" name="hour" id="hour" class="form-control required" /> 
+                <span class="tips">分钟</span>
+            </div>
+        </div>
+
+        <!--<div class="control-group">-->
+            <!--<label class="control-label">-->
+                <!--胜利者比率</label>-->
+            <!--<div class="controls">-->
+                <!--<input type="number" name="winner_rate" id="winner_rate" class="form-control required" />                       -->
+                <!--<span class="tips">%</span>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="control-group">-->
+            <!--<label class="control-label">-->
+                <!--战队比率</label>-->
+            <!--<div class="controls">-->
+                <!--<input type="number" name="team_rate" id="team_rate" class="form-control required" />-->
+                <!--<span class="tips">%</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="control-group">-->
+            <!--<label class="control-label">-->
+                <!--基金比率</label>-->
+            <!--<div class="controls">-->
+                <!--<input type="number" name="fund_rate" id="fund_rate" class="form-control required" />-->
+                <!--<span class="tips">%</span>-->
+            <!--</div>-->
+        <!--</div>-->
+       
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+
+</script>
+{/block}

@@ -1,0 +1,151 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+<div class="right-main">
+    <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+    <div id="js_main_header" class="ui-form main_header">
+        <span class="frm_input_box search append">
+            <a href="javascript:void(0);" id="js_search" class="frm_input_append">
+                <i class="icon wb-search" title="搜索"></i>
+            </a>
+            <input type="text" id="js_keyword" placeholder="请输入名称" value="" class="frm_input" />
+        </span>
+        <button type="button" id="js_addBtn" class="btn btn-primary right"><i class="icon wb-plus"></i> 添加{$page_nav}</button>
+    </div>
+    <table id="grid-table">
+        <thead frozen="true">
+        <th data-options="field:'name',width:140,align:'center'">名称</th> 
+        </thead>
+        <thead>
+            <tr>
+                <th data-options="field:'status',width:100, align:'center',formatter:formatStatus">游戏状态</th>
+                
+                <th data-options="field:'coin_name',width:120, align:'center'">币种名称</th>
+                <th data-options="field:'hour',width:140, align:'center'">时长(分钟)</th>
+                <!--<th data-options="field:'winner_rate',width:100, align:'center'">胜利者比率</th>-->
+                <!--<th data-options="field:'team_rate',width:100, align:'center'">团队比率</th>-->
+                <!--<th data-options="field:'fund_rate',width:100, align:'center',formatter:formatRate">基金比率</th>-->
+                <th data-options="field:'total_amount',width:120,align:'center',sortable: true">投注总额</th>
+                <th data-options="field:'pool_total_amount',width:120,align:'center',sortable: true">奖金池总额</th>
+                <th data-options="field:'release_total_amount',width:120,align:'center',sortable: true">释放总额</th>
+                <th data-options="field:'drop_total_amount',width:120,align:'center',sortable: true">空投总额</th>
+                
+                <th data-options="field:'update_time',width:140, align:'center'">更新时间</th>
+                <th data-options="field:'_oper',width:240,halign:'center',formatter: formatOper">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    
+    function formatOper(value, row, index) {
+        var html = '<span class="grid-operation">';
+        if(row['status'] == 1){
+            html += '<button type="button" onclick="edit_total(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>修改奖池金额</button>';
+        }
+        if(row['status'] == 0){
+            html += '<button type="button" onclick="start(' + row['id'] + ','+row['hour']+')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>开启</button>';
+        }
+        html += '<button type="button" onclick="edit(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>修改</button>';
+        html += '<button type="button" onclick="del(' + row['id'] + ')" class="btn btn-xs btn-default del-btn"><i class="icon wb-close"></i>删除</button>';
+        html += '</span>';
+        return html;
+    }
+    
+//    游戏状态：0=未开始，1=已开始，2=已结束'
+    function formatStatus(value,row,index){
+        var text = '未开始'
+        if(value == '1')
+            text = '已开始';
+        if(value == '2')
+            text= '已结束'
+        return text;
+    }
+    function formatRate(value,row,index){
+        var text = value + '%'
+        return text;
+    }
+    
+    $(function () {
+        $('#grid-table').datagrid({
+            url: getURL('loadList'),
+            method: "GET",
+            height: getGridHeight(),
+            rownumbers: true,
+            singleSelect: true,
+            remoteSort: false,
+            multiSort: true,
+            emptyMsg: '<span>无相关数据</span>',
+            pagination: true,
+            pageSize: 20
+        });
+        //设置分页控件 
+        $('#grid-table').datagrid('getPager').pagination({
+            pageSize: 20, //每页显示的记录条数，默认为10 
+            pageList: [20, 30, 50]
+        });
+    });
+    
+
+    function edit(id) {
+        var url = getURL('edit', 'id=' + id);
+        openBarWin('编辑', 800, 300, url, function () {
+            reload();
+        }, ['保存', '取消']);
+    }
+    function edit_total(id) {
+        var url = getURL('edit_total', 'id=' + id);
+        openBarWin('编辑奖池金额', 350, 150, url, function () {
+            reload();
+        }, ['保存', '取消']);
+    }
+
+    $("#js_addBtn").click(function () {
+        if ($(this).hasClass("disabled")) {
+            return;
+        }
+        var url = getURL('edit');
+        openBarWin('添加', 400, 220, url, function () {
+            reload();
+        });
+    });
+
+    function start(id,hour) {
+        confirm("确认要开启此游戏吗？", function () {
+            var url = getURL('start');
+            $.getJSON(url, {id: id,hour: hour}, function (json) {
+                if (json.success)
+                    reload();
+                else
+                    alert(json.message);
+            });
+        });
+    }
+    
+    function del(id) {
+        confirm("确认要删除此游戏吗？", function () {
+            var url = getURL('del');
+            $.getJSON(url, {id: id}, function (json) {
+                if (json.success)
+                    reload();
+                else
+                    alert(json.message);
+            });
+        });
+    }
+
+    $("#js_search").click(function () {
+        reload();
+    });
+    function reload() {
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword});
+    }
+    $("#type").change(function () {
+        var keyword = $("#js_keyword").val();
+        $('#grid-table').datagrid('reload', {keyword: keyword});
+    });
+</script>
+{/block}

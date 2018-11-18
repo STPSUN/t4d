@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: shilinqing
+// +----------------------------------------------------------------------
+
+// 定义项目路径
+//define('APP_PATH', __DIR__ . '/application/');
+define('APP_NAMESPACE', 'web');
+define('APP_PATH', __DIR__ . '/web/');
+// 定义插件命名空间
+define('ADDONS_NAMESPACE', 'addons');
+// 定义插件目录
+define('ADDONS_PATH', __DIR__ . '/addons/');
+// 加载框架引导文件
+require __DIR__.'/thinkphp/console.php';

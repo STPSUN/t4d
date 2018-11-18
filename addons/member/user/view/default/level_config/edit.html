@@ -1,0 +1,31 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<div class="box-content">
+    <input type="hidden" id="id" name="id" />  
+    <div id="js_main_header">
+        <div class="control-group">
+            <label class="control-label">
+                等级名称</label>
+            <div class="controls">
+                <input type="text" name="level_name" id="level_name" class="form-control required" />                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                所需币量</label>
+            <div class="controls">
+                <input type="number" placeholder="请填写达到此等级所需积分" name="score_total" id="score_total" class="form-control required"  oninput="if(value.length>19) value=value.slice(0,19)" />                       
+                <span class="tips">保留小数点后5位</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+
+</script>
+{/block}

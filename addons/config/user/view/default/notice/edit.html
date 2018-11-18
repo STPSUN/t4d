@@ -1,0 +1,27 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+
+<div class="box-content">   
+    <input type="hidden" id="id" name="id" value="{$id}"/>
+    
+    <div class="control-group">
+        <label class="control-label">公告标题</label>
+        <div class="controls">
+            <input style="width:400px" type="text" name="title" class="require form-control" />                                
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">公告内容</label>
+        <div class="controls">
+            <textarea style="width:400px;height:300px" name="content" id="content" placeholder="请输入内容" class="textarea" ></textarea>                                 
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    
+</script>
+{/block}
+
+

@@ -1,0 +1,32 @@
+{extend name="base/popup_form" /}
+{block name="body"}
+
+
+
+<div class="box-content">   
+
+    <div class="control-group">
+        <label class="control-label">
+            登录账号</label>
+        <div class="controls">
+            <input type="text" name="username" id="username" disabled="disabled" class="form-control" size="30" value="{$username}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            登录密码</label>
+        <div class="controls">
+            <input type="password" data-dataType="/^(\w){6,20}$/" name="password" id="password" class="form-control required" size="30" value="" />                
+            <div class="tips">6-20个字母、数字、下划线</div>            
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            确认密码</label>
+        <div class="controls">
+            <input type="password" data-equalcontron="#password" data-dataType="/^(\w){6,20}$/" name="password1" id="password1" class="form-control required" size="30" value="" />                
+            <div class="tips">6-20个字母、数字、下划线</div>   
+        </div>
+    </div>    
+</div>
+{/block}

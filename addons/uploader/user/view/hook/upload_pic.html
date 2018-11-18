@@ -1,0 +1,61 @@
+<span id="filePicker" style="display:none"></span>    
+<script type="text/javascript" src="__STATIC__/global/webuploader/webuploader.js"></script>
+<script type="text/javascript">
+    var folder = '{$data.folder}';
+    var sync_weixin = "{$data.sync_weixin}";//是否同步到微信
+    var btns = '{$data.btns}';
+    var uploadSuccess = '{$data.uploadSuccess}';
+    var uploadError = '{$data.uploadError}';
+    {if condition="$data.server neq ''"}
+    var server="{$data.server}";
+    {else/}
+    var server="{:getUrl('uploader/uploadPic','','uploader')}";
+    {/if}
+    // 初始化Web Uploader
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        // swf文件路径
+        swf: '__STATIC__/webuploader/Uploader.swf',
+        // 文件接收服务端。
+        server: server,
+        formData: {"t":new Date().getTime(), "folder": folder,"sync_weixin":sync_weixin},
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/png'
+        }
+    }); 
+    uploader.on('uploadBeforeSend', function (file, json) {
+        if (typeof(uploadBeforeSend) != 'undefined' && uploadBeforeSend != "")
+            uploadBeforeSend.call(uploader,__curBtn, file, json);
+    });
+    uploader.on('uploadSuccess', function (file, json) {
+        if (typeof(uploadSuccess) != 'undefined' && uploadSuccess != "")
+            uploadSuccess.call(uploader,__curBtn, file, json);
+    });
+    uploader.on('uploadError', function (file, json) {
+        if (typeof(uploadError) != 'undefined' && uploadError != "")
+            uploadError.call(uploader,__curBtn, file, json);
+        else
+            alert(json.message);
+    });
+    var __curBtn = null;
+    $(function () {
+        var btnArr = btns.split(',');
+        for (var i = 0; i < btnArr.length; i++) {
+            if (btnArr[i] != "") {
+                $("body").on("click",btnArr[i],function(){
+                    __curBtn = $(this);
+                    if("undefined" != typeof setFormData)        
+                        uploader.options.formData=setFormData(uploader.options.formData);
+                    $(".webuploader-element-invisible").click(); 
+                });
+            }                         
+        }
+    })  
+</script>

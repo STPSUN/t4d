@@ -1,0 +1,56 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+    <div class="box-content"> 
+        <input type="hidden" name="id" id="id" value="{$id}"/>
+        <div class="control-group">
+            <label class="control-label">认证状态</label>
+            <div class="controls">
+                <select name="is_auth" id="is_auth" class="form-control required">
+                    <option value="2">未认证</option>
+                    <option value="1">认证</option>  
+                    <option value="-1">不通过</option>  
+                </select>    
+                <span class="tips">*请在此处更改认证状态。</span>
+            </div>
+        </div>
+        <div class="control-row col-2">
+            <div class="control-group">
+                <label class="control-label">真实姓名</label>
+                <div class="controls">
+                    <input type="text" id="real_name" name="real_name" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">身份证号码</label>
+                <div class="controls">
+                    <input style="width:250px" type="text" id="card_no" name="card_no" class="form-control" disabled="disabled" />                                       
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">身份证正面</label>
+                <div class="controls">
+                    <img style="width:350px" id="id_face" src="" />                                    
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">身份证背面</label>
+                <div class="controls">
+                    <img style="width:350px" id="id_back" src="" />                   
+                </div>
+            </div>
+
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+    function onLoadDataSuccess(data){
+        $("#id_face").attr('src',data.id_face);
+        $("#id_back").attr('src',data.id_back);
+    }
+</script>
+{/block}
+
+

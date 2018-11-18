@@ -1,0 +1,73 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/easyui/themes/custom/easyui.css" />    
+<style type="text/css">
+    .panel-header, .panel-body {
+        border-color: #f2a654;
+    }    
+    .img_upload_wrp .img_upload_box{
+        width:375px;
+        height:175px;
+    }
+    .preview_photo{
+        width:375px !important;
+        height:175px !important;
+    }
+</style>  
+<div class="box-content">
+    <input type="hidden" id="id" name="id" />  
+    <div id="js_main_header">
+        <div class="control-group">
+            <label class="control-label">
+                标题</label>
+            <div class="controls">
+                <input style="width:300px" type="text" name="title" id="title" class="form-control required" />                       
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                链接</label>
+            <div class="controls">
+                <input style="width:250px" type="text" name="url" id="url" class="form-control" />                       
+                <span class="tips">格式:http://www.xxx.com</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                排列顺序</label>
+            <div class="controls">
+                <input type="text" data-dataType="positive_integer" id="order_index" name="order_index" value="{$order_index}" class="form-control required" />                                      
+                <span class="tips">越小越靠前</span>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label">
+                轮播图片
+            </label>
+            <div class="controls">
+                <div id="js_upload_wrp">
+                    <input type="hidden" id="pic" name="pic" value="" class="" />
+                    {:hook('picResource',array('name'=>'pic','folder'=>'slider','tips'=>'建议尺寸：800x600像素。仅支持.jpg .png格式长方形照片。','callback'=>'uploadImgCallback'))}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+/**
+ * 添加图片
+ */
+function uploadImgCallback(path) {
+    $("#pic").val(path);
+}
+function onLoadDataSuccess(data) {
+    setPicValue("pic", data['pic']);
+}
+
+</script>
+{/block}

@@ -1,0 +1,180 @@
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-margin">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#buy" data-toggle="tab">购买P3D</a>
+        </li>
+        <li>
+            <a href="#sale" data-toggle="tab">出售P3D</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="buy">
+            <div class="p3d-buy">
+                <div class="question">
+                    <svg class="svg-inline-sm fa-question-circle fa-w-16" aria-hidden="true" data-prefix="far" data-icon="question-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg>
+                    <div class="popover fade top in my-popover" style=""><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">投资生态系统</h3><div class="popover-content">
+                            提示信息
+                        </div></div>
+                </div>
+                <h3>创造代币！</h3>
+                <p class="text-center">从你的仓库再投资，以增加你的分红收入。</p>
+                <form id="form1" class="ui-form" method="post">
+                    <div class="input-box">
+                        <div class="input-icon"><svg class="input-svg fa-coins fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="coins" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M0 405.3V448c0 35.3 86 64 192 64s192-28.7 192-64v-42.7C342.7 434.4 267.2 448 192 448S41.3 434.4 0 405.3zM320 128c106 0 192-28.7 192-64S426 0 320 0 128 28.7 128 64s86 64 192 64zM0 300.4V352c0 35.3 86 64 192 64s192-28.7 192-64v-51.6c-41.3 34-116.9 51.6-192 51.6S41.3 334.4 0 300.4zm416 11c57.3-11.1 96-31.7 96-55.4v-42.7c-23.2 16.4-57.3 27.6-96 34.5v63.6zM192 160C86 160 0 195.8 0 240s86 80 192 80 192-35.8 192-80-86-80-192-80zm219.3 56.3c60-10.8 100.7-32 100.7-56.3v-42.7c-35.5 25.1-96.5 38.6-160.7 41.8 29.5 14.3 51.2 33.5 60 57.2z"></path></svg></div>
+                        <div class="input">
+                            <input type="text" name="buy_p3d_num" />
+                        </div>
+                        <div class="input-count">P3D = <span id="coin_amount">0</span>ETH</div>
+                    </div>
+                    <div class="buy-tips">
+                        记住：有10%的税，这毕竟是象征性的。
+                    </div>
+                    <div class="btn-row">
+<!--                        <div class="col">
+                            <button type="button" id="ethSend" class="btn btn-block btn-gren btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="发送ETH" style=""> 发送ETH</trans></button>
+                        </div>-->
+                        <div class="col">
+                            <button type="button" id="ethReinvest" class="btn btn-block btn-outline-gren btn-lg ticketProcess"><svg class="svg-inline-sm fa-piggy-bank fa-w-18" aria-hidden="true" data-prefix="fas" data-icon="piggy-bank" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M560 224h-29.5c-8.8-20-21.6-37.7-37.4-52.5L512 96h-32c-29.4 0-55.4 13.5-73 34.3-7.6-1.1-15.1-2.3-23-2.3H256c-77.4 0-141.9 55-156.8 128H56c-14.8 0-26.5-13.5-23.5-28.8C34.7 215.8 45.4 208 57 208h1c3.3 0 6-2.7 6-6v-20c0-3.3-2.7-6-6-6-28.5 0-53.9 20.4-57.5 48.6C-3.9 258.8 22.7 288 56 288h40c0 52.2 25.4 98.1 64 127.3V496c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-48h128v48c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-80.7c11.8-8.9 22.3-19.4 31.3-31.3H560c8.8 0 16-7.2 16-16V240c0-8.8-7.2-16-16-16zm-128 64c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zM256 96h128c5.4 0 10.7.4 15.9.8 0-.3.1-.5.1-.8 0-53-43-96-96-96s-96 43-96 96c0 2.1.5 4.1.6 6.2 15.2-3.9 31-6.2 47.4-6.2z"></path></svg><trans oldtip=" Reinvest" newtip="再投资" style=""> 再投资</trans></button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="sale">
+            <div class="p3d-buy">
+                <div class="question">
+                    <svg class="svg-inline-sm fa-question-circle fa-w-16" aria-hidden="true" data-prefix="far" data-icon="question-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg>
+                    <div class="popover fade top in my-popover" style=""><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">投资生态系统</h3><div class="popover-content">
+                            提示信息
+                        </div></div>
+                </div>
+                <h3>卖给合同：</h3>
+                <p class="text-center">随时为ETH出售你的P3D</p>
+                <form id="form2" class="ui-form" method="post">
+                    <div class="input-box">
+                        <div class="input-icon"><svg class="input-svg fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg></div>
+                        <div class="input">
+                            <input type="text" name="sale_p3d_num" />
+                        </div>
+                        <div class="input-count">P3D = <span id="sale_coin_amount">0</span>ETH</div>
+                    </div>
+                    <div class="buy-tips">
+                        注：ETH将存放在您的保险库中。你需要手动把它取到你的钱包里。
+                    </div>
+                    <div class="btn-row">
+                        <div class="col">
+                            <button type="button" id="ethSend_sele" class="btn btn-block btn-gren btn-lg ticketProcess"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip=" Send ETH" newtip="发送ETH" style=""> 出售P3D</trans></button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var loadPrice = "{$loadPrice}";
+    var price = '';
+    window.onload = function(){
+        form1 = $("#form1").bindForm();
+        form2 = $("#form2").bindForm();
+        loadPriceData();
+    };
+    function loadPriceData() {
+        var url = getURL(loadPrice);
+        $.ajax(url, {
+            BeforeLoad: function () {
+                showLoading("数据加载中...");
+            },
+            success: function (data) {
+                price = data //单位:eth
+                console.log(price)
+                hideLoading();
+            }
+        });
+    }
+    $('input[name=buy_p3d_num]').on('keyup', function(){
+        if ($(this).val()) {
+            var thisVal = $(this).val();
+            var totalVal = parseFloat(thisVal) * parseFloat(price)
+            $('#coin_amount').text(totalVal);
+        } else {
+            $('#coin_amount').text('0');
+        }
+
+    })
+    $('input[name=sale_p3d_num]').on('keyup', function(){
+        if ($(this).val()) {
+            var thisVal = $(this).val();
+            var totalVal = parseFloat(thisVal) * parseFloat(price)
+            $('#sale_coin_amount').text(totalVal);
+        } else {
+            $('#scoin_amount').text('0');
+        }
+
+    })
+    //买
+    $("#ethReinvest").click(function(){
+        var f = form1.valid();
+        if (f) {
+            if (typeof (chkForm) != 'undefined') {
+                if (!chkForm())
+                    return false;
+            }
+            _isClickSave = true;
+            
+            form1.ajaxSubmit({
+                url:getURL('buy'),
+                beforeSubmit: function () {
+                    showLoading("数据提交中...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (!res.success) {
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                        else
+                            msg(res.message);
+                        return;
+                    }
+                    msg('提交成功');
+                    location.reload();
+                }
+            })
+        }
+    })
+    
+    //卖
+    $("#ethSend_sele").click(function(){
+        var f = form2.valid();
+        if (f) {
+            if (typeof (chkForm) != 'undefined') {
+                if (!chkForm())
+                    return false;
+            }
+            _isClickSave = true;
+            
+            form2.ajaxSubmit({
+                url:getURL('sale'),
+                beforeSubmit: function () {
+                    showLoading("数据提交中...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (!res.success) {
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                        else
+                            msg(res.message);
+                        return;
+                    }
+                    msg('提交成功');
+                    location.reload();
+                }
+            })
+        }
+    })
+</script>

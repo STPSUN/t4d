@@ -1,0 +1,28 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<style>
+    .edui-editor, .edui-editor-iframeholder {
+        width: 790px !important;
+    }
+</style>
+<div class="box-content">
+
+    <div class="control-group">
+        <label class="control-label">新闻资讯内容</label>
+        <div class="controls">
+            <textarea id="content" name="about"></textarea>
+            {:hook('editor', array('height'=>'','id'=>"$id",'name'=>'content'))}
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    function onLoadDataSuccess(data) {
+        if (typeof (onLoadSuccess) !== "undefined")
+            onLoadSuccess();
+    }
+</script>
+{/block}
+
+

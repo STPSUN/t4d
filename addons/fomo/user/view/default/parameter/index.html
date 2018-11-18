@@ -1,0 +1,77 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<input type="hidden" id="id" name="id" />
+<input type="hidden" id="json" name="json"  value=""  />
+<div class="box-content">
+    <div class="control-row col-2">
+        {volist name="param_list" id="vo"}
+            {if condition="$vo.control_type eq 'select'"}
+            <div class="control-group">
+                <label class="control-label">{$vo.title}</label>
+                <select name="{$vo.field}" class="required form-control" style='width:100px'>                
+                    <option value="0" {if condition="$vo['parameter_val'] eq 0"}selected{/if}>否</option>
+                    <option value="1" {if condition="$vo['parameter_val'] eq 1"}selected{/if}>是</option>
+                </select> 
+            </div>
+            
+            {elseif condition="$vo.control_type eq 'number'"}
+            <div class="control-group">
+                <label class="control-label">{$vo.title}</label>
+                <input type="text" value="{$vo.parameter_val}" name="{$vo.field}" class="required form-control" /><span class="tips">{$vo.remark}</span>
+            </div>
+                        
+            {elseif condition="$vo.control_type eq 'text'"}
+            <div class="control-group">
+                <label class="control-label">{$vo.title}</label>
+                <input type="text" value="{$vo.parameter_val}" name="{$vo.field}" class="required form-control" /><span class="tips">{$vo.remark}</span>
+            </div>
+            
+            {elseif condition="$vo.control_type eq 'password'"}
+            <div class="control-group">
+                <label class="control-label">{$vo.title}</label>
+                <input type="password" value="{$vo.parameter_val}" name="{$vo.field}" class="required form-control" /><span class="tips">{$vo.remark}</span>
+            </div>
+            
+            {elseif condition="$vo.control_type eq 'textarea'"}
+            <div class="control-group">
+                <label class="control-label">{$vo.title}</label>
+                <textarea name="{$vo.field}" style="width:280px;height:150px" class="form-control">{$vo.parameter_val}</textarea>
+                <span class="tips">{$vo.remark}</span>
+            </div>
+            {/if}
+            
+        {/volist}
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+function chkForm() {
+    var data = {};
+    $("input[type='text']").each(function () {
+        var name = $(this)[0].name;
+        if(name != ''){
+            data[name] = $(this).val();
+        }
+    });
+    $("select").each(function () {
+        var name = $(this)[0].name;
+        var val = $(this).val();
+        data[name] = val;
+    });
+    $("select").each(function () {
+        var name = $(this)[0].name;
+        var val = $(this).val();
+        data[name] = val;
+    });
+    $("textarea").each(function(){
+        var name = $(this)[0].name;
+        var val = $(this).val();
+        data[name] = val;
+    })
+    $("#json").val(JSON.stringify(data));
+    return true;
+}
+</script>
+{/block}

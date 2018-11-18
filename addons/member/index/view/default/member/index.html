@@ -1,0 +1,226 @@
+{extend name="$BASE_LIST" /}
+{block name="body"}
+<style type="text/css">
+#_avatar-pic{width: 3rem;height:3rem,border: 2px solid #fff;border-radius: 100px;}
+.line-b{border-bottom:1px solid #f2f2f2!important}.yq{border-radius:.25rem;border:1px solid #57a9f0;color:#57a9f0;padding:.25rem;width:25%;text-align:center}.share{border-radius:.25rem;border:1px solid #57a9f0;color:#57a9f0;padding:.25rem;width:25%;text-align:center}.qd{border-radius:.25rem;border:1px solid #57a9f0;color:#57a9f0;padding:.25rem;width:25%;text-align:center}.qd_yes{border:1px solid #9499a5;color:#9499a5}.share-box{position:fixed;bottom:-1000px;left:0;z-index:100;width:100%;border-top:1px solid #e6e6e6;transition:.5s;-webkit-transition:.5s}.share-icon{width:2.5rem}.cancel-share{border-top:1px solid #e6e6e6}.mask{position:fixed;top:0;left:0;width:100%;height:100%;z-index:99;background:rgba(0,0,0,.5);opacity:0;-webkit-opacity:0;transition:.5s;-webkit-transition:.5s}
+</style>
+<header class="aui-bar aui-bar-nav nav-header" id="my-head">
+    <div class="title">我的</div>
+</header>
+
+<div class="aui-content" style="margin-bottom: 4rem">
+    <div class="flex-box flex-ver-center bg-white aui-padded-10">
+        <span id="avatar">
+            {if condition="$avatar_pic != ''"}
+            <img src="{$avatar_pic}" id="_avatar-pic" />
+            {else /}
+            <img src="__IMG__/my/head.png" id="_avatar-pic" />
+            {/if}
+        </span>
+        <div class="aui-margin-l-10">
+            <div style="color:#000;font-weight: 600;font-size: 0.8rem">{$username}</div>
+            <div class="text-grey">
+                <span> {$level_name}</span>
+            </div>
+        </div>
+    </div>
+    <ul class="aui-list aui-media-list aui-margin-t-10">
+        <li class="aui-list-item aui-list-item-middle line-b suggest">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-media" style="width: 2rem;">
+                    <img src="__IMG__/my/03@2x.png" class="aui-img-round aui-list-img-sm">
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    我的反馈
+                </div>
+            </div>
+        </li>
+    </ul>
+    <ul class="aui-list aui-media-list aui-margin-t-10">
+        <li class="aui-list-item aui-list-item-middle line-b user_auth">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-media" style="width: 2rem;">
+                    <img src="__IMG__/my/08@2x.png" class="aui-img-round aui-list-img-sm">
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    实名认证
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item aui-list-item-middle line-b my_asset">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-media" style="width: 2rem;">
+                    <img src="__IMG__/my/05@2x.png" class="aui-img-round aui-list-img-sm">
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    我的资产
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item aui-list-item-middle line-b config_btn">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-media" style="width: 2rem;">
+                    <img src="__IMG__/my/06@2x.png" class="aui-img-round aui-list-img-sm">
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    设置
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="flex-box flex-ver-center flex-align-justify text-grey" style="padding: 0.25rem 0.75rem">
+        <span>每日任务</span>
+    </div>
+    {if condition="$rule['is_sign_in']== 1"}
+    <div class="flex-box flex-ver-center flex-align-justify bg-white line-b" style="padding: 0.5rem 0.75rem">
+        <div style="width:75%;">
+            <div>签到奖励 <span class="text-app">+{$rule.sign_in_score}</span></div>
+            <div class="text-grey aui-font-size-12 aui-margin-t-5" >每日签到</div>
+        </div>
+        <div  {if condition="$has_check == 1"}class='qd qd_yes' {else/} class='qd qiandao'{/if}>
+            {if condition="$has_check == 1"}
+            <span class="change_status">已签到</span>
+            {else/}
+            <span class="change_status">签到</span>
+            {/if}
+        </div>
+    </div>
+    {/if}
+    {if condition="$rule['is_share_article']== 1"}
+    <div class="flex-box flex-ver-center flex-align-justify bg-white line-b" style="padding: 0.5rem 0.75rem">
+        <div style="width:75%;">
+            <div>分享文章奖励 <span class="text-app">+{$rule.share_article_score}</span></div>
+            <div class="text-grey aui-font-size-12 aui-margin-t-5" >每日分享文章获得奖励</div>
+        </div>
+        <div class="share">去分享</div>
+    </div>
+    {/if}
+    {notempty name="yq_rule.rule"}
+    <div class="flex-box flex-ver-center flex-align-justify bg-white line-b" style="padding: 0.5rem 0.75rem">
+        <div style="width:75%;">
+            <div>{$yq_rule.rule_name} <span class="text-app"></span></div>
+            <div class="text-grey aui-font-size-12 aui-margin-t-5" >
+                邀请好友一起挖可获
+                {volist name="yq_rule.rule" id='rule'}
+                【{$rule.candy_name}】{$rule.num}个
+                {/volist}的额外奖励
+            </div>
+        </div>
+        <div class="yq">邀请</div>
+    </div>
+    {/notempty}
+</div>
+<form id="form1" class="ui-form" method="post">
+    <input id="avatar_pic" name="avatar_pic" type="file" accept="image/*" style="display:none;"/>
+</form>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/jquery/jquery.form.js"></script>
+<script type="text/javascript">
+    $(function(){
+        form = $(".ui-form").bindForm();
+        
+    })
+    $("#avatar").click(function(){
+        $("#avatar_pic").click();
+    })
+    
+    $("#avatar_pic").change(function(){
+        saveAvatar();
+    })
+    
+    function saveAvatar(){
+        var f = form.valid();
+        if (f) {
+//            if (typeof (chkForm) != 'undefined') {
+//                if (!chkForm())
+//                    return false;
+//            }
+            _isClickSave = true;
+            form.ajaxSubmit({
+                url:getURL('changeAvatar'),
+                beforeSubmit: function () {
+                    showLoading("数据上传中...");
+                },
+                success: function (res) {
+                    _isClickSave = false;
+                    hideLoading();
+                    if (!res.success) {
+                        if (typeof (failCallback) != "undefined")
+                            failCallback(res);
+                        else
+                            msg(res.message);
+                        return;
+                    }
+                    msg('保存成功');
+                    $("#_avatar-pic").attr('src',res.data.path);
+                }
+            })
+        }
+    }
+    
+    $(".qiandao").click(function(){
+       var url = getURL('qiandao');
+        $.getJSON(url,{},function(res){
+            if(res.success){
+                msg(res.data);
+                $(".qd").removeClass('qiandao').addClass('qd_yes');
+                $(".change_status").html('已签到');
+                
+            }else{
+                msg(res.message);
+            }
+        }) 
+    })
+    $(".suggest").click(function(){
+        var url = getURL('suggest/user_suggest','','chat');
+        location.href = url;
+    })
+    
+    $(".share").click(function(){
+        var url = getURL('index_news/index','','news');
+        location.href = url;
+    })
+    
+    $(".yq").click(function(){
+        var url = getURL('index_invite/invite_card','','invite');
+        location.href = url;
+    })
+    
+    $(".config_btn").click(function(){
+        var url = getURL('Config/index');
+        location.href = url;
+    })
+    
+    $(".my_asset").click(function(){
+        var url = getURL('Asset/index','','candy');
+        location.href = url;
+    })
+    
+    $(".user_auth").click(function(){
+        var url = getURL('Config/user_auth');
+        location.href = url;
+    })
+    
+    function showShare(isShow){
+        var b = isShow?0:-1000,
+            o = isShow?1:0,
+            MASK = $api.dom(".mask"),
+            SHAREBOX= $api.dom(".share-box");
+
+        var opacity ='opacity:'+o+';-webkit-opacity:'+o+';';
+        if(isShow){
+            $api.removeCls(MASK, 'aui-hide');
+            setTimeout(function(){
+                $api.css(MASK, opacity);
+            },10)
+        }else{
+            $api.addCls(MASK, 'aui-hide');
+            $api.css(MASK, opacity);
+        }
+            $api.css(SHAREBOX, 'bottom:'+b+'px;');
+
+    }
+</script>
+{/block}

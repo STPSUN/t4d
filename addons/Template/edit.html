@@ -1,0 +1,117 @@
+{extend name="$BASE_POPUP_FORM" /}
+{block name="body"}
+<input type="hidden" id="id" name="id" />
+
+<div class="box-content">
+
+    <div class="control-group">
+        <label class="control-label">计量单位名称</label>
+        <div class="controls">
+            <input type="text" name="unit_name" id="unit_name" class="form-control required" />    
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">单位类别</label>
+        <div class="controls">
+            <select name="unit_type" id="unit_type" class="required form-control">                
+                <option value="3">原物料和商品</option>
+                <option value="1">原物料</option>
+            </select>                   
+        </div>       
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            最低提取数量</label>
+        <div class="controls">
+            <input type="number" placeholder="必须大于0" data-datatype="positive_integer" name="min_tiqu" id="min_tiqu" class="form-control required" />                       
+            <span class="tips">请输入整数</span>
+        </div>
+    </div>
+    <div class="control-group js_tax_parsent">
+        <label class="control-label">手续费税率</label>
+        <div class="controls">
+            <input data-dataType="amount" data-dataTypeMsg="不是有效的税率" type="text" name="tax_rate" id="tax_rate" class="form-control" size="3" /><span class="tips">%</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">是否奖励上级</label>
+        <div class="controls">
+            <label>
+                <input type="checkbox" id="is_feedback" name="is_feedback" value="1" />是
+            </label>
+        </div>
+    </div> 
+    <div class="control-group">
+        <label class="control-label">
+            图标
+        </label>
+        <div class="controls">
+            <div id="js_upload_wrp">
+                <input type="hidden" id="pic" name="pic" value="" class="" />
+                {:hook('picResource',array('name'=>'pic','folder'=>'candy','tips'=>'仅支持.jpg .png格式照片。','callback'=>'uploadImgCallback'))}
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            商品状态</label>
+        <div class="controls">
+            <label>
+                <input data-ui="switch" type="radio" id="status" name="status" checked value="1" /> 启用</label>
+            &nbsp;&nbsp;
+            <label>
+                <input data-ui="switch" type="radio" id="status1" name="status" value="0" /> 禁用</label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            排列顺序</label>
+        <div class="controls">
+            <input type="text" data-dataType="positive_integer" id="order_index" name="order_index" value="{$order_index}" class="form-control required" /><span class="tips">数值越小越靠前</span>                                          
+        </div>
+    </div>   
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+function chkForm(){
+    var cycle = $("#cycle").val();
+    var max = $("#max").val();
+    var min = $("#min").val();
+    parseFloat(max);
+    parseFloat(min);
+    if(max <= 0){
+        msg('最大值必须大于0');
+        return false;
+    }
+    if(min <= 0){
+        msg('最小值必须大于0');
+        return false;
+    }
+    if(cycle <= 0){
+        msg('生成周期必须大于0');
+        return false;
+    }    
+    if(max <= min){
+        msg('最大值必须大于最小值');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 添加图片
+ */
+function uploadImgCallback(path) {
+    $("#pic").val(path);
+}
+function onLoadDataSuccess(data) {
+    setPicValue("pic", data['pic']);
+}
+
+
+
+</script>
+{/block}
