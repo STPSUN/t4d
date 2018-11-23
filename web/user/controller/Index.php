@@ -1,6 +1,7 @@
 <?php
 
 namespace web\user\controller;
+use addons\fomo\index\controller\Crontab;
 
 
 /**
@@ -44,5 +45,11 @@ class Index extends Base {
             $this->assign('permission', array(1, 0, 1));
             return $this->fetch();
         }
+    }
+
+    public function test()
+    {
+        $m = new Crontab();
+        $m->excute();
     }
 }

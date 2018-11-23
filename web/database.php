@@ -7,16 +7,14 @@ return [
 //    'hostname'        => '47.74.236.198',
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 't3d2',
+    'database'        => 't4d',
     // 用户名
-//    'username'        => 't3d',
-//    'username'        => 't3d2',
-    'username'        => 'root',
+//    'username'        => 'root',
+    'username'        => 't4d',
 
     // 密码
-//    'password'        => 'TKnmizdWp6',
-//    'password'        => 'QEdkZZncDT',
-    'password'        => 'root',
+//    'password'        => 'root',
+    'password'        => 'E5zH8f53Hr',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

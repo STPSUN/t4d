@@ -66,10 +66,10 @@
     function formatOper(value, row, index) {
         if(row['id']){
             var html = '<span class="grid-operation">';
-            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 1)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第一名</button>';
-            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 2)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第二名</button>';
-            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 3)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第三名</button>';
-            html += '<button type="button" onclick="setCancel(' + row['id'] + ', 9)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>撤销</button>';
+            html += '<input type="number" style="width: 60px;"  class="btn btn-xs btn-default edit-btn" id="rank_'+row['id']+'"></input>';
+            html += '<button type="button" onclick="setWinner(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>确定</button>';
+//            html += '<button type="button" onclick="setWinner(' + row['id'] + ', 3)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>第三名</button>';
+            html += '<button type="button" onclick="setCancel(' + row['id'] + ', 99)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>撤销</button>';
 //            html += '<button type="button" onclick="del(' + row['id'] + ')" class="btn btn-xs btn-default del-btn"><i class="icon wb-close"></i>删除</button>';
             html += '</span>';
             return html;
@@ -79,12 +79,15 @@
     function formatStatus(value,row,index){
         if(row['id']){
             var text = '<span style="color:red">否</span>';
-            if(row['winner'] == '1')
-                text = '<span style="color:green">第一名</span>';
-            else if(row['winner'] == '2')
-                text = '<span style="color:green">第二名</span>';
-            else if(row['winner'] == '3')
-                text = '<span style="color:green">第三名</span>';
+            if(row['winner'] != '99')
+                text = "<span style='color:green'>第" + row['winner'] + "名</span>";
+
+//            if(row['winner'] == '1')
+//                text = '<span style="color:green">第一名</span>';
+//            else if(row['winner'] == '2')
+//                text = '<span style="color:green">第二名</span>';
+//            else if(row['winner'] == '3')
+//                text = '<span style="color:green">第三名</span>';
             return text;
         }
     }
@@ -135,8 +138,22 @@
             pageList: [20, 30, 50]
         });
     });
+
+    function setWinner(id) {
+        var url = getURL('set_winner');
+        var rank = '#rank_' + id;
+
+        var num = $(rank).val();
+        $.getJSON(url, {id: id,rank: num}, function (json) {
+            if (json.success){
+                reload();
+            }
+            else
+                alert(json.message);
+        });
+    }
     
-    function setWinner(id,rank) {
+    function setWinner2(id,rank) {
         confirm("同局多次设置赢家以最后一次设置的为准,确认要设置此用户为本局赢家吗?", function () {
             var url = getURL('set_winner');
             $.getJSON(url, {id: id,rank: rank}, function (json) {

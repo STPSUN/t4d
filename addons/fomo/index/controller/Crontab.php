@@ -21,30 +21,39 @@ class Crontab extends \web\common\controller\Controller{
     }
 
     public function excute(){
-        set_time_limit(55);
+        set_time_limit(0);
         $queueM = new \addons\fomo\model\BonusSequeue();
         $list = $queueM->getUnSendData();
         if(!empty($list)){
-            foreach($list as $data){
-                try{
-                    $queueM->startTrans();
-                    $res = false;
-                    if($data['type'] == 1){
-                        $res = $this->sendT3d($data['user_id'],$data['coin_id'],$data['amount'], $data['game_id'], $data['scene']);
-                    }
-                    if(!$res)
-                        return json($this->failData('发放失败'));
+            try
+            {
+                foreach($list as $data){
+                    try{
+                        $queueM->startTrans();
+                        $res = false;
+                        if($data['type'] == 1){
+                            $res = $this->sendT3d($data['user_id'],$data['coin_id'],$data['amount'], $data['game_id'], $data['scene']);
+                        }
+                        if(!$res)
+                            return json($this->failData('发放失败'));
 
-                    //更新发放状态
-                    $data['status'] = 1;
-                    $data['update_time'] = NOW_DATETIME;
-                    $queueM->save($data);
-                    $queueM->commit();
-                    return json($this->successData());
-                } catch (\Exception $ex) {
-//                    $queueM->rollback();
-                    return json($this->failData($ex->getMessage()) );
+                        //更新发放状态
+                        $data['status'] = 1;
+                        $data['update_time'] = NOW_DATETIME;
+                        $queueM->save($data);
+                        $queueM->commit();
+//                        return json($this->successData());
+                    } catch (\Exception $ex) {
+                        $queueM->rollback();
+//                        return json($this->failData($ex->getMessage()) );
+                    }
                 }
+
+                echo '处理成功';
+            }catch (\Exception $e)
+            {
+                echo '处理失败';
+//                return json($this->failData($e->getMessage()) );
             }
         }
     }
@@ -62,6 +71,10 @@ class Crontab extends \web\common\controller\Controller{
         $balanceM = new \addons\member\model\Balance();
         $rewardM = new \addons\fomo\model\RewardRecord();
 
+        $amount = $this->limitAmount($user_id,$coin_id,$game_id,$amount);
+        if(!$amount)
+            return true;
+
         if($scene == 0)
         {
             $this->sendT3dBuy($user_id,$game_id,$amount,$coin_id);
@@ -77,6 +90,10 @@ class Crontab extends \web\common\controller\Controller{
                 $remark = '大赢家分红';  break;
             case 6:
                 $remark = '奖金池触手分红';    break;
+            case 7:
+                $remark = '节点分红';   break;
+            case 8:
+                $remark = '中期奖金';   break;
         }
 
         //添加余额, 添加分红记录
@@ -129,20 +146,56 @@ class Crontab extends \web\common\controller\Controller{
                     continue;
                 }
                 $user_id = $record['user_id'];
-                $rate = $this->getUserRate($team_total_key, $record['key_num']);
-                $_amount = $amount * $rate; //所得分红
+//                $rate = $this->getUserRate($team_total_key, $record['key_num']);
+//                $_amount = $amount * $rate; //所得分红
                 //添加余额, 添加分红记录
                 $balance = $balanceM->getBalanceByCoinID($user_id, $coin_id);
-                $balance = $balanceM->updateBalance($user_id, $_amount, $coin_id, true);
+                $balance = $balanceM->updateBalance($user_id, $amount, $coin_id, true);
                 if($balance != false){
                     $before_amount = $balance['before_amount'];
                     $after_amount = $balance['amount'];
                     $type = 0; //奖励类型 0=投注分红(全网分红)，1=胜利战队分红，2=胜利者分红，3=邀请分红
-                    $remark  = 't3d全网分红';
-                    $rewardM->addRecord($user_id, $coin_id, $before_amount, $_amount, $after_amount, $type, $game_id,$remark);
+                    $remark  = '全网分红';
+                    $rewardM->addRecord($user_id, $coin_id, $before_amount, $amount, $after_amount, $type, $game_id,$remark);
                 }
             }
         }
+    }
+
+    /**
+     * 封顶限制
+     */
+    private function limitAmount($user_id,$coin_id,$game_id,$amount)
+    {
+        $rewardRecordM = new \addons\fomo\model\RewardRecord();
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
+        $user_amount = $rewardRecordM->getTotalAmount($user_id,$coin_id,$game_id);
+        $limit_amount = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('limit_amount');
+
+        if($limit_amount <= $user_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'user_id'   => $user_id,
+                'game_id'   => $game_id,
+            ]);
+            return false;
+        }
+
+        $total_amount = $user_amount + $amount;
+        if($limit_amount <= $total_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'user_id'   => $user_id,
+                'game_id'   => $game_id,
+            ]);
+            $amount = $limit_amount - $user_amount;
+        }
+
+        return $amount;
     }
     
     /**

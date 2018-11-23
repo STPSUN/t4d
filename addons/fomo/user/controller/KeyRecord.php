@@ -63,6 +63,7 @@ class KeyRecord extends \web\user\controller\AddonUserBase{
     public function set_winner(){
         $id = $this->_get('id');
         $rank = $this->_get('rank');    //排名
+        $rank = intval($rank);
 
         $m = new \addons\fomo\model\KeyRecord();
         $m->startTrans();
@@ -80,38 +81,36 @@ class KeyRecord extends \web\user\controller\AddonUserBase{
                 return $this->failData('游戏不存在或者不是进行中');
             }
 
+            if($rank == 0)
+            {
+                return $this->failData('请指定1-10名');
+            }
+
+            if($rank > 10 && $rank != 99)
+                return $this->failData('请指定1-10名');
+
             $record = $m->where(['game_id' => $game_id, 'winner' => $rank])->find();
             $record['update_time'] = NOW_DATETIME;
-            $record['winner'] = 9;
+            $record['winner'] = 99;
             $m->save($record);
 
             $data['update_time'] = NOW_DATETIME;
             $data['winner'] = $rank;
             $m->save($data);
 
-            if($rank == 2)
+            if($rank == 99)
             {
-                $record = $m->where(['game_id' => $game_id, 'winner' => 1])->find();
-                if(empty($record))
-                {
-                    return $this->failData('请先指定第一名');
-                }
-            }else if($rank == 3)
+                $m->where('game_id',$game_id)->update(['winner' => 99]);
+            }else
             {
-                $record = $m->where(['game_id' => $game_id, 'winner' => 1])->find();
-                if(empty($record))
+                for($i = 1; $i < $rank; $i++)
                 {
-                    return $this->failData('请先指定第一名');
+                    $record = $m->where(['game_id' => $game_id, 'winner' => $i])->find();
+                    if(empty($record))
+                    {
+                        return $this->failData('请先指定第' . $i . '名');
+                    }
                 }
-
-                $record = $m->where(['game_id' => $game_id, 'winner' => 2])->find();
-                if(empty($record))
-                {
-                    return $this->failData('请先指定第二名');
-                }
-            }else if($rank == 9)
-            {
-                $m->where('game_id',$game_id)->update(['winner' => 9]);
             }
 
             $m->commit();
@@ -119,6 +118,19 @@ class KeyRecord extends \web\user\controller\AddonUserBase{
         } catch (\Exception $ex) {
             $m->rollback();
             return $this->failData($ex->getMessage());
+        }
+    }
+
+    private function checkRank($game_id,$rank)
+    {
+        $m = new \addons\fomo\model\KeyRecord();
+        for($i = 1; $i < $rank; $i++)
+        {
+            $record = $m->where(['game_id' => $game_id, 'winner' => $i])->find();
+            if(empty($record))
+            {
+                return $this->failData('请先指定第' . $i . '名');
+            }
         }
     }
     

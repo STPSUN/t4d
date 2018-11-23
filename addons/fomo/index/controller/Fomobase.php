@@ -106,7 +106,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     $remark = '外网转入';
                     $_id = $recordM->addRecord($user_id, $coin_id, $amount, $before_amount, $after_amount, $type, $change_type, $user_id, $address, '', $remark);
 
-                    //ETH换算ITTM
+                    //ETH换算EOPS
                     $maketM = new \web\api\model\MarketModel();
                     $rate = $maketM->getUsdtRateByCoinId($coin_id);
                     $ittm_amount = bcmul($amount,$rate,8);

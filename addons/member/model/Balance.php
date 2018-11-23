@@ -61,6 +61,7 @@ class Balance extends \web\common\model\BaseModel
             'update_time' => NOW_DATETIME,
         ];
         $ret = $this->save($data);
+        $data = $this->where(['user_id' => $user_id, 'coin_id' => $coin_id])->find();
         return $data ;
     }
 

@@ -11,9 +11,9 @@
               <div id="pc_group_content" class="long-solution-list">
                 <div class="order-title">
                   {if condition="$detail.user_id neq $user_id"}
-                  您向 {$detail.username} <em class="text-primary">购买</em> ITTM
+                  您向 {$detail.username} <em class="text-primary">购买</em> EOPS
                   {else /}
-                  {$detail.buy_username}向您<em class="text-primary">购买</em> ITTM
+                  {$detail.buy_username}向您<em class="text-primary">购买</em> EOPS
                   <!--我的订单详情-->
                   {/if}
                   <span>订单编号：{$detail.id}</span>
@@ -34,7 +34,7 @@
                     <strong>{$detail.total_cny} CNY</strong>
                   </li>
                   <li class="user-trust">
-                    {$detail.amount} ITTM
+                    {$detail.amount} EOPS
                   </li>
                   <li class="payment-type">
                     {$detail.price}  CNY
@@ -63,7 +63,7 @@
                 <div class="tfoot-right">
                   <div>
                     <p>总额：<span class="text-primary">{$detail.total_cny} CNY</span></p>
-                    <p>兑换：<em>{$detail.amount} ITTM</em></p>
+                    <p>兑换：<em>{$detail.amount} EOPS</em></p>
                   </div>
                 </div>
               </div>

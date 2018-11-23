@@ -1,6 +1,7 @@
 <?php
 
 namespace addons\fomo\index\controller;
+use function PHPSTORM_META\elementType;
 
 /**
  * Description of Game
@@ -38,6 +39,7 @@ class KeyGame extends Fomobase
             $game_id = $this->_post('game_id');
 //            $team_id = $this->_post('team_id');
             $key_num = $this->_post('key_num'); //数量
+
             //是否有上级,余额是否足够,是否空投
             $gameM = new \addons\fomo\model\Game();
             $game = $gameM->getDetail($game_id);
@@ -50,6 +52,7 @@ class KeyGame extends Fomobase
 
             //用户是否有该币种余额
             $coin_id = $game['coin_id']; //币种
+
             $balanceM = new \addons\member\model\Balance();
             $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
             if (empty($balance)) {
@@ -76,7 +79,7 @@ class KeyGame extends Fomobase
 //            if (empty($team_config)) {
 //                return $this->failData(lang('The selected team does not exist'));
 //            }
-            try {
+//            try {
                 $gameM->startTrans();
 
                 //扣除用户余额
@@ -92,7 +95,7 @@ class KeyGame extends Fomobase
                 $after_amount = $balance['amount'];
                 $change_type = 0; //减少
                 $remark = '购买key';
-                $r_id = $recordM->addRecord($this->user_id, $coin_id, $key_total_price, $before_amount, $after_amount, $type, $change_type, '', '', '', $remark);
+                $r_id = $recordM->addRecord($this->user_id, $coin_id, $key_total_price, $before_amount, $after_amount, $type, $change_type, '', '', '', $remark,$game_id);
                 if (!$r_id) {
                     $gameM->rollback();
                     return $this->failData(lang('Purchase failed'));
@@ -101,11 +104,16 @@ class KeyGame extends Fomobase
                 //全网分红
                 $this->wholeDividend($coin_id,$game_id,$key_total_price);
 
-                //触手分红：邀请人逆推3代奖励
+                //动态分红：邀请人逆推3代奖励
                 $invite_rate = $confM->getValByName('invite_rate');  //投注推荐奖励
-                $remark = '推荐投注分红';
+                $remark = '动态分红';
                 $this->parentDividend($this->user_id, $invite_rate, $key_total_price, $coin_id, 3, $game_id, $remark);
 
+                //父级加入节点分红
+                $this->addNode($this->user_id,$key_total_price,$game_id);
+
+                //节点分红
+                $this->nodeIncome($coin_id,$game_id,$key_total_price);
                 //空投
 //                $drop_amount = 0;
 //                $is_drop = $confM->getValByName('is_drop');
@@ -131,7 +139,9 @@ class KeyGame extends Fomobase
 //                更新数据 
 //                用户key+
                 $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
-                $save_key = $keyRecordM->saveUserKey($this->user_id, $game_id, $key_num);
+                $out_mom = $confM->getValByName('out_mom'); //出局倍数
+                $limit_amount = $key_total_price * $out_mom;
+                $save_key = $keyRecordM->saveUserKey($this->user_id, $game_id, $key_num,$limit_amount);
 //              更新游戏设置：奖池+ ,时间+
                 $time = time();
                 $end_game_time = $game['end_game_time'] + $inc_time;
@@ -150,6 +160,8 @@ class KeyGame extends Fomobase
                 $current_price_data['update_time'] = NOW_DATETIME;
                 $priceM->save($current_price_data);
 
+                //中期奖
+                $this->interimAward($coin_id,$game_id);
 
 //                $sequeueM = new \addons\fomo\model\BonusSequeue();
 //                $whole_rate = $confM->getValByName('whole_rate'); //全网分红比率
@@ -157,13 +169,197 @@ class KeyGame extends Fomobase
 //                $sequeueM->addSequeue($this->user_id, $coin_id, $t3d_amount, 1, 0, $game_id);
                 $gameM->commit();
                 return $this->successData();
-            } catch (\Exception $ex) {
-                $gameM->rollback();
-                return $this->failData($ex->getMessage());
-            }
+//            } catch (\Exception $ex) {
+//                $gameM->rollback();
+//                return $this->failData($ex->getMessage());
+//            }
         }
     }
 
+    /**
+     * 封顶限制
+     */
+    private function limitAmount($user_id,$coin_id,$game_id,$amount)
+    {
+        $rewardRecordM = new \addons\fomo\model\RewardRecord();
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
+        $user_amount = $rewardRecordM->getTotalAmount($user_id,$coin_id,$game_id);
+        $limit_amount = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('limit_amount');
+
+        if($limit_amount <= $user_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'user_id'   => $user_id,
+                'game_id'   => $game_id,
+            ]);
+            return false;
+        }
+
+        $total_amount = $user_amount + $amount;
+        if($limit_amount <= $total_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'user_id'   => $user_id,
+                'game_id'   => $game_id,
+            ]);
+            $amount = $limit_amount - $user_amount;
+        }
+
+        return $amount;
+    }
+
+    /**
+     * 中期奖
+     */
+    private function interimAward($coin_id,$game_id)
+    {
+        $gameM = new \addons\fomo\model\Game();
+        $pool_amount = $gameM->where('id',$game_id)->value('pool_total_amount');
+        if($pool_amount < 1000)
+            return;
+
+        $grant_amount = 0;  //发放金额
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
+        $sequeueM = new \addons\fomo\model\BonusSequeue();
+        $data = $keyRecordM->getMaxWinner($game_id);
+        foreach ($data as $key=>$v)
+        {
+            if($key < 10)
+            {
+                //封顶限制
+                $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,6000);
+                if(!$amount)
+                    continue;
+
+                $grant_amount += $amount;
+                $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+            }else if($key < 20)
+            {
+                //封顶限制
+                $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,3000);
+                if(!$amount)
+                    continue;
+
+                $grant_amount += $amount;
+                $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+            }else if($key < 50)
+            {
+                //封顶限制
+                $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,2000);
+                if(!$amount)
+                    continue;
+
+                $grant_amount += $amount;
+                $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+            }else
+            {
+                //封顶限制
+                $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,1000);
+                if(!$amount)
+                    continue;
+
+                $grant_amount += $amount;
+                $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+            }
+        }
+
+        $gameM->where('id',$game_id)->setDec('pool_total_amount',$grant_amount);
+    }
+
+
+
+    /**
+     * 节点分红
+     */
+    private function nodeIncome($coin_id,$game_id,$key_total_price)
+    {
+        $confM = new \addons\fomo\model\Conf();
+        $nodeM = new \addons\fomo\model\Node();
+        $sequeueM = new \addons\fomo\model\BonusSequeue();
+        $users = $nodeM->getNodeUsers($game_id);
+        if(empty($users))
+            return;
+
+        $user_num = count($users);
+        $node_rate = $confM->getValByName('node_rate'); //节点分红比率
+        $node_amount = $this->countRate($key_total_price,$node_rate);
+        $amount = bcdiv($node_amount,$user_num,8);
+        foreach ($users as $v)
+        {
+            //封顶限制
+            $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,$amount);
+            if(!$amount)
+                continue;
+
+            $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,7,$game_id);
+        }
+    }
+
+    /**
+     * 父级加入节点分红表
+     */
+    private function addNode($user_id,$key_total_price,$game_id)
+    {
+        $memberM = new \addons\member\model\MemberAccountModel();
+        $user = $memberM->getDetail($user_id);
+        $puser = $memberM->getDetail($user['pid']);
+        if(empty($puser))
+            return false;
+
+        $nodeM = new \addons\fomo\model\Node();
+        $node = $nodeM->where(['user_id' => $user['pid'], 'game_id' => $game_id])->find();
+        if(!empty($node))
+            return false;
+
+        $recordM = new \addons\member\model\TradingRecord();
+        $map = array(
+            'user_id'   => $user['pid'],
+            'type'      => 10,
+            'game_id'   => $game_id,
+        );
+        $amount = $recordM->where($map)->sum('amount');
+        if($amount < 100)
+            return false;
+
+        $users = $memberM->where('pid',$user['pid'])->column('id');
+        $user_ids = '';
+        foreach ($users as $v)
+        {
+            $user_ids = $v . ',';
+        }
+
+        $user_ids = rtrim($user_ids,',');
+        $where['user_id'] = array('in',$user_ids);
+        $where['type'] = 10;
+        $where['game_id'] = $game_id;
+        $total_amount = $recordM->where($where)->sum('amount');
+        $total_amount += $key_total_price;
+        if($total_amount < 5000)
+            return false;
+
+        $data = array(
+            'user_id' => $user['pid'],
+            'game_id' => $game_id,
+            'create_time' => NOW_DATETIME
+        );
+        $res = $nodeM->add($data);
+        if($res)
+            return true;
+        else
+            return false;
+
+    }
+
+    /**
+     * 全网分红
+     * @param $coin_id
+     * @param $game_id
+     * @param $key_total_price
+     */
     private function wholeDividend($coin_id,$game_id,$key_total_price)
     {
         $confM = new \addons\fomo\model\Conf();
@@ -171,7 +367,8 @@ class KeyGame extends Fomobase
         $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
         $whole_rate = $confM->getValByName('whole_rate'); //全网分红比率
 
-        $record_user_data = $keyRecordM->where('game_id',$game_id)->field('user_id')->select();
+        //分红用户
+        $record_user_data = $keyRecordM->where(['game_id' => $game_id, 'status' => 1])->field('user_id')->select();
         if(empty($record_user_data))
             return;
 
@@ -181,14 +378,24 @@ class KeyGame extends Fomobase
 
         $whole_amount = $this->countRate($key_total_price,$whole_rate);
 
+        //分红发放
         foreach ($record_user_data as $v)
         {
             if(empty($v))
                 continue;
 
             $user_amount =  $keyRecordM->getTotalByGameID($v['user_id'],$game_id);
+            if(empty($user_amount))
+                continue;
+
             $rate = bcdiv($user_amount,$key_total,8);  //分红比率 = 会员本局key总和 / 本局key总和
             $amount = bcmul($whole_amount,$rate,8);  //分红数量 = 全网数量 * 权重占比
+
+            //封顶限制
+            $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,$amount);
+            if(!$amount)
+                continue;
+
             $sequeueM->addSequeue($v['user_id'], $coin_id, $amount, 1, 0, $game_id);
         }
     }
@@ -319,8 +526,8 @@ class KeyGame extends Fomobase
                     $m->save($game);
 
                     //大赢家
-                    $winner_rate = $confM->getValByName('winner_rate');
-                    $this->bigWinnerDividend($game_id, $winner_rate, $pool_total_amount, $coin_id);
+//                    $winner_rate = $confM->getValByName('winner_rate');
+                    $this->bigWinnerDividend($game_id,$pool_total_amount, $coin_id);
 
                     //触手分红
                     $pool_winner_rate = $confM->getValByName('pool_winner_rate');
@@ -368,7 +575,7 @@ class KeyGame extends Fomobase
             $game['total_amount_usdt'] = bcmul($game['total_amount'],$rate,8);
 
             $recordM = new \addons\fomo\model\RewardRecord();
-            $last_winner = $recordM->getGameWinner($game['id']);
+//            $last_winner = $recordM->getGameWinner($game['id']);
 
             $keyRecordM = new \addons\fomo\model\KeyRecord();
             $last_winner = $keyRecordM->getWinnerRank($game['id'], 10);
@@ -389,7 +596,51 @@ class KeyGame extends Fomobase
      * @param $type
      * @param $remark
      */
-    private function bigWinnerDividend($game_id, $winner_rate, $amount, $coin_id)
+    private function bigWinnerDividend($game_id,$pool_total_amount, $coin_id)
+    {
+        $queueM = new \addons\fomo\model\BonusSequeue();
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
+        //大赢家30名
+        $winner_list = $keyRecordM->getWinner($game_id, 30);
+
+        if(empty($winner_list))
+            return;
+
+        $count = count($winner_list);
+
+        $confM = new \addons\fomo\model\Conf();
+        $rate = $confM->getValByName('winner_rate'); //最后投注者分红比率
+        $total_amount = $this->countRate($pool_total_amount, $rate); //胜利者所得
+        foreach ($winner_list as $key=>$v)
+        {
+            if($key < 1)
+            {
+                $amount = $this->countRate($total_amount,35);
+            }else if($key < 10)
+            {
+                $amount = $this->countRate($total_amount,30);
+                $num = ($count > 10) ? 9 : ($count - 1);
+                $amount = bcdiv($amount,$num,8);
+            }else if($key < 20)
+            {
+                $amount = $this->countRate($total_amount,20);
+                $num = ($count > 20) ? 10 : ($count - 10);
+                $amount = bcdiv($amount,$num,8);
+            }else if($key < 30)
+            {
+                $amount = $this->countRate($total_amount,15);
+                $num = ($count > 30) ? 10 : ($count - 20);
+                $amount = bcdiv($amount,$num,8);
+            }
+
+            //添加队列 scene = 2 ,type=0
+            $type = 1;
+            $scene = 5; //奖金池-大赢家分红
+            $queueM->addSequeue($v['user_id'], $coin_id, $amount, $type, $scene, $game_id);
+        }
+    }
+
+    private function bigWinnerDividend2($game_id, $winner_rate, $amount, $coin_id)
     {
         $queueM = new \addons\fomo\model\BonusSequeue();
         $keyRecordM = new \addons\fomo\model\KeyRecord();
@@ -500,12 +751,17 @@ class KeyGame extends Fomobase
                     continue;
                 }
 
-                //父级是否参与本局游戏
-                $key_record = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $pid])->find();
+                //父级是否参与本局游戏及是否出局
+                $key_record = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $pid, 'status' => 1])->find();
                 if(empty($key_record))
                     continue;
 
                 $invite_amount = $this->countRate($amount, $val); //邀请奖励
+
+                //封顶限制
+                $invite_amount = $this->limitAmount($pid,$coin_id,$game_id,$invite_amount);
+                if(!$invite_amount)
+                    continue;
 
                 //更新余额
                 $pidBalance = $balanceM->updateBalance($pid, $invite_amount, $coin_id, true);
@@ -527,7 +783,7 @@ class KeyGame extends Fomobase
     }
 
     /**
-     * 最后投资100名分红
+     * 最后投资500名分红
      * @param $game_id
      */
     private function lastWinnerDividend($game_id, $pool_total_amount, $coin_id)
@@ -540,10 +796,32 @@ class KeyGame extends Fomobase
 
         $confM = new \addons\fomo\model\Conf();
         $rate = $confM->getValByName('last_rate'); //最后投注者分红比率
-        $amount = $this->countRate($pool_total_amount, $rate); //胜利者所得
+        $total_amount = $this->countRate($pool_total_amount, $rate); //胜利者所得
         $user_num = count($list);
-        $amount = bcdiv($amount,$user_num,8);
-        foreach ($list as $v) {
+
+        foreach ($list as $key=>$v) {
+            if($key < 1)
+            {
+                $amount = $this->countRate($total_amount,40);
+            }else if($key < 20)
+            {
+                //倒数2至20名的人数
+                $num = ($user_num > 20) ? 19 : ($user_num - 1);
+                $amount = $this->countRate($total_amount,30);
+                $amount = bcdiv($amount,$num,8);
+            }else if($key < 200)
+            {
+                //倒数21至200名的人数
+                $num = ($user_num > 200) ? 180 : ($user_num - 20);
+                $amount = $this->countRate($total_amount,20);
+                $amount = bcdiv($amount,$num,8);
+            }else if($key < 500)
+            {
+                //倒数21至200名的人数
+                $num = ($user_num > 500) ? 300 : ($user_num - 200);
+                $amount = $this->countRate($total_amount,10);
+                $amount = bcdiv($amount,$num,8);
+            }
             //添加队列 scene = 2 ,type=0
             $type = 1;
             $scene = 4; //奖金池触手分红

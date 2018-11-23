@@ -36,6 +36,8 @@ class RewardRecord extends \web\common\model\BaseModel {
         return $this->add($data);
     }
 
+
+
     public function getUserTotal($user_id, $coin_id, $game_id = 0) {
         $where['user_id'] = $user_id;
         $where['coin_id'] = $coin_id;
@@ -59,6 +61,20 @@ class RewardRecord extends \web\common\model\BaseModel {
         $where['type'] = array('in', $type);
         $where['user_id'] = $user_id;
         $where['coin_id'] = $coin_id;
+        $data = $this->where($where)->sum('amount');
+        if (empty($data)) {
+            return 0;
+        }
+        return $data;
+    }
+
+    /**
+     * 获取奖励总数
+     */
+    public function getTotalAmount($user_id, $coin_id,$game_id) {
+        $where['user_id'] = $user_id;
+        $where['coin_id'] = $coin_id;
+        $where['game_id'] = $game_id;
         $data = $this->where($where)->sum('amount');
         if (empty($data)) {
             return 0;
