@@ -3,6 +3,7 @@
  
 <div class="right-main">
     <div class="page_nav" id="js_page_nav"><span class="page_title">{$page_nav}</span></div>
+
     <ul class="tab_navs" id="js_tab_navs">
         <li class="{if condition='$status eq 0'}current{/if}"><a class="pjax" href="{:getUrl('index','status=0')}">未审核</a></li>            
         <li class="{if condition='$status eq 1'}current{/if}"><a class="pjax" href="{:getUrl('index','status=1')}">已完成</a></li>
@@ -10,6 +11,7 @@
         <li class="{if condition='$status eq -1'}current{/if}"><a class="pjax" href="{:getUrl('index','status=-1')}">未通过</a></li>
         <!--<li class="{if condition='$status eq -2'}current{/if}"><a class="pjax" href="{:getUrl('index','status=-2')}">转出异常</a></li>-->
     </ul>
+
     <div id="js_main_header" class="ui-form main_header">
         {if condition="$status eq 1"}
         <span>
@@ -27,12 +29,16 @@
             </a>
             <input type="text" id="js_keyword" placeholder="请输入用户邮箱名称" value="" class="frm_input" />
         </span>
+        {if condition="$status eq 1"}
+            <button id="excel">导出</button>
+        {/if}
     </div>
     <table id="grid-table">
         <thead frozen="true">
         <th data-options="field:'username',width:100,align:'center'">用户名称</th> 
-        <th data-options="field:'phone',width:100,align:'center'">手机号</th> 
-        <th data-options="field:'amount',width:120,align:'center'">数量</th>
+        <th data-options="field:'phone',width:100,align:'center'">手机号</th>
+        <th data-options="field:'eth_amount',width:120,align:'center'">ETH数量</th>
+        <th data-options="field:'amount',width:120,align:'center'">EOPS数量</th>
         <th data-options="field:'coin_name',width:100, align:'center'">币种</th>
         </thead>
         <thead>
@@ -143,7 +149,7 @@
     
     $("#type").change(function(){
         reload();
-    })
+    });
     
     function reload() {
         var keyword = $("#js_keyword").val();
@@ -153,6 +159,15 @@
             type:type
         });
     }
+
+    $("#excel").click(function () {
+        var url = getURL('excel');
+        var keyword = $("#js_keyword").val();
+        var type = $("#type").val();
+        $.post(url, {keyword: keyword,type: type}, function (json) {
+            hideLoading();
+        });
+    });
 
 </script>
 {/block}

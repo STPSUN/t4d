@@ -41,6 +41,7 @@ return[
 	'Bonus share out bonus'            => '分红奖金',
 	'Invitation bonus'                 => '邀请奖金',
 	'The total balance'                => '总余额',
+    'The total eth balance'            => 'ETH总余额',
 	'extract'                		   => '提取',
 	'content3'                		   => '最火区块链游戏，全民狂撸以太坊',
 	'content4'                		   => '注册一个独特的代号, 永久解锁邀请机制',

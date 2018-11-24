@@ -28,6 +28,14 @@ class Trade extends \web\user\controller\AddonUserBase{
         $m = new \addons\eth\model\EthTradingOrder();
         $total = $m->getTotal($filter);
         $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter);
+
+        $sysM = new \web\common\model\sys\SysParameterModel();
+        $eth_rate = $sysM->getValByName('eth_rate');
+        foreach ($rows as &$v)
+        {
+            $v['eth_amount'] = bcdiv($v['amount'],$eth_rate,8);
+        }
+
         $count_total = $m->getCountTotal($filter);
         return $this->toTotalDataGrid($total, $rows,$count_total);
     }
@@ -54,8 +62,8 @@ class Trade extends \web\user\controller\AddonUserBase{
                 $to = $data['to_address'];
                 $contract_address = $data['contract_address'];
                 $byte = $data['byte'];
-                if($data['coin_id'] !=1  && empty($contract_address))
-                    return $this->failData ('未设置合约地址');
+//                if($data['coin_id'] !=1  && empty($contract_address))
+//                    return $this->failData ('未设置合约地址');
                 $frex_to = strtolower(substr($to,0,2));
                 if(($frex_to !== "0x" || strlen($to) !== 42)){
                     //异常订单处理 更新订单状态非未通过
@@ -135,8 +143,54 @@ class Trade extends \web\user\controller\AddonUserBase{
         }
     }
 
+    /**
+     * @throws \Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function excel()
+    {
+        $keyword = $this->_get('keyword');
+        $status = $this->_get('status');
+        $type = $this->_get('type');
+        $filter = 'status=1';
+        if($type != ''){
+            $filter .= ' and type='.$type;
+        }
+        if ($keyword != null) {
+            $filter .= ' and b.username like \'%' . $keyword . '%\'';
+        }
+        $m = new \addons\eth\model\EthTradingOrder();
+        $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter);
 
+        $data = [];
+        foreach ($rows as $v)
+        {
+            $data[] = [
+                1,
+                2
+            ];
+        }
+
+        $letter = ['A', 'B', 'C'];
+        $tableHeader = ['a','b','c'];
+        $title = "提现明细";
+
+        export_excel($data,$letter,$tableHeader,$title);
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 

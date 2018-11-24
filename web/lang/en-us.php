@@ -42,6 +42,7 @@ return[
 	'Bonus share out bonus'            => 'Bonus share out bonus',
 	'Invitation bonus'                 => 'Invitation bonus',
 	'The total balance'                => 'The total balance',
+    'The total eth balance'            => 'The total eth balance',
 	'extract'                		   => 'extract',
 	'content3'                		   => 'The most popular blockchain game, the public rush ethereum',
 	'content4'                		   => 'Register a unique code to permanently unlock the invite mechanism',

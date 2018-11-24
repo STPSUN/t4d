@@ -79,7 +79,7 @@ class KeyGame extends Fomobase
 //            if (empty($team_config)) {
 //                return $this->failData(lang('The selected team does not exist'));
 //            }
-//            try {
+            try {
                 $gameM->startTrans();
 
                 //扣除用户余额
@@ -169,10 +169,10 @@ class KeyGame extends Fomobase
 //                $sequeueM->addSequeue($this->user_id, $coin_id, $t3d_amount, 1, 0, $game_id);
                 $gameM->commit();
                 return $this->successData();
-//            } catch (\Exception $ex) {
-//                $gameM->rollback();
-//                return $this->failData($ex->getMessage());
-//            }
+            } catch (\Exception $ex) {
+                $gameM->rollback();
+                return $this->failData($ex->getMessage());
+            }
         }
     }
 
@@ -219,7 +219,7 @@ class KeyGame extends Fomobase
     {
         $gameM = new \addons\fomo\model\Game();
         $pool_amount = $gameM->where('id',$game_id)->value('pool_total_amount');
-        if($pool_amount < 1000)
+        if($pool_amount < 200000)
             return;
 
         $grant_amount = 0;  //发放金额
@@ -269,7 +269,6 @@ class KeyGame extends Fomobase
 
         $gameM->where('id',$game_id)->setDec('pool_total_amount',$grant_amount);
     }
-
 
 
     /**

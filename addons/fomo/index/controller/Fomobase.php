@@ -148,7 +148,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         }
         $rewardM = new \addons\fomo\model\RewardRecord();
         $data['invite_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id);
-        $data['other_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id,'0,3,4,5,6');
+        $data['other_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id,'0,3,4,5,6,7,8');
         $data['all_reward'] = 0;
         if($game_id) $data['all_reward'] = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
 
@@ -158,7 +158,12 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 8);
         $balanceM = new \addons\member\model\Balance();
         $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
+
+        $sysM = new \web\common\model\sys\SysParameterModel();;
+        $eth_rate = $sysM->getValByName('eth_rate');
+        $eth_balance = bcdiv($balance['amount'],$eth_rate,8);
         $data['balance'] = $balance['amount'];
+        $data['eth_balance'] = $eth_balance;
         return $this->successData($data);
     }
     
@@ -260,6 +265,9 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             }
             
         }else{
+            $sysM = new \web\common\model\sys\SysParameterModel();
+            $eth_rate = $sysM->getValByName('eth_rate');
+            $this->assign('eth_rate',$eth_rate);
             $this->assign('coin_id',$this->_get('coin_id'));
             $this->assign('id','0');
             $this->setLoadDataAction('');

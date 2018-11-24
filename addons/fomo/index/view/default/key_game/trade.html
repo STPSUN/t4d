@@ -102,6 +102,13 @@
                                     <!--<p><span>≙ <span class="user_total_amount">0.0000</span> USDT</span></p>-->
                                 </div>
                             </div>
+                            <div class="item">
+                                <!--<div class="item-left">{:lang('The total eth balance')}</div>-->
+                                <div class="item-right">
+                                    <div class="eth-balance">0.0000 ETH</div>
+                                    <!--<p><span>≙ <span class="user_total_amount">0.0000</span> USDT</span></p>-->
+                                </div>
+                            </div>
                         <!--<div class="col" style="padding: 10px 0;">-->
                             <!--<button type="button" id="withdraw" class="btn btn-block my-btn-primary btn-lg ticketProcess"><img src="__IMG__/icon_pickup.png"> <trans oldtip=" Reinvest" newtip="提取" style=""> 提取</trans></button>-->
                         <!--</div>-->
@@ -222,7 +229,6 @@
     var price = '', teamId = '',inc = "{$inc}";
     // 加键
     $('#choose_add').find('a').on('click', function () {
-        console.log(111);
         var keyVal = 0;
         if($('#js_key_num').val() && parseFloat($('#js_key_num').val()) > 0){
             keyVal = parseInt($('#js_key_num').val());
@@ -232,16 +238,18 @@
 
         var aVal = parseInt($(this).attr('data-val'));
         thisVal = keyVal + aVal;
-//        debugger
         $('#js_key_num').val(thisVal);
-        var totalVal = sumTotalVal(price,thisVal);
+//        var totalVal = sumTotalVal(price,thisVal);
+        var totalVal = thisVal*10;
         $("#key_num").text(totalVal);
     });
+
     // 键值变化
     $('input[name=key_num]').on('keyup', function(){
         var thisVal = $(this).val();
         if (thisVal && parseFloat(thisVal) > 0) {
-            var totalVal = sumTotalVal(price,thisVal);
+//            var totalVal = sumTotalVal(price,thisVal);
+            var totalVal = thisVal*10;
             $('#key_num').text(totalVal);
         } else {
             $('#key_num').text('0.0000');

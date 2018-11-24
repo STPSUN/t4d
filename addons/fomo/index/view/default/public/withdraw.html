@@ -8,6 +8,7 @@
         <div class="input-box">
             <input type="hidden" name="coin_id" value="{$coin_id}" />
             <input type="number" placeholder="{:lang('Please enter the withdrawal amount')}" class="input required" name="amount" id="amount" />
+            <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈ <span id="eth_amount"></span></h3>
             <input type="text" placeholder="{:lang('Please enter the extraction address')}" class="input required" name="address" id="address" />
             
         </div>
@@ -16,9 +17,22 @@
 {/block}
 {block name="script"}
 <script type="text/javascript">
+    var eth_rate = "{$eth_rate}";
     $(function(){
         $(document.body).css('background-color','#2e3338')
-    })
+    });
+
+    $('#amount').on('keyup', function(){
+        var thisVal = $(this).val();
+        if (thisVal && parseFloat(thisVal) > 0) {
+//            var totalVal = sumTotalVal(price,thisVal);
+            var totalVal = thisVal/eth_rate;
+            $('#eth_amount').text(totalVal + ' ETH');
+        } else {
+            $('#eth_amount').text('0.0000' + ' ETH');
+        }
+
+    });
 
 </script>
 

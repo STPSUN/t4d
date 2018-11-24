@@ -41,6 +41,7 @@ return[
 	'Bonus share out bonus'            => '分紅獎金',
 	'Invitation bonus'                 => '邀請獎金',
 	'The total balance'                => '總余額',
+    'The total eth balance'            => 'ETH總余額',
 	'extract'                		   => '提取',
 	'content3'                		   => '最火區塊鏈遊戲，全民狂撸以太坊',
 	'content4'                		   => '注冊一個獨特的代號, 永久解鎖邀請機制',
