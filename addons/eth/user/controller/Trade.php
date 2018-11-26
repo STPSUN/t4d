@@ -2,6 +2,8 @@
 
 namespace addons\eth\user\controller;
 
+use think\Loader;
+
 class Trade extends \web\user\controller\AddonUserBase{
 
 
@@ -162,25 +164,101 @@ class Trade extends \web\user\controller\AddonUserBase{
             $filter .= ' and b.username like \'%' . $keyword . '%\'';
         }
         $m = new \addons\eth\model\EthTradingOrder();
+        $sysM = new \web\common\model\sys\SysParameterModel();
+        $eth_rate = $sysM->getValByName('eth_rate');
         $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter);
-
         $data = [];
         foreach ($rows as $v)
         {
-            $data[] = [
-                1,
-                2
-            ];
+            $temp = [];
+            $temp[] = $v['username'];
+            $temp[] = $v['phone'];
+            $temp[] = bcdiv($v['amount'],$eth_rate,8);
+            $temp[] = $v['amount'];
+            $temp[] = $v['coin_name'];
+            $temp[] = ($v['type'] == 1) ? '转入' : '转出';
+            $temp[] = $v['to_address'];
+            $temp[] = $v['txhash'];
+            $temp[] = $v['update_time'];
+            $temp[] = $v['remark'];
+            $temp[] = '已完成';
+
+            $data[] = $temp;
         }
 
-        $letter = ['A', 'B', 'C'];
-        $tableHeader = ['a','b','c'];
-        $title = "提现明细";
+        $fileName = '提现明细.xlsx';
+        $headArr = ['用户名称','手机号','ETH数量','EOPS数量','币种','类型','目标钱包地址','交易哈希值','更新时间','备注','订单状态'];
 
-        export_excel($data,$letter,$tableHeader,$title);
+        Loader::import('PHPExcel.Classes.PHPExcel');
+        Loader::import('PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->getProperties();
+
+
+        $key = ord("A");
+
+        foreach ($headArr as $v)
+        {
+            $colum = chr($key);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1',$v);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1',$v);
+            $key += 1;
+        }
+
+        $c = 2;
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->getColumnDimension('A')->setWidth('10');
+        $objActSheet->getColumnDimension('B')->setWidth('12');
+        $objActSheet->getColumnDimension('C')->setWidth('12');
+        $objActSheet->getColumnDimension('D')->setWidth('10');
+        $objActSheet->getColumnDimension('E')->setWidth('8');
+        $objActSheet->getColumnDimension('F')->setWidth('8');
+        $objActSheet->getColumnDimension('G')->setWidth('45');
+        $objActSheet->getColumnDimension('H')->setWidth('12');
+        $objActSheet->getColumnDimension('I')->setWidth('18');
+        $objActSheet->getColumnDimension('J')->setWidth('22');
+        $objActSheet->getColumnDimension('K')->setWidth('10');
+
+        foreach ($data as $key => $r)
+        {
+            $span = ord("A");
+
+            foreach ($r as $keyName => $value)
+            {
+                $objActSheet->setCellValue(chr($span) . $c,$value);
+                $span++;
+            }
+
+            $c++;
+        }
+
+
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition:attachment;filename='$fileName'");
+        header("Cache-Control:max-age=0");
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,"Excel2007");
+        $objWriter->save("php://output");
+
+        exit();
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

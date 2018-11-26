@@ -30,7 +30,7 @@
             <input type="text" id="js_keyword" placeholder="请输入用户邮箱名称" value="" class="frm_input" />
         </span>
         {if condition="$status eq 1"}
-            <button id="excel">导出</button>
+            <a href="{:getUrl('excel')}"><button >导出</button></a>
         {/if}
     </div>
     <table id="grid-table">
