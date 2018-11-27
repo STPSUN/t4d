@@ -113,7 +113,7 @@ class KeyGame extends Fomobase
                 $this->addNode($this->user_id,$key_total_price,$game_id);
 
                 //节点分红
-                $this->nodeIncome($coin_id,$game_id,$key_total_price);
+                $this->nodeIncome($coin_id,$game_id,$key_total_price,$game['is_node']);
                 //空投
 //                $drop_amount = 0;
 //                $is_drop = $confM->getValByName('is_drop');
@@ -274,8 +274,12 @@ class KeyGame extends Fomobase
     /**
      * 节点分红
      */
-    private function nodeIncome($coin_id,$game_id,$key_total_price)
+    private function nodeIncome($coin_id,$game_id,$key_total_price,$is_node)
     {
+        //是否开启节点分红
+        if($is_node != 1)
+            return;
+
         $confM = new \addons\fomo\model\Conf();
         $nodeM = new \addons\fomo\model\Node();
         $sequeueM = new \addons\fomo\model\BonusSequeue();

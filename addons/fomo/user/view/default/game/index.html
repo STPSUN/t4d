@@ -91,7 +91,7 @@
 
     function edit(id) {
         var url = getURL('edit', 'id=' + id);
-        openBarWin('编辑', 800, 300, url, function () {
+        openBarWin('编辑', 400, 300, url, function () {
             reload();
         }, ['保存', '取消']);
     }
@@ -107,7 +107,7 @@
             return;
         }
         var url = getURL('edit');
-        openBarWin('添加', 400, 220, url, function () {
+        openBarWin('添加', 400, 300, url, function () {
             reload();
         });
     });
