@@ -22,7 +22,7 @@ class KeyGame extends Fomobase
 
     public function index()
     {
-        $this->assign('title', 'T3D区块链游戏');
+        $this->assign('title', 'DD.POR');
         //判断游戏是否结束
 //        $this->getTeams();
         $this->getInc();
@@ -876,13 +876,11 @@ class KeyGame extends Fomobase
         }
 
         $keyRecordM = new \addons\fomo\model\KeyRecord();
-        $winner_list = $keyRecordM->getWinnerRank($game_id, 10);
+        $winner_list = $keyRecordM->getWinnerRank($game_id, 30);
         $data = array();
-        $rank_arr = array('第一名','第二名','第三名','第四名','第五名','第六名','第七名','第八名','第九名','第十名');
         for($i = 0; $i < count($winner_list); $i++)
         {
             $temp['username'] = $winner_list[$i]['username'];
-            $temp['rank'] = $rank_arr[$i];
             $data[] = $temp;
         }
 
@@ -936,7 +934,53 @@ class KeyGame extends Fomobase
         }
     }
 
+    public function getNode()
+    {
+        $game_id = $this->_get('game_id');
+//        $game_id = 7;
+//        if ($this->user_id <= 0) {
+//            return $this->failData(lang('Not logged in'));
+//        }
+
+        $recordM = new \addons\fomo\model\RewardRecord();
+        $data = $recordM->alias('r')
+                ->field('r.amount,r.update_time,u.username')
+                ->join('member_account u','u.id = r.user_id','left')
+                ->where(['r.game_id' => $game_id, 'r.type' => 7, 'user_id' => $this->user_id])
+                ->select();
+
+        return $this->successData($data);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

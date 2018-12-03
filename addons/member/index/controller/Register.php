@@ -95,7 +95,7 @@ class Register extends \web\index\controller\AddonIndexBase {
             $this->assign('title','');
             $invite_code = $this->_get("inv");
             $this->assign('invite_code',$this->_get("inv"));
-            $this->setLoadDataAction('T3D区块链游戏');
+            $this->setLoadDataAction('DD.POR');
             return $this->fetch('reg');
         }
     }

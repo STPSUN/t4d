@@ -176,6 +176,7 @@
 //                    getTeamTotal();
                     getKeyNum();
                     getRank();
+                    getNode();
                 }
             }else{
                 $(".top-title").html(data.message)
@@ -208,12 +209,34 @@
                 for (var i = 0; i < data.length; i++)
                 {
                     htmls.push('<div class="item">');
-                    htmls.push('<div class="item-left">'+data[i]['rank']+'</div>');
+                    htmls.push('<div class="item-left">第'+data[i]+'名</div>');
                     htmls.push('<div class="item-right"><p>'+data[i]['username']+'</p></div>');
                     htmls.push('</div>');
                 }
 
                 $('.winner_list').append(htmls.join(''));
+            }
+        })
+    }
+
+    //获取节点玩家
+    function getNode(){
+        var url = getURL('getNode');
+        $.getJSON(url,{game_id:game_id},function(data){
+            if(data.success){
+                var data = data.data;
+                $('.node_list').empty();
+                var htmls = [];
+                for (var i = 0; i < data.length; i++)
+                {
+                    htmls.push('<div class="item">');
+                    htmls.push('<div class="item-left" style="width: 180px">'+data[i]['username']+'</div>');
+                    htmls.push('<div class="item-left">'+data[i]['update_time']+'</div>');
+                    htmls.push('<div class="item-left">'+data[i]['amount']+'</div>');
+                    htmls.push('</div>');
+                }
+
+                $('.node_list').append(htmls.join(''));
             }
         })
     }
