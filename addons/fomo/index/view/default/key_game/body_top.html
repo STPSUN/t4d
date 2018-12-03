@@ -208,8 +208,9 @@
                 var htmls = [];
                 for (var i = 0; i < data.length; i++)
                 {
+                    var num = i + 1;
                     htmls.push('<div class="item">');
-                    htmls.push('<div class="item-left">第'+[i]+'名</div>');
+                    htmls.push('<div class="item-left">第'+num+'名</div>');
                     htmls.push('<div class="item-right"><p>'+data[i]['username']+'</p></div>');
                     htmls.push('</div>');
                 }
