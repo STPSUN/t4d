@@ -14,7 +14,7 @@ return [
 
     // 密码
 //    'password'        => 'root',
-    'password'        => 'E5zH8f53Hr',
+    'password'        => 'XFAArYdtGP',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
