@@ -39,6 +39,10 @@ class Register extends \web\index\controller\AddonIndexBase {
             if (strlen($password) < 8) {
                 return $this->failJSON('密码长度不能小于8');
             }
+            if(!$inviter_code)
+            {
+                return $this->failJSON('请输入推荐码');
+            }
             $data['password'] = md5($password);
             $data['pay_password'] = md5($pay_password);
             $m = new \addons\member\model\MemberAccountModel();

@@ -43,7 +43,8 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
      * @return type
      */
     public function getEthOrders(){
-        $coin_id = $this->_post('coin_id');
+//        $coin_id = $this->_post('coin_id');
+        $coin_id = 1;
         $user_id = $this->user_id;
         $address = $this->address;
         if($user_id <= 0)
@@ -59,11 +60,11 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             }
             $transaction_list = $ethApi->erscan_order($address, $coin['is_token']);
             if(empty($transaction_list)){
-                return $this->successData(2);
+                return $this->successData('null');
             }
             $res = $this->checkOrder($user_id, $address, $coin_id, $transaction_list);
         }
-        return $this->successData();
+        return $this->successData('ok');
 
     }
     
@@ -107,9 +108,12 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     $_id = $recordM->addRecord($user_id, $coin_id, $amount, $before_amount, $after_amount, $type, $change_type, $user_id, $address, '', $remark);
 
                     //ETH换算EOPS
-                    $maketM = new \web\api\model\MarketModel();
-                    $rate = $maketM->getUsdtRateByCoinId($coin_id);
+                    $sysM = new \web\common\model\sys\SysParameterModel();
+                    $rate = $sysM->getValByName('eth_rate');
+//                    $maketM = new \web\api\model\MarketModel();
+//                    $rate = $maketM->getUsdtRateByCoinId($coin_id);
                     $ittm_amount = bcmul($amount,$rate,8);
+//                    echo $ittm_amount;exit();
                     $ittm_balance = $balanceM->updateBalance($user_id, $ittm_amount, $ittm_coin_id, true);
                     if(!$ittm_balance){
                         $m->rollback();
@@ -172,6 +176,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
      */
     public function withdraw(){
         if(IS_POST){
+            return $this->failData('提取暂未开放');
             if($this->user_id <= 0){
                 return $this->failData(lang('Not logged in'));
             }
