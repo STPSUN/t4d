@@ -74,6 +74,24 @@ class KeyGame extends Fomobase
                 return $this->failData(lang('Lack of balance'));
             }
 
+            $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
+            $key_limit = $confM->getValByName('key_limit');
+            if($key_limit > 0)
+            {
+                $key_before = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $this->user_id])->value('key_num');
+                if($key_before >= $key_limit)
+                {
+                    return $this->failData(lang('The purchase limit has been reached') . 0);
+                }
+
+                $total_key = $key_before + $key_num;
+                if($total_key > $key_limit)
+                {
+                    $buy_num = $key_limit - $key_before;
+                    return $this->failData(lang('The purchase limit has been reached') . $buy_num);
+                }
+            }
+
 //            $teamM = new \addons\fomo\model\Team();
 //            $team_config = $teamM->getConfigByFields($team_id);
 //            if (empty($team_config)) {
@@ -138,7 +156,7 @@ class KeyGame extends Fomobase
                 $inc_time = $key_num * $buy_inc_second; //游戏增加时间
 //                更新数据 
 //                用户key+
-                $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
+
                 $out_mom = $confM->getValByName('out_mom'); //出局倍数
                 $limit_amount = $key_total_price * $out_mom;
                 $save_key = $keyRecordM->saveUserKey($this->user_id, $game_id, $key_num,$limit_amount);

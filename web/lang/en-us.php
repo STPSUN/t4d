@@ -114,4 +114,5 @@ return[
 	'The selected team does not exist' => 'The selected team does not exist',
 	'Purchase failed'                  => 'Purchase failed',
 	'Drop failure'                     => 'Drop failure',
+    'The purchase limit has been reached'   => 'The purchase limit has been reached,the quantity available for purchase is:',
 ]; 

@@ -112,5 +112,6 @@ return[
 	'The selected team does not exist' => '所选团队不存在',
 	'Purchase failed'                  => '购买失败',
 	'Drop failure'                     => '空投失败',
+    'The purchase limit has been reached'   => '已达到购买上限，可购买数量为：',
 
 ];

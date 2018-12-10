@@ -9,12 +9,12 @@ return [
     // 数据库名
     'database'        => 't4d',
     // 用户名
-//    'username'        => 'root',
-    'username'        => 't4d',
+    'username'        => 'root',
+//    'username'        => 't4d',
 
     // 密码
-//    'password'        => 'root',
-    'password'        => 'XFAArYdtGP',
+    'password'        => 'root',
+//    'password'        => 'XFAArYdtGP',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
