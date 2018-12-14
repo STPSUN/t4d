@@ -150,6 +150,12 @@ class Game extends \web\user\controller\AddonUserBase{
         $m = new \addons\fomo\model\Game();
         $total = $m->getTotal($filter);
         $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter);
+
+        $bonusM = new \addons\fomo\model\BonusSequeue();
+        foreach ($rows as &$v)
+        {
+            $v['node_amount'] = $bonusM->where(['game_id' => $v['id'], 'scene' => 7,'status' => 1])->sum('amount');
+        }
         return $this->toDataGrid($total, $rows);
     }
     
