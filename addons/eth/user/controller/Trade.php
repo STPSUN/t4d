@@ -83,6 +83,7 @@ class Trade extends \web\user\controller\AddonUserBase{
      */
     public function appr(){
         if(IS_POST){
+            echo 11;exit();
             $id = $this->_post('id');
             try{
                 $tradeM = new \addons\eth\model\EthTradingOrder();
