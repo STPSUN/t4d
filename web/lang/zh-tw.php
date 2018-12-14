@@ -113,4 +113,6 @@ return[
 	'Purchase failed'                  => '購買失敗',
 	'Drop failure'                     => '空投失敗',
     'The purchase limit has been reached'   => '已達到購買上限，可購買數量爲：',
+    'Please wait for approval before withdrawing cash again'   => '請等待審核通過后，再次體現',
+    'withdraw limit'    => '已達到提現上限，本次可提現數量爲：',
 ];

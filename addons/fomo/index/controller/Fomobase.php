@@ -108,11 +108,12 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     $_id = $recordM->addRecord($user_id, $coin_id, $amount, $before_amount, $after_amount, $type, $change_type, $user_id, $address, '', $remark);
 
                     //ETH换算EOPS
-                    $sysM = new \web\common\model\sys\SysParameterModel();
-                    $rate = $sysM->getValByName('eth_rate');
+                    $marketM = new \addons\financing\model\Market();
+                    $cny = $marketM->getDetailByCoinName('ETH','cny');
+                    $eth_rate = bcdiv($cny,7,4);
 //                    $maketM = new \web\api\model\MarketModel();
 //                    $rate = $maketM->getUsdtRateByCoinId($coin_id);
-                    $ittm_amount = bcmul($amount,$rate,8);
+                    $ittm_amount = bcmul($amount,$eth_rate,8);
 //                    echo $ittm_amount;exit();
                     $ittm_balance = $balanceM->updateBalance($user_id, $ittm_amount, $ittm_coin_id, true);
                     if(!$ittm_balance){
@@ -190,8 +191,31 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 return $this->failData(lang('The amount must be greater than 0'));
             }
 
+            $ethM = new \addons\eth\model\EthTradingOrder();
+            $order_num = $ethM->where(['user_id' => $this->user_id, 'coin_id' => $coin_id, 'status' => 0])->find();
+            if(!empty($order_num))
+            {
+                return $this->failData(lang('Please wait for approval before withdrawing cash again'));
+            }
+
+            $sysM = new \web\common\model\sys\SysParameterModel();
+            $eops_limit = $sysM->getValByName('eops_limit');
+            $where['user_id'] = $this->user_id;
+            $where['coin_id'] = $coin_id;
+            $where['status'] = array('in','0,1');
+            $eops_num = $ethM->where($where)->whereTime('update_time','today')->sum('amount');
+            if($eops_num >= $eops_limit)
+            {
+                return $this->failData(lang('withdraw limit') . 0);
+            }
+            $eops_total = $eops_num + $amount;
+            if($eops_total > $eops_limit)
+            {
+                $num = $eops_limit - $eops_num;
+                return $this->failData(lang('withdraw limit') . $num);
+            }
+
             try{
-                $sysM = new \web\common\model\sys\SysParameterModel();
                 $without_min = $sysM->getValByName("withdraw_min");
                 if($amount < $without_min){
                     return $this->failData(lang('The minimum withdrawal amount is:').$without_min);
@@ -208,8 +232,6 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 $without_limit_amount = $this->countRate($balance['amount'],$without_limit_rate);
                 if($amount > $without_limit_amount)
                     return $this->failData('提币数量不能超过总额的' . $without_limit_rate . '%');
-
-                $ethM = new \addons\eth\model\EthTradingOrder();
 
                 $filter = 'user_id = '. $this->user_id ." and coin_id = ".$coin_id;
                 $userWithout = $ethM->getSum($filter, "amount");
@@ -270,8 +292,9 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             }
             
         }else{
-            $sysM = new \web\common\model\sys\SysParameterModel();
-            $eth_rate = $sysM->getValByName('eth_rate');
+            $marketM = new \addons\financing\model\Market();
+            $cny = $marketM->getDetailByCoinName('ETH','cny');
+            $eth_rate = bcdiv($cny,7,4);
             $this->assign('eth_rate',$eth_rate);
             $this->assign('coin_id',$this->_get('coin_id'));
             $this->assign('id','0');

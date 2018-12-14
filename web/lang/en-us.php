@@ -115,4 +115,6 @@ return[
 	'Purchase failed'                  => 'Purchase failed',
 	'Drop failure'                     => 'Drop failure',
     'The purchase limit has been reached'   => 'The purchase limit has been reached,the quantity available for purchase is:',
+    'Please wait for approval before withdrawing cash again'   => 'Please wait for approval before withdrawing cash again',
+    'withdraw limit'    => 'The withdrawal limit has been reached and the withdrawal quantity is available this time: '
 ]; 
