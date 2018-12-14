@@ -95,7 +95,9 @@ class Trade extends \web\user\controller\AddonUserBase{
                 //初始化参数 eth api
                 $msg = '';
                 $ethApi = $this->_initArguments($msg);
+                echo 4;
                 if($ethApi == false){
+                    echo 5;
                     return $this->failData($msg);
                 }
                 $id = $data['id'];
@@ -104,7 +106,7 @@ class Trade extends \web\user\controller\AddonUserBase{
                 $byte = $data['byte'];
 //                if($data['coin_id'] !=1  && empty($contract_address))
 //                    return $this->failData ('未设置合约地址');
-                echo 4;
+                echo 6;
                 $frex_to = strtolower(substr($to,0,2));
                 echo 5;
                 if(($frex_to !== "0x" || strlen($to) !== 42)){
