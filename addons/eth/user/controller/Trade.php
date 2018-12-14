@@ -85,33 +85,26 @@ class Trade extends \web\user\controller\AddonUserBase{
         if(IS_POST){
             $id = $this->_post('id');
             try{
-                echo 1;
                 $tradeM = new \addons\eth\model\EthTradingOrder();
                 $data = $tradeM->getUncheckDataByID($id);
                 if(!$data){
                     return $this->failData("订单数据异常");
                 }
-                echo 2;
                 //初始化参数 eth api
                 $msg = '';
-                $ethApi = $this->_initArguments($msg);
-                echo 4;
-                if($ethApi == false){
-                    echo 5;
-                    return $this->failData($msg);
-                }
+//                $ethApi = $this->_initArguments($msg);
+//                if($ethApi == false){
+//                    return $this->failData($msg);
+//                }
                 $id = $data['id'];
                 $to = $data['to_address'];
                 $contract_address = $data['contract_address'];
                 $byte = $data['byte'];
 //                if($data['coin_id'] !=1  && empty($contract_address))
 //                    return $this->failData ('未设置合约地址');
-                echo 6;
                 $frex_to = strtolower(substr($to,0,2));
-                echo 5;
                 if(($frex_to !== "0x" || strlen($to) !== 42)){
 //                    //异常订单处理 更新订单状态非未通过
-                    echo 3;
                     $tradeM->updateStatus($id,5,NOW_DATETIME,'','转出地址格式错误');
                 }
 //                $ret = $ethApi->send($to, $data['amount'], $contract_address, $byte);
@@ -132,7 +125,6 @@ class Trade extends \web\user\controller\AddonUserBase{
 //                    return $this->failData($ret['message']);
 //                }
             } catch (\Exception $ex) {
-                echo 9;
                 return $this->failData($ex->getMessage());
             }
         }
