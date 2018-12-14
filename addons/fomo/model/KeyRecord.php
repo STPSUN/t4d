@@ -15,7 +15,7 @@ class KeyRecord extends \web\common\model\BaseModel{
         $g = new \addons\fomo\model\Game();
         $t = new \addons\fomo\model\Team();
         $u = new \addons\member\model\MemberAccountModel();
-        $sql = 'select a.*,g.name as game_name,g.status,u.username from '.$this->getTableName().' a ,'.$g->getTableName().' g,'.$u->getTableName().' u where a.user_id=u.id and a.game_id=g.id';
+        $sql = 'select a.*,g.name as game_name,g.status as status2,u.username from '.$this->getTableName().' a ,'.$g->getTableName().' g,'.$u->getTableName().' u where a.user_id=u.id and a.game_id=g.id';
         if($filter!=''){
             $sql = 'select * from ('.$sql.') as tab where '.$filter;
         }
@@ -37,7 +37,7 @@ class KeyRecord extends \web\common\model\BaseModel{
         $g = new \addons\fomo\model\Game();
         $t = new \addons\fomo\model\Team();
         $u = new \addons\member\model\MemberAccountModel();
-        $sql = 'select a.*,g.name as game_name,g.status,t.name as team_name,u.username from '.$this->getTableName().' a ,'.$g->getTableName().' g,'.$t->getTableName().' t,'.$u->getTableName().' u where a.user_id=u.id and a.game_id=g.id and a.team_id=t.id';
+        $sql = 'select a.*,g.name as game_name,g.status as status2,t.name as team_name,u.username from '.$this->getTableName().' a ,'.$g->getTableName().' g,'.$t->getTableName().' t,'.$u->getTableName().' u where a.user_id=u.id and a.game_id=g.id and a.team_id=t.id';
         if($filter!=''){
             $sql = 'select count(*) as c from ('.$sql.') as tab where '.$filter;
         }
