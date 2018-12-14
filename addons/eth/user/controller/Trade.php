@@ -104,7 +104,9 @@ class Trade extends \web\user\controller\AddonUserBase{
                 $byte = $data['byte'];
 //                if($data['coin_id'] !=1  && empty($contract_address))
 //                    return $this->failData ('未设置合约地址');
+                echo 4;
                 $frex_to = strtolower(substr($to,0,2));
+                echo 5;
                 if(($frex_to !== "0x" || strlen($to) !== 42)){
 //                    //异常订单处理 更新订单状态非未通过
                     echo 3;
