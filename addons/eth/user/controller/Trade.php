@@ -60,6 +60,19 @@ class Trade extends \web\user\controller\AddonUserBase{
 //        $m = new \addons\member\model\MemberAccountModel();
         $total = $m->getTotal2($filter);
         $rows = $m->getList2($this->getPageIndex(), $this->getPageSize(), $filter);
+
+        $marketM = new \addons\financing\model\Market();
+        $cny = $marketM->getDetailByCoinName('ETH','cny');
+        $eth_rate = bcdiv($cny,7,4);
+//        $sysM = new \web\common\model\sys\SysParameterModel();
+//        $eth_rate = $sysM->getValByName('eth_rate');
+        foreach ($rows as &$v)
+        {
+            $v['eth_amount'] = bcdiv($v['amount'],$eth_rate,8);
+        }
+
+//        $count_total = $m->getCountTotal($filter);
+//        return $this->toTotalDataGrid($total, $rows,$count_total);
 //        print_r($rows);exit();
 //        $count_total = $m->getCountTotal($filter);
         return $this->toDataGrid($total, $rows);

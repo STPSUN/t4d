@@ -141,7 +141,7 @@ class EthTradingOrder extends \web\common\model\BaseModel {
 //        $coinM = new \addons\config\model\Coins();
 //        $sql = 'select a.*,b.phone,b.username,c.coin_name,case when a.status=0 then "待审核" when a.status=1 then "已完成" when a.status=2 then "待转账" when a.status=3 then "转账中" when a.status=-1 then "未通过" when a.status=-2 then "订单异常" end as status_name, case when a.type=0 then "提现转出" when a.status=1 then "外网转入"  end as trade_type from ' . $this->getTableName() . ' a,'.$m->getTableName().' b,'.$coinM->getTableName().' c where a.user_id=b.id and a.coin_id=c.id';
 
-        $sql = "SELECT o.*,m.username,m.phone "
+        $sql = "SELECT o.*,m.username,m.phone,c.coin_name "
             . " FROM tp_eth_trading_order AS o "
             . " JOIN tp_member_account AS m ON m.id = o.user_id "
             . " JOIN tp_coins AS c ON o.coin_id = c.id "
