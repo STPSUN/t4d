@@ -176,7 +176,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
      */
     public function withdraw(){
         if(IS_POST){
-            return $this->failData('提取暂未开放');
+//            return $this->failData('提取暂未开放');
             if($this->user_id <= 0){
                 return $this->failData(lang('Not logged in'));
             }
