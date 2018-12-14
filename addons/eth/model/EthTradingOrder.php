@@ -135,6 +135,22 @@ class EthTradingOrder extends \web\common\model\BaseModel {
             $sql .=  ' and '.$filter;
         return $this->getDataListBySQL($sql, $pageIndex, $pageSize, $order);
     }
+
+    public function getList2($pageIndex = -1, $pageSize = -1, $filter = '', $order = 'id asc') {
+//        $m = new \addons\member\model\MemberAccountModel();
+//        $coinM = new \addons\config\model\Coins();
+//        $sql = 'select a.*,b.phone,b.username,c.coin_name,case when a.status=0 then "待审核" when a.status=1 then "已完成" when a.status=2 then "待转账" when a.status=3 then "转账中" when a.status=-1 then "未通过" when a.status=-2 then "订单异常" end as status_name, case when a.type=0 then "提现转出" when a.status=1 then "外网转入"  end as trade_type from ' . $this->getTableName() . ' a,'.$m->getTableName().' b,'.$coinM->getTableName().' c where a.user_id=b.id and a.coin_id=c.id';
+
+        $sql = "SELECT o.*,m.username,m.phone "
+            . " FROM tp_eth_trading_order AS o "
+            . " JOIN tp_member_account AS m ON m.id = o.user_id "
+            . " JOIN tp_coins AS c ON o.coin_id = c.id "
+            . " where 1=1 and ";
+
+        if (!empty($filter))
+            $sql .= $filter;
+        return $this->getDataListBySQL($sql, $pageIndex, $pageSize, $order);
+    }
     
     public function getTotal($filter = '') {
         $m = new \addons\member\model\MemberAccountModel();
@@ -145,6 +161,21 @@ class EthTradingOrder extends \web\common\model\BaseModel {
         }
         $count = $this->query($sql);
         return $count[0]['c'];
+    }
+
+    public function getTotal2($filter = '')
+    {
+        $sql = "SELECT o.* "
+            . " FROM tp_eth_trading_order AS o "
+            . " JOIN tp_member_account AS m ON m.id = o.user_id "
+            . " JOIN tp_coins AS c ON o.coin_id = c.id "
+            . " where 1=1 and ";
+        if($filter)
+            $sql .= $filter;
+
+//        print_r($sql);exit();
+        $count = $this->query($sql);
+        return count($count);
     }
     
     public function getCountTotal($filter = '') {

@@ -16,7 +16,7 @@ class Trade extends \web\user\controller\AddonUserBase{
         return $this->fetch();
     }
 
-    public function loadList(){
+    public function loadList2(){
         $keyword = $this->_get('keyword');
         $status = $this->_get('status');
         $type = $this->_get('type');
@@ -25,9 +25,10 @@ class Trade extends \web\user\controller\AddonUserBase{
             $filter .= ' and type='.$type;
         }
         if ($keyword != null) {
-            $filter .= ' and b.username like \'%' . $keyword . '%\'';
+            $filter .= ' and m.username like \'%' . $keyword . '%\'';
         }
         $m = new \addons\eth\model\EthTradingOrder();
+
         $total = $m->getTotal($filter);
         $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter);
 
@@ -40,6 +41,28 @@ class Trade extends \web\user\controller\AddonUserBase{
 
         $count_total = $m->getCountTotal($filter);
         return $this->toTotalDataGrid($total, $rows,$count_total);
+    }
+
+    public function loadList(){
+        $keyword = $this->_get('keyword');
+        $status = $this->_get('status');
+        $type = $this->_get('type');
+//        $status = 3;
+        $filter = 'o.status='.$status;
+        if($type != ''){
+            $filter .= ' and o.type='.$type;
+        }
+        if ($keyword != null) {
+//            $filter .= ' and b.username like \'%' . $keyword . '%\'';
+            $filter .= ' and m.username like \'%' . $keyword . '%\'';
+        }
+        $m = new \addons\eth\model\EthTradingOrder();
+//        $m = new \addons\member\model\MemberAccountModel();
+        $total = $m->getTotal2($filter);
+        $rows = $m->getList2($this->getPageIndex(), $this->getPageSize(), $filter);
+//        print_r($rows);exit();
+//        $count_total = $m->getCountTotal($filter);
+        return $this->toDataGrid($total, $rows);
     }
 
     /**
