@@ -164,8 +164,13 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         $balanceM = new \addons\member\model\Balance();
         $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
 
-        $sysM = new \web\common\model\sys\SysParameterModel();;
-        $eth_rate = $sysM->getValByName('eth_rate');
+//        print_r($balance);exit();
+//        $sysM = new \web\common\model\sys\SysParameterModel();;
+//        $eth_rate = $sysM->getValByName('eth_rate');
+
+        $marketM = new \addons\financing\model\Market();
+        $cny = $marketM->getDetailByCoinName('ETH','cny');
+        $eth_rate = bcdiv($cny,7,4);
         $eth_balance = bcdiv($balance['amount'],$eth_rate,8);
         $data['balance'] = $balance['amount'];
         $data['eth_balance'] = $eth_balance;
