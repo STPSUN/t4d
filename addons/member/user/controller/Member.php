@@ -127,6 +127,53 @@ class Member extends \web\user\controller\AddonUserBase{
             return $this->fetch();
         }
     }
+
+    /**
+     * 修改密码
+     * @return type
+     */
+    public function modifyPassword(){
+        if(IS_POST){
+            $user_id = $this->_post('id');
+            $password = $this->_post('password');
+            $type = $this->_post('type');
+            $memberM = new \addons\member\model\MemberAccountModel();
+
+            if($type == 1)
+            {
+                if (strlen($password) < 8) {
+                    return $this->failData('密码长度不能小于8');
+                }
+
+                $memberM->save([
+                    'password' => md5($password),
+                ],[
+                    'id' => $user_id,
+                ]);
+            }else
+            {
+                if (!preg_match("/^[0-9]{6}$/", $password)) {
+                    return $this->failData('请输入6位数字交易密码');
+                }
+
+                $memberM->save([
+                    'pay_password' => md5($password),
+                ],[
+                    'id' => $user_id,
+                ]);
+            }
+
+            return $this->successData();
+
+        }else{
+//            $m = new \addons\config\model\Coins();
+//            $filter = 'id = 2';
+//            $list = $m->getDataList(-1,-1,$filter,'id,coin_name','id asc');
+//            $this->assign('coins',$list);
+            $this->assign('id',$this->_get('id'));
+            return $this->fetch();
+        }
+    }
     
     public function change_frozen(){
         $id = $this->_post('id');

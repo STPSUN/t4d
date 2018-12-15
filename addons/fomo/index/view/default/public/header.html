@@ -27,6 +27,7 @@
             <ul class="nav navbar-nav navbar-right nav-show-lg" style="float: right; margin-right: 20px;">
                 <li><a id="login" style="cursor: pointer;">{:lang('login')}</a></li>
                 <li><a id="register" style="cursor: pointer">{:lang('register')}</a></li>
+                <!--<li><a id="forget_password" style="cursor: pointer">{:lang('forget password')}</a></li>-->
                 <!--<li><a  style="cursor: pointer; font-size: 12px!important;" onclick="setlang('en')">English</a></li>-->
                 <!--<li><a  style="cursor: pointer; font-size: 12px!important;" onclick="setlang('cn')">简体</a></li>-->
                 <!--<li><a  style="cursor: pointer; font-size: 12px!important;" onclick="setlang('tw')">繁體</a></li>-->
@@ -171,6 +172,12 @@
     $('#login').on('click', function () {
         var url = getURL('login/index', '', 'member');
         openBarWin("{:lang('login')}", layerWidth, 250, url, function () {
+            location.reload();
+        }, ["{:lang('submit')}", "{:lang('cancel')}"]);
+    });
+    $('#forget_password').on('click', function () {
+        var url = getURL('login/forgetPass', '', 'member');
+        openBarWin("{:lang('forget password')}", 350, 500, url, function () {
             location.reload();
         }, ["{:lang('submit')}", "{:lang('cancel')}"]);
     });

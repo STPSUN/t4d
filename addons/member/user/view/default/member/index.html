@@ -37,7 +37,7 @@
                 <th data-options="field:'game_count',width:150, align:'center'">参与局数</th>
                 <th data-options="field:'is_frozen',width:100,align:'center', formatter:formatStatus">是否冻结</th>
                 <th data-options="field:'register_time',width:150, align:'center'">注册时间</th>
-                <th data-options="field:'_oper',width:250,halign:'center',formatter: formatOper">操作</th>
+                <th data-options="field:'_oper',width:270,halign:'center',formatter: formatOper">操作</th>
             </tr>
         </thead>
     </table>
@@ -57,6 +57,8 @@
             html += '<button type="button" onclick="change_frozen(' + row['id'] + ',1)" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>冻结</button>'
         if(row['is_auth'] == 2)
             html += '<button type="button" onclick="auth(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>认证</button>';
+
+        html += '<button type="button" onclick="password(' + row['id'] + ')" class="btn btn-xs btn-default edit-btn"><i class="icon wb-edit"></i>修改密码</button>';
         
         html += '<button type="button" onclick="del(' + row['id'] + ')" class="btn btn-xs btn-default del-btn"><i class="icon wb-close"></i>删除</button>';
         html += '</span>';
@@ -120,6 +122,13 @@
     function edit(id) {
         var url = getURL('add_coin_stock', 'id=' + id);
         openBarWin('拨币', 400, 200, url, function () {
+            reload();
+        }, ['确定','取消']);
+    }
+
+    function password(id) {
+        var url = getURL('modifyPassword', 'id=' + id);
+        openBarWin('修改密码', 400, 200, url, function () {
             reload();
         }, ['确定','取消']);
     }

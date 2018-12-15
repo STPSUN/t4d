@@ -82,7 +82,9 @@ class Login extends \web\index\controller\AddonIndexBase {
             }
             
         }else{
+            $title = '忘记密码';
             $time = 60*3;
+            $this->assign('title',$title);
             $this->assign('time' , $time);
             return $this->fetch();
         }
