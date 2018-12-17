@@ -34,15 +34,15 @@ class MemberAccountModel extends \web\common\model\BaseModel
         $game = $game[0];
         $game_id = $game['id'];
 
-        $keyRecordM = new \addons\fomo\model\KeyRecord();
-        $sql = "select a.*,ifnull(sum(key_num),0) now_key_num from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id and b.game_id = {$game_id} group by a.id";
+//        $keyRecordM = new \addons\fomo\model\KeyRecord();
+//        $sql = "select a.*,ifnull(sum(key_num),0) now_key_num from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id and b.game_id = {$game_id} group by a.id";
+//
+//        $sql = "select a.*,ifnull(sum(key_num),0) key_total from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id group by a.id";
+//
+//        $sql = "select a.*,ifnull(count(game_id),0) game_count from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id group by a.id";
 
-        $sql = "select a.*,ifnull(sum(key_num),0) key_total from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id group by a.id";
-
-        $sql = "select a.*,ifnull(count(game_id),0) game_count from ({$sql}) a left join {$keyRecordM->getTableName()} b on a.id = b.user_id group by a.id";
-
-        $tokenRecordM = new \addons\fomo\model\TokenRecord();
-        $sql = "select a.*,ifnull(token,0) token_total from ({$sql}) a left join {$tokenRecordM->getTableName()} b on a.id = b.user_id";
+//        $tokenRecordM = new \addons\fomo\model\TokenRecord();
+//        $sql = "select a.*,ifnull(token,0) token_total from ({$sql}) a left join {$tokenRecordM->getTableName()} b on a.id = b.user_id";
 
 
         $sql = "select a.*,ifnull(count(b.id),0) recommend1,GROUP_CONCAT(b.id) ids  from ({$sql}) a left join {$this->getTableName()} b on a.id = b.pid group by a.id";
