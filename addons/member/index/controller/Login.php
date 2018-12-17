@@ -21,7 +21,7 @@ class Login extends \web\index\controller\AddonIndexBase {
                 $res = $m->getLoginData($password,$phone,'','id,username,address,invite_code,is_frozen');
                 if ($res) {
                     if($res['is_frozen'] == 1){
-                        return $this->failData('账号已冻结');
+                        return $this->failData('账号异常');
                     }
                     $memberData['user_id'] = $res['id'];
                     $memberData['username'] = $res['username'];
