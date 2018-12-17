@@ -14,15 +14,16 @@ class Member extends \web\user\controller\AddonUserBase{
     }
     
     public function loadList(){
+        set_time_limit(0);
         $is_auth = $this->_get('is_auth');
         $keyword = $this->_get('keyword');
         $filter = '  is_auth='.$is_auth;
-        if ($keyword != null) {
+        if (!empty($keyword)) {
             $filter .= ' and phone like \'%' . $keyword . '%\' or username like \'%' . $keyword . '%\'';
         }
         $m = new \addons\member\model\MemberAccountModel();
         $total = $m->getTotal($filter);
-        $rows = $m->getList($this->getPageIndex(), $this->getPageSize(), $filter, 'register_time desc');
+        $rows = $m->getList($this->getPageIndex(), 10, $filter, 'register_time desc');
         return $this->toDataGrid($total, $rows);
     }
     

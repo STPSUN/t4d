@@ -583,6 +583,7 @@ class Model {
                 $offset = (intval($pageIndex) - 1) * intval($pageSize);
             $sql .= ' limit ' . $offset . ',' . $pageSize;
         }
+
         return $this->query($sql);
     }
 
