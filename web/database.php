@@ -7,15 +7,15 @@ return [
     'hostname'        => 'rm-t4nx717k0q554z636jo.mysql.singapore.rds.aliyuncs.com',
 //    'hostname'        => '127.0.0.1',
     // 数据库名
-//    'database'        => 't4d',
-    'database'        => 'ddpor',
+    'database'        => 't4d',
+//    'database'        => 'ddpor',
     // 用户名
-//    'username'        => 'root',
-    'username'        => 'ddpor',
+    'username'        => 't4d',
+//    'username'        => 'ddpor',
 
     // 密码
-//    'password'        => 'root',
-    'password'        => 'gisTxqnxPTuYj5Vm',
+    'password'        => 'XFAArYdtGP',
+//    'password'        => 'gisTxqnxPTuYj5Vm',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
