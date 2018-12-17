@@ -15,7 +15,7 @@ class Register extends \web\index\controller\AddonIndexBase {
      * @return type
      */
     public function index(){
-        return $this->failData('系统维护中');
+        return  $this->failJSON('请选择手机区号');
         if (IS_POST) {
             $data['phone'] = $this->_post('phone');
             $data['verify_code'] = $this->_post('verify_code');
