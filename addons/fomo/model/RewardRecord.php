@@ -33,6 +33,7 @@ class RewardRecord extends \web\common\model\BaseModel {
         $data['game_id'] = $game_id;
         $data['remark'] = $remark;
         $data['update_time'] = NOW_DATETIME;
+
         return $this->add($data);
     }
 
@@ -80,6 +81,22 @@ class RewardRecord extends \web\common\model\BaseModel {
             return 0;
         }
         return $data;
+    }
+
+    public function getTotalAmountAndLimit($user_id, $coin_id,$game_id,$key_record_id) {
+        $sql = "SELECT SUM(r.amount)as amount,k.limit_amount "
+            . " FROM tp_fomo_reward_record AS r, tp_fomo_key_record AS k"
+            . " WHERE r.user_id = $user_id AND r.coin_id = $coin_id AND r.game_id = $game_id AND k.id = $key_record_id";
+
+
+//        $where['user_id'] = $user_id;
+//        $where['coin_id'] = $coin_id;
+//        $where['game_id'] = $game_id;
+//        $data = $this->where($where)->sum('amount');
+//        if (empty($data)) {
+//            return 0;
+//        }
+        return $this->query($sql);
     }
     
     public function getGameWinner($game_id){

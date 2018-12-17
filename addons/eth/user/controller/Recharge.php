@@ -27,7 +27,7 @@ class Recharge extends \web\user\controller\AddonUserBase
         $type = $this->_get('type');
 //        $status = 3;
 //        $filter = 'o.status='.$status;
-        $filter = 'o.type=' . 1;
+        $filter = ' o.type=' . 1;
 //        if($type != ''){
 //            $filter .= ' and o.type='.$type;
 //        }
@@ -40,20 +40,10 @@ class Recharge extends \web\user\controller\AddonUserBase
         $total = $m->getTotal2($filter);
         $rows = $m->getList2($this->getPageIndex(), $this->getPageSize(), $filter);
 
-        $marketM = new \addons\financing\model\Market();
-        $cny = $marketM->getDetailByCoinName('ETH','cny');
-        $eth_rate = bcdiv($cny,7,4);
-//        $sysM = new \web\common\model\sys\SysParameterModel();
-//        $eth_rate = $sysM->getValByName('eth_rate');
-        foreach ($rows as &$v)
-        {
-            $v['eth_amount'] = bcdiv($v['amount'],$eth_rate,8);
-        }
-
-//        $count_total = $m->getCountTotal($filter);
+        $count_total = $m->getCountTotal2($filter);
 //        return $this->toTotalDataGrid($total, $rows,$count_total);
 //        print_r($rows);exit();
 //        $count_total = $m->getCountTotal($filter);
-        return $this->toDataGrid($total, $rows);
+        return $this->toTotalDataGrid($total, $rows,$count_total);
     }
 }

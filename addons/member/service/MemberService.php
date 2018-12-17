@@ -643,7 +643,13 @@ class MemberService extends \web\common\controller\Service {
                 }
                 $m->startTrans();
                 $amount = $val['amount'];
-                $eth_order_id = $m->transactionIn($user_id, $from_address, $address, $coin_id, $amount, $txhash, $block_number, 0, 1, 1, "外网转入");
+
+                $marketM = new \addons\financing\model\Market();
+                $cny = $marketM->getDetailByCoinName('ETH','cny');
+                $eth_rate = bcdiv($cny,7,4);
+                $ittm_amount = bcmul($amount,$eth_rate,8);
+
+                $eth_order_id = $m->transactionIn($user_id, $from_address, $address, $coin_id, $amount, $txhash, $block_number, 0, 1, 1, "外网转入",$ittm_amount);
                 if($eth_order_id > 0){
                     //插入转入eth记录成功
                     $balance = $balanceM->updateAsset($user_id, $amount, $coin_id, true);

@@ -91,8 +91,12 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     continue;
                 }
                 $m->startTrans();
+                $marketM = new \addons\financing\model\Market();
+                $cny = $marketM->getDetailByCoinName('ETH','cny');
+                $eth_rate = bcdiv($cny,7,4);
                 $amount = $val['amount'];
-                $eth_order_id = $m->transactionIn($user_id, $from_address, $address, $coin_id, $amount, $txhash, $block_number, 0, 1, 1, "外网转入");
+                $ittm_amount = bcmul($amount,$eth_rate,8);
+                $eth_order_id = $m->transactionIn($user_id, $from_address, $address, $coin_id, $amount, $txhash, $block_number, 0, 1, 1, "外网转入",$ittm_amount);
                 if($eth_order_id > 0){
                     //插入转入eth记录成功
                     $balance = $balanceM->updateBalance($user_id, $amount, $coin_id, true);
@@ -108,12 +112,12 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     $_id = $recordM->addRecord($user_id, $coin_id, $amount, $before_amount, $after_amount, $type, $change_type, $user_id, $address, '', $remark);
 
                     //ETH换算EOPS
-                    $marketM = new \addons\financing\model\Market();
-                    $cny = $marketM->getDetailByCoinName('ETH','cny');
-                    $eth_rate = bcdiv($cny,7,4);
+//                    $marketM = new \addons\financing\model\Market();
+//                    $cny = $marketM->getDetailByCoinName('ETH','cny');
+//                    $eth_rate = bcdiv($cny,7,4);
 //                    $maketM = new \web\api\model\MarketModel();
 //                    $rate = $maketM->getUsdtRateByCoinId($coin_id);
-                    $ittm_amount = bcmul($amount,$eth_rate,8);
+//                    $ittm_amount = bcmul($amount,$eth_rate,8);
 //                    echo $ittm_amount;exit();
                     $ittm_balance = $balanceM->updateBalance($user_id, $ittm_amount, $ittm_coin_id, true);
                     if(!$ittm_balance){

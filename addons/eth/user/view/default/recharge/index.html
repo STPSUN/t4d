@@ -37,8 +37,8 @@
         <thead frozen="true">
         <th data-options="field:'username',width:100,align:'center'">用户名称</th> 
         <th data-options="field:'phone',width:100,align:'center'">手机号</th>
-        <th data-options="field:'eth_amount',width:120,align:'center'">ETH数量</th>
-        <th data-options="field:'amount',width:120,align:'center'">EOPS数量</th>
+        <th data-options="field:'amount',width:120,align:'center'">ETH数量</th>
+        <th data-options="field:'eops_amount',width:120,align:'center'">EOPS数量</th>
         <th data-options="field:'coin_name',width:100, align:'center'">币种</th>
         </thead>
         <thead>
@@ -80,7 +80,8 @@
                 $('#grid-table').datagrid('reloadFooter', [
                     {
                         phone: '统计',
-                        amount: data.count_total
+                        amount: data.count_total,
+                        eops_amount: data.count_total
                     }
                 ]);
             }

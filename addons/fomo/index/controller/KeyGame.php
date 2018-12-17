@@ -29,8 +29,26 @@ class KeyGame extends Fomobase
         return $this->fetch();
     }
 
+    private function test()
+    {
+        $rewardRecordM = new \addons\fomo\model\RewardRecord();
+        $data = $rewardRecordM->field('sum(amount) as amount,user_id')->group('user_id')->select();
+        $keyM = new \addons\fomo\model\KeyRecord();
+        foreach ($data as $v)
+        {
+            $keyM->save([
+                'bonus_amount' => $v['amount'],
+            ],[
+                'user_id'   => $v['user_id']
+            ]);
+        }
+
+        echo 22;exit();
+    }
+
     public function buy()
     {
+        set_time_limit(0);
         if (IS_POST) {
             //投注 需要验证
             if ($this->user_id <= 0) {
@@ -231,6 +249,40 @@ class KeyGame extends Fomobase
     }
 
     /**
+     * 封顶限制
+     */
+    private function limitAmount2($amount,$id)
+    {
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
+        $data = $keyRecordM->where('id',$id)->field('limit_amount,bonus_amount')->find();
+
+        $limit_amount = $data['limit_amount'];
+        $user_amount = $data['bonus_amount'];
+        if($limit_amount <= $user_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'id' => $id,
+            ]);
+            return false;
+        }
+
+        $total_amount = $user_amount + $amount;
+        if($limit_amount <= $total_amount)
+        {
+            $keyRecordM->save([
+                'status' => 2,
+            ],[
+                'id' => $id,
+            ]);
+            $amount = $limit_amount - $user_amount;
+        }
+
+        return $amount;
+    }
+
+    /**
      * 中期奖
      */
     private function interimAward($coin_id,$game_id)
@@ -389,7 +441,7 @@ class KeyGame extends Fomobase
         $whole_rate = $confM->getValByName('whole_rate'); //全网分红比率
 
         //分红用户
-        $record_user_data = $keyRecordM->where(['game_id' => $game_id, 'status' => 1])->field('user_id')->select();
+        $record_user_data = $keyRecordM->where(['game_id' => $game_id, 'status' => 1])->field('user_id,id')->select();
         if(empty($record_user_data))
             return;
 
@@ -400,11 +452,8 @@ class KeyGame extends Fomobase
         $whole_amount = $this->countRate($key_total_price,$whole_rate);
 
         //分红发放
-        foreach ($record_user_data as $v)
+        foreach ($record_user_data as $key => $v)
         {
-            if(empty($v))
-                continue;
-
             $user_amount =  $keyRecordM->getTotalByGameID($v['user_id'],$game_id);
             if(empty($user_amount))
                 continue;
@@ -413,7 +462,7 @@ class KeyGame extends Fomobase
             $amount = bcmul($whole_amount,$rate,8);  //分红数量 = 全网数量 * 权重占比
 
             //封顶限制
-            $amount = $this->limitAmount($v['user_id'],$coin_id,$game_id,$amount);
+            $amount = $this->limitAmount2($amount,$v['id']);
             if(!$amount)
                 continue;
 
@@ -794,6 +843,8 @@ class KeyGame extends Fomobase
 //                    $type = 3; //奖励类型 0=投注分红，1=胜利战队分红，2=胜利者分红，3=邀请分红
 //                    $remark = '推荐投注分红';
                     $rewardM->addRecord($pid, $coin_id, $before_amount, $invite_amount, $after_amount, $type, $game_id, $remark);
+                    //分红值增加
+                    $keyRecordM->where(['game_id' => $game_id, 'user_id' => $pid])->setInc('bonus_amount',$invite_amount);
                     $pid = $userM->getPID($pid);
                     if (!$pid) {
                         break;

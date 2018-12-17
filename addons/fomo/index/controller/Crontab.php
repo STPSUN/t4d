@@ -105,6 +105,8 @@ class Crontab extends \web\common\controller\Controller{
 //            $type = 0; //奖励类型 0=投注分红(全网分红)，1=胜利战队分红，2=胜利者分红，3=邀请分红
 //            $remark  = 't3d全网分红';
             $rewardM->addRecord($user_id, $coin_id, $before_amount, $amount, $after_amount, $scene, $game_id,$remark);
+            //分红值增加
+            $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->setInc('bonus_amount',$amount);
         }
 
 //        $record_list = $keyRecordM->getRecord($user_id, $game_id);

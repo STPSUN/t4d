@@ -51,7 +51,7 @@ class EthTradingOrder extends \web\common\model\BaseModel {
      * @param type $status
      * @param type $remark
      */
-    public function transactionIn($user_id, $from_address, $to_address, $coin_id, $amount, $txhash, $block_number = 0, $tax = 0, $type=1, $status=1, $remark='用户外网转入'){
+    public function transactionIn($user_id, $from_address, $to_address, $coin_id, $amount, $txhash, $block_number = 0, $tax = 0, $type=1, $status=1, $remark='用户外网转入',$eops_amount){
         $data['user_id'] = $user_id;
         $data['from_address'] = $from_address;
         $data['to_address'] = $to_address;
@@ -64,6 +64,7 @@ class EthTradingOrder extends \web\common\model\BaseModel {
         $data['status'] = $status;
         $data['remark'] = $remark;
         $data['update_time'] = NOW_DATETIME;
+        $data['eops_amount'] = $eops_amount;
         return $this->add($data);
 
     }
@@ -185,6 +186,19 @@ class EthTradingOrder extends \web\common\model\BaseModel {
         if($filter!=''){
             $sql = 'select sum(amount) as count_total from ('.$sql.') as tab where '.$filter;
         }
+        print_r($sql);exit();
+        $count = $this->query($sql);
+        return $count[0]['count_total'];
+    }
+
+    public function getCountTotal2($filter = '') {
+        $sql = "SELECT SUM(amount) AS count_total,SUM(eops_amount) AS eosp_amount "
+            . " FROM tp_eth_trading_order o "
+            . " LEFT JOIN tp_member_account b ON b.id = o.user_id "
+            . " LEFT JOIN tp_coins c ON c.id = o.coin_id "
+            . " WHERE 1=1 and";
+        if($filter)
+            $sql .= $filter;
         $count = $this->query($sql);
         return $count[0]['count_total'];
     }

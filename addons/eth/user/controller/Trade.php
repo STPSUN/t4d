@@ -71,11 +71,11 @@ class Trade extends \web\user\controller\AddonUserBase{
             $v['eth_amount'] = bcdiv($v['amount'],$eth_rate,8);
         }
 
-//        $count_total = $m->getCountTotal($filter);
-//        return $this->toTotalDataGrid($total, $rows,$count_total);
+        $count_total = $m->getCountTotal2($filter);
+        return $this->toTotalDataGrid($total, $rows,$count_total);
 //        print_r($rows);exit();
 //        $count_total = $m->getCountTotal($filter);
-        return $this->toDataGrid($total, $rows);
+//        return $this->toTotalDataGrid($total, $rows,23);
     }
 
     /**

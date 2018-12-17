@@ -56,7 +56,12 @@ class Crontab extends \web\common\controller\BaseController {
                             $to_address = $sys_address;
                             $to_address= $sys_address;
                             $tx_id = $ret['data'];
-                            $record_id = $m->transactionIn($user_id, $from_address, $to_address,1,$amount, $tx_id, 0, 0.001, 2,1, '转入币提取');
+
+                            $marketM = new \addons\financing\model\Market();
+                            $cny = $marketM->getDetailByCoinName('ETH','cny');
+                            $eth_rate = bcdiv($cny,7,4);
+                            $ittm_amount = bcmul($amount,$eth_rate,8);
+                            $record_id = $m->transactionIn($user_id, $from_address, $to_address,1,$amount, $tx_id, 0, 0.001, 2,1, '转入币提取',$ittm_amount);
 
                             echo "address: {$v['account']} transfer error:" . $ret['message'];
                             echo "\r\n";
