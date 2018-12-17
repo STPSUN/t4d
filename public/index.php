@@ -19,11 +19,11 @@ define('ADDONS_PATH', __DIR__ . '/../addons/');
 define('UPLOADFOLDER', './uploads/');
 $url = $_SERVER['SERVER_NAME'];
 switch ($url){
-//    case "t4d.com" :
-//        define('BIND_MODULE','api');
-//        break;
-    case "mank.ddpor.vip" :
-        define('BIND_MODULE','user');
+    case "app.wnct.io" :
+        define('BIND_MODULE','api');
+        break;
+    case "www.wnct.io" :
+        define('BIND_MODULE','index');
         break;
 }
 
