@@ -182,6 +182,11 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
      */
     public function withdraw(){
         if(IS_POST){
+            $sysM = new \web\common\model\sys\SysParameterModel();
+            $is_withdraw = $sysM->getValByName('is_withdraw');
+            if($is_withdraw != 1)
+                return $this->failData('提取暂未开放');
+
 //            return $this->failData('提取暂未开放');
             if($this->user_id <= 0){
                 return $this->failData(lang('Not logged in'));
@@ -203,7 +208,6 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 return $this->failData(lang('Please wait for approval before withdrawing cash again'));
             }
 
-            $sysM = new \web\common\model\sys\SysParameterModel();
             $eops_limit = $sysM->getValByName('eops_limit');
             $where['user_id'] = $this->user_id;
             $where['coin_id'] = $coin_id;

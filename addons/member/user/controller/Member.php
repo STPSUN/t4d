@@ -19,7 +19,7 @@ class Member extends \web\user\controller\AddonUserBase{
         $keyword = $this->_get('keyword');
         $filter = '  is_auth='.$is_auth;
         if (!empty($keyword)) {
-            $filter .= ' and phone like \'%' . $keyword . '%\' or username like \'%' . $keyword . '%\'';
+            $filter .= ' and (phone like \'%' . $keyword . '%\' or username like \'%' . $keyword . '%\')';
         }
         $m = new \addons\member\model\MemberAccountModel();
         $total = $m->getTotal($filter);
