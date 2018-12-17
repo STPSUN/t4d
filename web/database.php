@@ -4,8 +4,8 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'rm-t4nx717k0q554z636jo.mysql.singapore.rds.aliyuncs.com',
-//    'hostname'        => '127.0.0.1',
+//    'hostname'        => 'rm-t4nx717k0q554z636jo.mysql.singapore.rds.aliyuncs.com',
+    'hostname'        => '127.0.0.1',
     // 数据库名
     'database'        => 't4d',
 //    'database'        => 'ddpor',
