@@ -17,10 +17,10 @@ class Member extends \web\user\controller\AddonUserBase{
 //        echo 22;exit();
         $is_auth = $this->_get('is_auth');
         $keyword = $this->_get('keyword');
-        $filter = '  is_auth='.$is_auth;
-//        $filter = '';
+//        $filter = '  is_auth='.$is_auth;
+        $filter = '';
         if (!empty($keyword)) {
-            $filter = ' and phone like \'%' . $keyword . '%\' or username like \'%' . $keyword . '%\'';
+            $filter = ' phone like \'%' . $keyword . '%\' or username like \'%' . $keyword . '%\'';
         }
         $m = new \addons\member\model\MemberAccountModel();
         $total = $m->getTotal($filter);
