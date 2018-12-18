@@ -18,7 +18,7 @@ define('ADDONS_PATH', __DIR__ . '/../addons/');
 //上传目录
 define('UPLOADFOLDER', './uploads/');
 $url = $_SERVER['SERVER_NAME'];
-echo $url;exit();
+//echo $url;exit();
 if($url != 'mank.ddpor.vip')
     exit();
 
