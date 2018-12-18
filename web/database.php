@@ -4,18 +4,18 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-//    'hostname'        => 'rm-t4nx717k0q554z636jo.mysql.singapore.rds.aliyuncs.com',
-    'hostname'        => '127.0.0.1',
+    'hostname'        => 'rm-t4n09e14u6vu17533io.mysql.singapore.rds.aliyuncs.com',
+//    'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 't4d',
-//    'database'        => 'ddpor',
+//    'database'        => 't4d',
+    'database'        => 'ddopr',
     // 用户名
-    'username'        => 't4d',
-//    'username'        => 'ddpor',
+//    'username'        => 'root',
+    'username'        => 'ddopr',
 
     // 密码
-    'password'        => 'XFAArYdtGP',
-//    'password'        => 'gisTxqnxPTuYj5Vm',
+//    'password'        => 'root',
+    'password'        => 'gisTxqnxPTuYj5Vm',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
