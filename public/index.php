@@ -18,7 +18,7 @@ define('ADDONS_PATH', __DIR__ . '/../addons/');
 //上传目录
 define('UPLOADFOLDER', './uploads/');
 $url = $_SERVER['SERVER_NAME'];
-if($url != 'www.DDPOR.VIP')
+if($url != 'www.ddpor.vip')
     exit();
 
 // 加载框架引导文件
