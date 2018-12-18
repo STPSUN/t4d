@@ -18,9 +18,17 @@ define('ADDONS_PATH', __DIR__ . '/../addons/');
 //上传目录
 define('UPLOADFOLDER', './uploads/');
 $url = $_SERVER['SERVER_NAME'];
-//echo $url;exit();
 if($url != 'mank.ddpor.vip')
     exit();
+
+//switch ($url){
+//    case "t4d.com" :
+//        define('BIND_MODULE','api');
+//        break;
+//    case "www.wnct.io" :
+//        define('BIND_MODULE','index');
+//        break;
+//}
 
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
