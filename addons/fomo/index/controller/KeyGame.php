@@ -218,10 +218,12 @@ class KeyGame extends Fomobase
      */
     private function limitAmount($user_id,$coin_id,$game_id,$amount)
     {
-        $rewardRecordM = new \addons\fomo\model\RewardRecord();
+//        $rewardRecordM = new \addons\fomo\model\RewardRecord();
         $keyRecordM = new \addons\fomo\model\KeyRecord();
-        $user_amount = $rewardRecordM->getTotalAmount($user_id,$coin_id,$game_id);
-        $limit_amount = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('limit_amount');
+//        $user_amount = $rewardRecordM->getTotalAmount($user_id,$coin_id,$game_id);
+        $data = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->field('limit_amount,bonus_amount')->find();
+        $limit_amount = $data['limit_amount'];
+        $user_amount = $data['bonus_amount'];
 
         if($limit_amount <= $user_amount)
         {
