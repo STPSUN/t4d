@@ -42,10 +42,11 @@ class Crontab extends \web\common\controller\Controller{
                         $data['update_time'] = NOW_DATETIME;
                         $queueM->save($data);
                         $queueM->commit();
+
 //                        return json($this->successData());
                     } catch (\Exception $ex) {
                         $queueM->rollback();
-//                        return json($this->failData($ex->getMessage()) );
+                        return json($this->failData($ex->getMessage()) );
                     }
                 }
 
@@ -53,7 +54,7 @@ class Crontab extends \web\common\controller\Controller{
             }catch (\Exception $e)
             {
                 echo '处理失败';
-//                return json($this->failData($e->getMessage()) );
+                return json($this->failData($e->getMessage()) );
             }
         }
     }
@@ -71,7 +72,7 @@ class Crontab extends \web\common\controller\Controller{
         $balanceM = new \addons\member\model\Balance();
         $rewardM = new \addons\fomo\model\RewardRecord();
 
-        $amount = $this->limitAmount($user_id,$coin_id,$game_id,$amount);
+        $amount = $this->limitAmount($user_id,$game_id,$amount);
         if(!$amount)
             return true;
 
@@ -167,12 +168,12 @@ class Crontab extends \web\common\controller\Controller{
     /**
      * 封顶限制
      */
-    private function limitAmount($user_id,$coin_id,$game_id,$amount)
+    private function limitAmount($user_id,$game_id,$amount)
     {
-        $rewardRecordM = new \addons\fomo\model\RewardRecord();
         $keyRecordM = new \addons\fomo\model\KeyRecord();
-        $user_amount = $rewardRecordM->getTotalAmount($user_id,$coin_id,$game_id);
-        $limit_amount = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('limit_amount');
+        $data = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->field('limit_amount,bonus_amount')->find();
+        $limit_amount = $data['limit_amount'];
+        $user_amount = $data['bonus_amount'];
 
         if($limit_amount <= $user_amount)
         {
