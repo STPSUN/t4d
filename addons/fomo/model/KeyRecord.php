@@ -162,7 +162,7 @@ class KeyRecord extends \web\common\model\BaseModel{
     public function getWinnerRank($game_id,$winner_num)
     {
         $data = $this->alias('r')
-            ->field('u.username')
+            ->field('u.username,u.id')
             ->join('member_account u', 'u.id = r.user_id')
             ->where('r.game_id',$game_id)
             ->order(['r.winner' => 'asc', 'r.key_num' => 'desc'])
