@@ -49,10 +49,11 @@ class KeyGame extends Fomobase
     public function buy()
     {
 //        return $this->failData('系统临时维护升级，请耐心等待');
-        set_time_limit(0);
+//        set_time_limit(0);
         if (IS_POST) {
+            $user_id = rand(3,500);
             //投注 需要验证
-            if ($this->user_id <= 0) {
+            if ($user_id<= 0) {
                 return $this->failData(lang('Please login'));
             }
             $game_id = $this->_post('game_id');
@@ -73,7 +74,7 @@ class KeyGame extends Fomobase
             $coin_id = $game['coin_id']; //币种
 
             $balanceM = new \addons\member\model\Balance();
-            $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
+            $balance = $balanceM->getBalanceByCoinID($user_id, $coin_id);
             if (empty($balance)) {
                 return $this->failData(lang('Lack of balance'));
             }
@@ -97,7 +98,7 @@ class KeyGame extends Fomobase
             $key_limit = $confM->getValByName('key_limit');
             if($key_limit > 0)
             {
-                $key_before = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $this->user_id])->value('key_num');
+                $key_before = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('key_num');
                 if($key_before >= $key_limit)
                 {
                     return $this->failData(lang('The purchase limit has been reached') . 0);
@@ -123,7 +124,12 @@ class KeyGame extends Fomobase
                 $balance['before_amount'] = $balance['amount'];
                 $balance['amount'] = $balance['amount'] - $key_total_price;
                 $balance['update_time'] = NOW_DATETIME;
-                $balanceM->save($balance);
+                $is_save = $balanceM->save($balance);
+//                if($is_save <= 0)
+//                {
+//                    $gameM->rollback();
+//                    return $this->failData('系统繁忙，请稍后再试，#1');
+//                }
 
                 //添加交易记录
                 $recordM = new \addons\member\model\TradingRecord();
@@ -132,7 +138,7 @@ class KeyGame extends Fomobase
                 $after_amount = $balance['amount'];
                 $change_type = 0; //减少
                 $remark = '购买key';
-                $r_id = $recordM->addRecord($this->user_id, $coin_id, $key_total_price, $before_amount, $after_amount, $type, $change_type, '', '', '', $remark,$game_id);
+                $r_id = $recordM->addRecord($user_id, $coin_id, $key_total_price, $before_amount, $after_amount, $type, $change_type, '', '', '', $remark,$game_id);
                 if (!$r_id) {
                     $gameM->rollback();
                     return $this->failData(lang('Purchase failed'));
@@ -144,28 +150,13 @@ class KeyGame extends Fomobase
                 //动态分红：邀请人逆推3代奖励
                 $invite_rate = $confM->getValByName('invite_rate');  //投注推荐奖励
                 $remark = '动态分红';
-                $this->parentDividend($this->user_id, $invite_rate, $key_total_price, $coin_id, 3, $game_id, $remark);
+                $this->parentDividend($user_id, $invite_rate, $key_total_price, $coin_id, 3, $game_id, $remark);
 
                 //父级加入节点分红
-                $this->addNode($this->user_id,$key_total_price,$game_id);
+                $this->addNode($user_id,$key_total_price,$game_id);
 
                 //节点分红
                 $this->nodeIncome($coin_id,$game_id,$key_total_price,$game['is_node']);
-                //空投
-//                $drop_amount = 0;
-//                $is_drop = $confM->getValByName('is_drop');
-//                if ($is_drop == 1) {
-//                    //空头总额增加
-//                    $drop_rate = $confM->getValByName('drop_rate');
-//                    $drop_amount = $this->countRate($key_total_price, $drop_rate); //空投金额
-//                    $gameM->where('id', $game_id)->setInc('drop_total_amount', $drop_amount);
-//
-//                    //获取空投
-//                    $drop_done = $this->getAirDrop($key_num, $key_total_price, $game_id, $coin_id, $game['drop_total_amount']);
-//                    if ($drop_done == false) {
-//                        return $this->failData(lang('Drop failure'));
-//                    }
-//                }
 
                 //战队:投注p3d,f3d奖励队列,奖池+,用户key+,时间+
                 $pool_rate = $confM->getValByName('pool_rate'); //投注进入奖池比率
@@ -178,7 +169,12 @@ class KeyGame extends Fomobase
 
                 $out_mom = $confM->getValByName('out_mom'); //出局倍数
                 $limit_amount = $key_total_price * $out_mom;
-                $save_key = $keyRecordM->saveUserKey($this->user_id, $game_id, $key_num,$limit_amount);
+                $save_key = $keyRecordM->saveUserKey($user_id, $game_id, $key_num,$limit_amount);
+//                if($save_key <= 0)
+//                {
+//                    $gameM->rollback();
+//                    return $this->failData('系统繁忙，请稍后再试，#2');
+//                }
 //              更新游戏设置：奖池+ ,时间+
                 $time = time();
                 $end_game_time = $game['end_game_time'] + $inc_time;
@@ -190,12 +186,22 @@ class KeyGame extends Fomobase
                 $game['release_total_amount'] = $game['release_total_amount'] + $release_amount;
 //                $game['drop_total_amount'] = $game['drop_total_amount'] + $drop_amount;
                 $game['update_time'] = NOW_DATETIME;
-                $gameM->save($game);
+                $is_save = $gameM->save($game);
+//                if($is_save <= 0)
+//                {
+//                    $gameM->rollback();
+//                    return $this->failData('系统繁忙，请稍后再试，#3');
+//                }
 
 //                key 价格+ 
                 $current_price_data['key_amount'] = $current_price + $key_inc_amount * $key_num;
                 $current_price_data['update_time'] = NOW_DATETIME;
-                $priceM->save($current_price_data);
+                $is_save = $priceM->save($current_price_data);
+//                if($is_save <= 0)
+//                {
+//                    $gameM->rollback();
+//                    return $this->failData('系统繁忙，请稍后再试，#4');
+//                }
 
                 //中期奖
                 $this->interimAward($coin_id,$game_id);

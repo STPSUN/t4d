@@ -48,7 +48,7 @@ class Trade extends \web\user\controller\AddonUserBase{
         $status = $this->_get('status');
         $type = $this->_get('type');
 //        $status = 3;
-        $filter = 'o.status='.$status;
+        $filter = ' o.status='.$status;
         if($type != ''){
             $filter .= ' and o.type='.$type;
         }
