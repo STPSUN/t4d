@@ -76,7 +76,7 @@ class KeyGame extends Fomobase
             $balanceM = new \addons\member\model\Balance();
             $balance = $balanceM->getBalanceByCoinID($user_id, $coin_id);
             if (empty($balance)) {
-                return $this->failData(lang('Lack of balance'));
+                return $this->failData(lang('Lack of balance') . '#1');
             }
 
             //游戏当前价格
@@ -91,7 +91,7 @@ class KeyGame extends Fomobase
             $key_total_price = iterativeInc($current_price, $key_num, $key_inc_amount);
             $key_total_price = round($key_total_price, 8);
             if ($key_total_price > $balance['amount']) {
-                return $this->failData(lang('Lack of balance'));
+                return $this->failData(lang('Lack of balance') . '#2');
             }
 
             $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录

@@ -105,7 +105,7 @@
 </style>
 <div class="f3d-fonts">
     <h2 class="top-title">{:lang('win a big prize')}</h2>
-    <h1><span class="f3d-number big_winner_amount" style="word-break: break-all;">0.0</span> <svg class="svg-inline--fa fa-ethereum fa-w-10 icon-purp" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg></h1>
+    <h1><span class="f3d-number pool_total_amount" style="word-break: break-all;">0.0</span> <svg class="svg-inline--fa fa-ethereum fa-w-10 icon-purp" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg></h1>
     <div class="f3d-time">
         <span class="date_show"><em class="hour">00</em>:<em class="minute">00</em>:<em class="second">00</em>
         </span>
@@ -147,8 +147,11 @@
                           $(".top-title").html("等待下一局开启");
                       }
                     }
-                    $('.big_winner_amount').html(data.big_winner_amount);   //第一名奖奖金
-                    $('.pool_total_amount').html(data.pool_total_amount);   //奖池
+                    var pool_total_amount = data.pool_total_amount;
+                    if(data.status == 2)
+                        pool_total_amount = data.big_winner_amount;
+
+                    $('.pool_total_amount').html(pool_total_amount);   //奖池
                     $(".airdropcounter").html(data.drop_total_amount);
                     $(".pool_total_cny").html(data.pool_total_cny);         //奖池usdt
                     $(".release_total_cny").html(data.release_total_cny);   //已发奖金usdt
