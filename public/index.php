@@ -19,8 +19,8 @@ define('ADDONS_PATH', __DIR__ . '/../addons/');
 define('UPLOADFOLDER', './uploads/');
 $url = $_SERVER['SERVER_NAME'];
 //if($url != 'www.ddpor.vip2')
-if($url != 'ceshi.ddpor.vip')
-    exit();
+//if($url != 't4d.com')
+//    exit();
 
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
