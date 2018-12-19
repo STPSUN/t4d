@@ -125,11 +125,11 @@ class KeyGame extends Fomobase
                 $balance['amount'] = $balance['amount'] - $key_total_price;
                 $balance['update_time'] = NOW_DATETIME;
                 $is_save = $balanceM->save($balance);
-//                if($is_save <= 0)
-//                {
-//                    $gameM->rollback();
-//                    return $this->failData('系统繁忙，请稍后再试，#1');
-//                }
+                if($is_save <= 0)
+                {
+                    $gameM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#1');
+                }
 
                 //添加交易记录
                 $recordM = new \addons\member\model\TradingRecord();
@@ -170,11 +170,11 @@ class KeyGame extends Fomobase
                 $out_mom = $confM->getValByName('out_mom'); //出局倍数
                 $limit_amount = $key_total_price * $out_mom;
                 $save_key = $keyRecordM->saveUserKey($user_id, $game_id, $key_num,$limit_amount);
-//                if($save_key <= 0)
-//                {
-//                    $gameM->rollback();
-//                    return $this->failData('系统繁忙，请稍后再试，#2');
-//                }
+                if($save_key <= 0)
+                {
+                    $gameM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#2');
+                }
 //              更新游戏设置：奖池+ ,时间+
                 $time = time();
                 $end_game_time = $game['end_game_time'] + $inc_time;
@@ -187,21 +187,21 @@ class KeyGame extends Fomobase
 //                $game['drop_total_amount'] = $game['drop_total_amount'] + $drop_amount;
                 $game['update_time'] = NOW_DATETIME;
                 $is_save = $gameM->save($game);
-//                if($is_save <= 0)
-//                {
-//                    $gameM->rollback();
-//                    return $this->failData('系统繁忙，请稍后再试，#3');
-//                }
+                if($is_save <= 0)
+                {
+                    $gameM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#3');
+                }
 
 //                key 价格+ 
                 $current_price_data['key_amount'] = $current_price + $key_inc_amount * $key_num;
                 $current_price_data['update_time'] = NOW_DATETIME;
                 $is_save = $priceM->save($current_price_data);
-//                if($is_save <= 0)
-//                {
-//                    $gameM->rollback();
-//                    return $this->failData('系统繁忙，请稍后再试，#4');
-//                }
+                if($is_save <= 0)
+                {
+                    $gameM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#4');
+                }
 
                 //中期奖
                 $this->interimAward($coin_id,$game_id);
