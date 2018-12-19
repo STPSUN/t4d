@@ -155,11 +155,15 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         if($this->user_id <= 0){
             return $this->failData(lang('Not logged in'));
         }
+        if(empty($game_id))
+            return $this->failData('系统繁忙，请稍后再试');
+
         $rewardM = new \addons\fomo\model\RewardRecord();
         $data['invite_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id);
         $data['other_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id,'0,3,4,5,6,7,8');
         $data['all_reward'] = 0;
-        if($game_id) $data['all_reward'] = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
+        if($game_id)
+            $data['all_reward'] = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
 
         $data['all_reward'] = sprintf("%01.8f", $data['all_reward']);
         $maketM = new \web\api\model\MarketModel();
