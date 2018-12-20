@@ -49,7 +49,7 @@ class Index extends Base {
 
     public function test()
     {
-        $m = new Crontab();
-        $m->excute();
+        $m = new \addons\eth\user\controller\Crontab();
+        $m->clientEthTosys();
     }
 }
