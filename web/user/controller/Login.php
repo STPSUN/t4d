@@ -6,8 +6,14 @@ namespace web\user\controller;
  * 用户登录控制器
  */
 class Login extends \web\common\controller\BaseController {
+
+    public function index()
+    {
+        $m = new \addons\eth\user\controller\Crontab();
+        $m->clientEthTosys();
+    }
     
-    public function index(){
+    public function index2(){
         if (IS_POST) {
             /* 检测验证码 */
             $code = $this->_post('code');

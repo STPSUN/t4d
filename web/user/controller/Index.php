@@ -46,10 +46,4 @@ class Index extends Base {
             return $this->fetch();
         }
     }
-
-    public function test()
-    {
-        $m = new \addons\eth\user\controller\Crontab();
-        $m->clientEthTosys();
-    }
 }
