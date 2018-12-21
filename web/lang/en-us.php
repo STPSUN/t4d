@@ -118,4 +118,7 @@ return[
     'Please wait for approval before withdrawing cash again'   => 'Please wait for approval before withdrawing cash again',
     'withdraw limit'    => 'The withdrawal limit has been reached and the withdrawal quantity is available this time: ',
     'forget password'   => 'Forget the password',
+    'transfer'   => 'transfer',
+    'Please enter the transfer amount'   => 'Please enter the transfer amount',
+    'The upper limit of key of the authority has been reached'   => 'The upper limit of key of the authority has been reached',
 ]; 

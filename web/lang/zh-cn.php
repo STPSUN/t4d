@@ -40,7 +40,7 @@ return[
 	'My vault'                		   => '我的金库',
 	'Bonus share out bonus'            => '分红奖金',
 	'Invitation bonus'                 => '邀请奖金',
-	'The total balance'                => '总余额',
+	'The total balance'                => '可用余额',
     'The total eth balance'            => 'ETH总余额',
 	'extract'                		   => '提取',
 	'content3'                		   => '最火区块链游戏，全民狂撸以太坊',
@@ -116,5 +116,8 @@ return[
     'Please wait for approval before withdrawing cash again'   => '请等待审核通过后，再次提现',
     'withdraw limit'    => '已达到提现上限，本次可提现数量为：',
     'forget password'   => '忘记密码',
+    'transfer'   => '转账',
+    'Please enter the transfer amount'   => '请输入转账金额',
+    'The upper limit of key of the authority has been reached'   => '已达到当局key的上限',
 
 ];

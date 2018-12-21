@@ -38,21 +38,23 @@ class Balance extends \web\common\model\BaseModel
      * @param type $coin_id
      * @return int
      */
-    public function getBalanceByCoinID($user_id, $coin_id)
+    public function getBalanceByCoinID($user_id, $coin_id,$type = 1)
     {
         $where['user_id'] = $user_id;
         $where['coin_id'] = $coin_id;
+        $where['type'] = $type;
         $data  = $this->where($where)->find();
         if(!$data){
-            return $this->addBalance($user_id, $coin_id);
+            return $this->addBalance($user_id, $coin_id,$type);
         }
         return $data;
     }
 
-    public function addBalance($user_id,$coin_id){
+    public function addBalance($user_id,$coin_id,$type){
         $data = [
             'user_id' => $user_id,
             'coin_id' => $coin_id,
+            'type'    => $type,
             'amount' => 0,
             'before_amount' => 0,
             'total_amount' => 0,
@@ -70,14 +72,16 @@ class Balance extends \web\common\model\BaseModel
      * @param type $user_id
      * @param type $amount 变动金额
      * @param type $coin_id 变动币种
-     * @param type $type 变动类型，false 减值，true增值
+     * @param type $change_type 变动类型，false 减值，true增值
+     * @param type $type 资金类型，1 冻结，2 可用
      * @return type
      */
-    public function updateBalance($user_id, $amount, $coin_id, $type = false)
+    public function updateBalance($user_id, $amount, $coin_id, $change_type = false,$type = 1)
     {
         $map = array();
         $map['user_id'] = $user_id;
         $map['coin_id'] = $coin_id;
+        $map['type']    = $type;
         $userAsset = $this->where($map)->find();
         if (!$userAsset) {
             $userAsset['user_id'] = $user_id;
@@ -85,9 +89,10 @@ class Balance extends \web\common\model\BaseModel
             $userAsset['amount'] = 0;
             $userAsset['total_amount'] = 0;
             $userAsset['coin_id'] = $coin_id;
+            $userAsset['type'] = $type;
         }
         $userAsset['update_time'] = NOW_DATETIME;
-        if ($type) {
+        if ($change_type) {
             $userAsset['before_amount'] = $userAsset['amount'];
             $userAsset['amount'] = $userAsset['amount'] + $amount;
             $userAsset['total_amount'] = $userAsset['total_amount'] + $amount;
@@ -96,6 +101,34 @@ class Balance extends \web\common\model\BaseModel
             $userAsset['amount'] = $userAsset['amount'] - $amount;
             $userAsset['total_amount'] = $userAsset['total_amount'] - $amount;
         }
+        $res = $this->save($userAsset);
+        if (!$res) {
+            return false;
+        }
+        return $userAsset;
+    }
+
+    public function updateBalanceByBonus($user_id, $amount, $coin_id,$type = 2)
+    {
+        $map = array();
+        $map['user_id'] = $user_id;
+        $map['coin_id'] = $coin_id;
+        $map['type']    = $type;
+        $userAsset = $this->where($map)->find();
+        if (!$userAsset) {
+            $userAsset['user_id'] = $user_id;
+            $userAsset['before_amount'] = 0;
+            $userAsset['amount'] = 0;
+            $userAsset['total_amount'] = 0;
+            $userAsset['coin_id'] = $coin_id;
+            $userAsset['type'] = $type;
+        }
+
+        $userAsset['update_time'] = NOW_DATETIME;
+        $userAsset['before_amount'] = $userAsset['amount'];
+        $userAsset['amount'] = $userAsset['amount'] + $amount;
+        $userAsset['total_amount'] = $userAsset['total_amount'] + $amount;
+
         $res = $this->save($userAsset);
         if (!$res) {
             return false;

@@ -80,8 +80,8 @@
                 $('#grid-table').datagrid('reloadFooter', [
                     {
                         phone: '统计',
-                        amount: data.count_total,
-                        eops_amount: data.count_total
+                        amount: data.count_total.eth_total,
+                        eops_amount: data.count_total.eops_total
                     }
                 ]);
             }

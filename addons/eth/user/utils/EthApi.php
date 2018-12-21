@@ -48,7 +48,7 @@ class EthApi{
      * 需要把主钱包的keystore导入到服务器的keystore文件夹中才能进行解锁
      * @var type
      */
-    private $client_account = array(
+    public $client_account = array(
         'address' => '',
         'password' => '',
     );

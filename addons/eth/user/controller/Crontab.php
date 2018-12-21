@@ -31,7 +31,7 @@ class Crontab extends \web\common\controller\BaseController {
         }
         $addr = array();
         foreach ($list as $key => $val) {
-            $addr[$val['address']]['passwrod'] = $val["eth_pass"];
+            $addr[$val['address']]['password'] = $val["eth_pass"];
             $addr[$val['address']]['user_id'] = $val["user_id"];
             if ($key % 20 !== 0 &&  $key <= count($list) - 1) {
                 $addrs = join(",", array_keys($addr));
@@ -42,6 +42,7 @@ class Crontab extends \web\common\controller\BaseController {
                 }
                 $result = $ret['data']['result'];
                 foreach ($result as $v) {
+//                    print_r($addr);exit();
                     $balance = $v["balance"] / bcpow(10, 18);
                     if ($balance > 0.001) {
                         $account = array(

@@ -3,6 +3,7 @@
         <li class="active"><a href="#buy" data-toggle="tab">{:lang('purchase')}</a></li>
         <li><a href="#gold" data-toggle="tab">{:lang('vault')}</a></li>
         <li><a href="#recommend" data-toggle="tab">{:lang('invite')}</a></li>
+        <li><a href="#transfer" data-toggle="tab">{:lang('transfer')}</a></li>
     </ul>
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade in active" id="buy">
@@ -119,6 +120,34 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade" id="transfer">
+            <div class="p3d-buy">
+                <!--<h3>{:lang('My vault')}</h3>-->
+                <div class="p3d-gold" style="padding-left: 0; padding-right: 0;">
+                    <div class="box">
+                        <div class="item">
+                            <div class="item-left">{:lang('The total balance')}</div>
+                            <div class="item-right">
+                                <div class="f3d-balance">0.0000 EOPS</div>
+                                <!--<p><span>≙ <span class="user_total_amount">0.0000</span> USDT</span></p>-->
+                            </div>
+                        </div>
+                        <div class="item">
+                            <!--<div class="item-left">{:lang('The total eth balance')}</div>-->
+                            <div class="item-right">
+                                <div class="eth-balance">0.0000 ETH</div>
+                                <!--<p><span>≙ <span class="user_total_amount">0.0000</span> USDT</span></p>-->
+                            </div>
+                        </div>
+                        <div class="col" style="padding: 10px 0;">
+                            <button style="background: #fc4cca" type="button" id="transfer_btn" class="btn btn-block btn-outline-purp btn-lg ticketProcess"><img src="__IMG__/icon_pickup.png"><trans oldtip=" Reinvest" newtip="{:lang('extract')}" style=""> {:lang('transfer')}</trans></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tab-pane fade" id="recommend">
             <div class="p3d-buy">
                 <h3>{:lang('content3')}</h3>

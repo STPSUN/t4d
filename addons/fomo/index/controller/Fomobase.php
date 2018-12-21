@@ -170,7 +170,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         $rate = $maketM->getUsdtRateByCoinId(1);
         $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 8);
         $balanceM = new \addons\member\model\Balance();
-        $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
+        $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id,2);
 
 //        print_r($balance);exit();
 //        $sysM = new \web\common\model\sys\SysParameterModel();;
@@ -232,6 +232,10 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 return $this->failData(lang('withdraw limit') . $num);
             }
 
+            $marketM = new \addons\financing\model\Market();
+            $cny = $marketM->getDetailByCoinName('ETH','cny');
+            $eth_rate = bcdiv($cny,7,4);
+
             try{
                 $without_min = $sysM->getValByName("withdraw_min");
                 if($amount < $without_min){
@@ -239,16 +243,15 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 }
 
                 $balanceM = new \addons\member\model\Balance();
-                $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id);
+                $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id,2);
                 if(empty($balance)){
                     return $this->failData(lang('Lack of balance'));
                 }
 
-                $without_limit_rate = $sysM->getValByName("withdraw_limit_rate");
-
-                $without_limit_amount = $this->countRate($balance['amount'],$without_limit_rate);
-                if($amount > $without_limit_amount)
-                    return $this->failData('提币数量不能超过总额的' . $without_limit_rate . '%');
+//                $without_limit_rate = $sysM->getValByName("withdraw_limit_rate");
+//                $without_limit_amount = $this->countRate($balance['amount'],$without_limit_rate);
+//                if($amount > $without_limit_amount)
+//                    return $this->failData('提币数量不能超过总额的' . $without_limit_rate . '%');
 
                 $filter = 'user_id = '. $this->user_id ." and coin_id = ".$coin_id;
                 $userWithout = $ethM->getSum($filter, "amount");
@@ -282,7 +285,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                 $ret = $balanceM->save($balance);
                 if($ret > 0){
                     //保存提取订单
-                    $data['amount'] = $amount;
+                    $data['amount'] = bcdiv($amount,$eth_rate,8);
                     $data['tax'] = $tax;
                     $data['type'] = 0;//转出
                     $data['coin_id'] = $coin_id;
@@ -290,6 +293,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
                     $data['from_address'] = $this->address;
                     $data['user_id'] = $this->user_id;
                     $data['status'] = 0;
+                    $data['eops_amount'] = $amount;
                     $data['update_time'] = NOW_DATETIME;
                     $id = $ethM->add($data);
                     if($id > 0){
@@ -319,7 +323,85 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             return $this->fetch('public/withdraw');
         }
     }
-    
+
+    /**
+     * 转账
+     */
+    public function transfer()
+    {
+        if(IS_POST)
+        {
+            $user_id = $this->user_id;
+            if($user_id <= 0){
+                return $this->failData(lang('Not logged in'));
+            }
+
+            $amount = $this->_post('amount');
+            $coin_id = $this->_post('coin_id');
+            $username = $this->_post('username');
+
+            $userM = new \addons\member\model\MemberAccountModel();
+            $to_user_id = $userM->getUserByUsername($username);
+
+            $sysM = new \web\common\model\sys\SysParameterModel();
+            $is_withdraw = $sysM->getValByName('is_transfer_tax');
+            $tax = 0;
+            $total_amount = $amount;
+            if($is_withdraw == 1)
+            {
+                $transfer_rate = $sysM->getValByName('transfer_tax');
+                if(!empty($transfer_rate)){
+                    $tax = $amount * $transfer_rate / 100;
+                }
+                $total_amount += $tax; //用户资产扣除总额
+            }
+
+            $balanceM = new \addons\member\model\Balance();
+            $balance = $balanceM->getBalanceByCoinID($user_id,$coin_id,2);
+            if($balance['amount'] < $total_amount)
+                return $this->failData(lang('Lack of balance'));
+
+            $recordM = new \addons\member\model\TradingRecord();
+
+            $balanceM->startTrans();
+            try
+            {
+                $is_save = $balanceM->updateBalance($user_id,$total_amount,$coin_id,false,2);
+                if(!$is_save)
+                {
+                    $balanceM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#1');
+                }
+                $recordM->addRecord($user_id,$coin_id,$total_amount,0,0,11,false,$to_user_id,'','','转账-转出');
+
+                $is_save = $balanceM->updateBalance($to_user_id,$amount,$coin_id,true,2);
+                if(!$is_save)
+                {
+                    $balanceM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#2');
+                }
+                $recordM->addRecord($user_id,$coin_id,$amount,0,0,11,true,$to_user_id,'','','转账-收入');
+            }catch (\Exception $e)
+            {
+                $balanceM->rollback();
+                return $this->failData($e->getMessage());
+            }
+
+            $balanceM->commit();
+            return $this->successData(1);
+
+        }else
+        {
+            $marketM = new \addons\financing\model\Market();
+            $cny = $marketM->getDetailByCoinName('ETH','cny');
+            $eth_rate = bcdiv($cny,7,4);
+            $this->assign('eth_rate',$eth_rate);
+            $this->assign('coin_id',$this->_get('coin_id'));
+            $this->assign('id','0');
+            $this->setLoadDataAction('');
+            return $this->fetch('public/transfer');
+        }
+    }
 
     
 }

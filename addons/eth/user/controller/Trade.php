@@ -61,21 +61,8 @@ class Trade extends \web\user\controller\AddonUserBase{
         $total = $m->getTotal2($filter);
         $rows = $m->getList2($this->getPageIndex(), $this->getPageSize(), $filter);
 
-        $marketM = new \addons\financing\model\Market();
-        $cny = $marketM->getDetailByCoinName('ETH','cny');
-        $eth_rate = bcdiv($cny,7,4);
-//        $sysM = new \web\common\model\sys\SysParameterModel();
-//        $eth_rate = $sysM->getValByName('eth_rate');
-        foreach ($rows as &$v)
-        {
-            $v['eth_amount'] = bcdiv($v['amount'],$eth_rate,8);
-        }
-
         $count_total = $m->getCountTotal2($filter);
         return $this->toTotalDataGrid($total, $rows,$count_total);
-//        print_r($rows);exit();
-//        $count_total = $m->getCountTotal($filter);
-//        return $this->toTotalDataGrid($total, $rows,23);
     }
 
     /**
@@ -151,7 +138,7 @@ class Trade extends \web\user\controller\AddonUserBase{
                         if($data['tax'] > 0) $amount += $data['tax'];
                         //返还金额
                         $balanceM = new \addons\member\model\Balance();
-                        $balance = $balanceM->updateBalance($user_id, $amount, $coin_id, true);
+                        $balance = $balanceM->updateBalance($user_id, $amount, $coin_id, true,2);
                         if(!$balance){
                             $tradeM->rollback();
                             return $this->failData('退单失败');
@@ -209,8 +196,8 @@ class Trade extends \web\user\controller\AddonUserBase{
             $temp = [];
             $temp[] = $v['username'];
             $temp[] = $v['phone'];
-            $temp[] = bcdiv($v['amount'],$eth_rate,8);
             $temp[] = $v['amount'];
+            $temp[] = $v['eops_amount'];
             $temp[] = $v['coin_name'];
             $temp[] = ($v['type'] == 1) ? '转入' : '转出';
             $temp[] = $v['to_address'];
@@ -254,6 +241,80 @@ class Trade extends \web\user\controller\AddonUserBase{
         $objActSheet->getColumnDimension('I')->setWidth('18');
         $objActSheet->getColumnDimension('J')->setWidth('22');
         $objActSheet->getColumnDimension('K')->setWidth('10');
+
+        foreach ($data as $key => $r)
+        {
+            $span = ord("A");
+
+            foreach ($r as $keyName => $value)
+            {
+                $objActSheet->setCellValue(chr($span) . $c,$value);
+                $span++;
+            }
+
+            $c++;
+        }
+
+
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition:attachment;filename='$fileName'");
+        header("Cache-Control:max-age=0");
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,"Excel2007");
+        $objWriter->save("php://output");
+
+        exit();
+    }
+
+    public function excel2()
+    {
+        $keyM = new \addons\fomo\model\KeyRecord();
+        $memM = new \addons\member\model\MemberAccountModel();
+        $rows = $memM->alias('u')
+                    ->field('u.username,u.phone,k.key_num')
+                    ->join('fomo_key_record k','u.id=k.user_id','right')
+                    ->where('u.is_frozen',0)
+                    ->select();
+
+//        print_r($rows);exit();
+        $data = [];
+        foreach ($rows as $v)
+        {
+            $temp = [];
+            $temp[] = $v['username'];
+            $temp[] = $v['phone'];
+            $temp[] = $v['key_num'];
+
+            $data[] = $temp;
+        }
+
+        $fileName = 'key购买统计.xlsx';
+        $headArr = ['用户名称','手机号','key数量'];
+
+        Loader::import('PHPExcel.Classes.PHPExcel');
+        Loader::import('PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->getProperties();
+
+
+        $key = ord("A");
+
+        foreach ($headArr as $v)
+        {
+            $colum = chr($key);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1',$v);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1',$v);
+            $key += 1;
+        }
+
+        $c = 2;
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->getColumnDimension('A')->setWidth('10');
+        $objActSheet->getColumnDimension('B')->setWidth('12');
+        $objActSheet->getColumnDimension('C')->setWidth('12');
 
         foreach ($data as $key => $r)
         {

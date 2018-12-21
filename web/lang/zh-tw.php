@@ -40,7 +40,7 @@ return[
 	'My vault'                		   => '我的金庫',
 	'Bonus share out bonus'            => '分紅獎金',
 	'Invitation bonus'                 => '邀請獎金',
-	'The total balance'                => '總余額',
+	'The total balance'                => '可用余額',
     'The total eth balance'            => 'ETH總余額',
 	'extract'                		   => '提取',
 	'content3'                		   => '最火區塊鏈遊戲，全民狂撸以太坊',
@@ -116,4 +116,5 @@ return[
     'Please wait for approval before withdrawing cash again'   => '請等待審核通過后，再次體現',
     'withdraw limit'    => '已達到提現上限，本次可提現數量爲：',
     'forget password'   => '忘記密碼',
+    'transfer'   => '轉賬',
 ];

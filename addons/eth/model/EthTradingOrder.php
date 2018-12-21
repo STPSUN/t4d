@@ -192,7 +192,7 @@ class EthTradingOrder extends \web\common\model\BaseModel {
     }
 
     public function getCountTotal2($filter = '') {
-        $sql = "SELECT SUM(amount) AS count_total,SUM(eops_amount) AS eosp_amount "
+        $sql = "SELECT SUM(amount) AS eth_total,SUM(eops_amount) AS eops_total "
             . " FROM tp_eth_trading_order o "
             . " LEFT JOIN tp_member_account b ON b.id = o.user_id "
             . " LEFT JOIN tp_coins c ON c.id = o.coin_id "
@@ -200,7 +200,7 @@ class EthTradingOrder extends \web\common\model\BaseModel {
         if($filter)
             $sql .= $filter;
         $count = $this->query($sql);
-        return $count[0]['count_total'];
+        return $count[0];
     }
     
 

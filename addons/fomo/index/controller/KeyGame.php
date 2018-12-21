@@ -49,15 +49,13 @@ class KeyGame extends Fomobase
     public function buy()
     {
 //        return $this->failData('系统临时维护升级，请耐心等待');
-//        set_time_limit(0);
         if (IS_POST) {
-            $user_id = rand(3,500);
+            $user_id = $this->user_id;
             //投注 需要验证
             if ($user_id<= 0) {
                 return $this->failData(lang('Please login'));
             }
             $game_id = $this->_post('game_id');
-//            $team_id = $this->_post('team_id');
             $key_num = $this->_post('key_num'); //数量
 
             //是否有上级,余额是否足够,是否空投
@@ -70,14 +68,13 @@ class KeyGame extends Fomobase
                 return $this->failData(lang('The game is over'));
             }
 
+            $gameS = new \addons\fomo\service\Game();
+            $is_true = $gameS->isGameTotalKey($key_num,$game['key_total']);
+            if(!$is_true)
+                return $this->failData(lang('The upper limit of key of the authority has been reached'));
+
             //用户是否有该币种余额
             $coin_id = $game['coin_id']; //币种
-
-            $balanceM = new \addons\member\model\Balance();
-            $balance = $balanceM->getBalanceByCoinID($user_id, $coin_id);
-            if (empty($balance)) {
-                return $this->failData(lang('Lack of balance') . '#1');
-            }
 
             //游戏当前价格
             $priceM = new \addons\fomo\model\KeyPrice();
@@ -85,14 +82,13 @@ class KeyGame extends Fomobase
             $current_price = $current_price_data['key_amount'];
 
             //余额是否足够
+            $balanceS = new \addons\fomo\service\Balance();
+            $key_total_price = $balanceS->isEnoughBalance($user_id,$game_id,$key_num,$coin_id);
+            if(!$key_total_price)
+                return $this->failData(lang('Lack of balance'));
+
             $confM = new \addons\fomo\model\Conf();
             $key_inc_amount = $confM->getValByName('key_inc_amount'); //key递增值
-            //计算总金额：key价格递增
-            $key_total_price = iterativeInc($current_price, $key_num, $key_inc_amount);
-            $key_total_price = round($key_total_price, 8);
-            if ($key_total_price > $balance['amount']) {
-                return $this->failData(lang('Lack of balance') . '#2');
-            }
 
             $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
             $key_limit = $confM->getValByName('key_limit');
@@ -112,20 +108,16 @@ class KeyGame extends Fomobase
                 }
             }
 
-//            $teamM = new \addons\fomo\model\Team();
-//            $team_config = $teamM->getConfigByFields($team_id);
-//            if (empty($team_config)) {
-//                return $this->failData(lang('The selected team does not exist'));
-//            }
-            try {
+           try {
                 $gameM->startTrans();
 
                 //扣除用户余额
-                $balance['before_amount'] = $balance['amount'];
-                $balance['amount'] = $balance['amount'] - $key_total_price;
-                $balance['update_time'] = NOW_DATETIME;
-                $is_save = $balanceM->save($balance);
-                if($is_save <= 0)
+                $is_true = $balanceS->updateBalance($user_id,$key_total_price,$coin_id);
+//                $balance['before_amount'] = $balance['amount'];
+//                $balance['amount'] = $balance['amount'] - $key_total_price;
+//                $balance['update_time'] = NOW_DATETIME;
+//                $is_save = $balanceM->save($balance);
+                if(!$is_true)
                 {
                     $gameM->rollback();
                     return $this->failData('系统繁忙，请稍后再试，#1');
@@ -134,8 +126,8 @@ class KeyGame extends Fomobase
                 //添加交易记录
                 $recordM = new \addons\member\model\TradingRecord();
                 $type = 10;
-                $before_amount = $balance['before_amount'];
-                $after_amount = $balance['amount'];
+                $before_amount = 0;
+                $after_amount = 0;
                 $change_type = 0; //减少
                 $remark = '购买key';
                 $r_id = $recordM->addRecord($user_id, $coin_id, $key_total_price, $before_amount, $after_amount, $type, $change_type, '', '', '', $remark,$game_id);
@@ -156,7 +148,7 @@ class KeyGame extends Fomobase
                 $this->addNode($user_id,$key_total_price,$game_id);
 
                 //节点分红
-                $this->nodeIncome($coin_id,$game_id,$key_total_price,$game['is_node']);
+                $this->nodeIncome($coin_id,$game_id,$key_total_price);
 
                 //战队:投注p3d,f3d奖励队列,奖池+,用户key+,时间+
                 $pool_rate = $confM->getValByName('pool_rate'); //投注进入奖池比率
@@ -186,6 +178,7 @@ class KeyGame extends Fomobase
                 $game['release_total_amount'] = $game['release_total_amount'] + $release_amount;
 //                $game['drop_total_amount'] = $game['drop_total_amount'] + $drop_amount;
                 $game['update_time'] = NOW_DATETIME;
+                $game['key_total'] = $key_num;
                 $is_save = $gameM->save($game);
                 if($is_save <= 0)
                 {
@@ -193,7 +186,7 @@ class KeyGame extends Fomobase
                     return $this->failData('系统繁忙，请稍后再试，#3');
                 }
 
-//                key 价格+ 
+//              key 价格+
                 $current_price_data['key_amount'] = $current_price + $key_inc_amount * $key_num;
                 $current_price_data['update_time'] = NOW_DATETIME;
                 $is_save = $priceM->save($current_price_data);
@@ -206,10 +199,6 @@ class KeyGame extends Fomobase
                 //中期奖
                 $this->interimAward($coin_id,$game_id);
 
-//                $sequeueM = new \addons\fomo\model\BonusSequeue();
-//                $whole_rate = $confM->getValByName('whole_rate'); //全网分红比率
-//                $t3d_amount = $this->countRate($key_total_price, $whole_rate); //发放给f3d用户金额
-//                $sequeueM->addSequeue($this->user_id, $coin_id, $t3d_amount, 1, 0, $game_id);
                 $gameM->commit();
                 return $this->successData();
             } catch (\Exception $ex) {
@@ -235,6 +224,7 @@ class KeyGame extends Fomobase
         {
             $keyRecordM->save([
                 'status' => 2,
+                'current_key' => 0,
             ],[
                 'user_id'   => $user_id,
                 'game_id'   => $game_id,
@@ -247,6 +237,7 @@ class KeyGame extends Fomobase
         {
             $keyRecordM->save([
                 'status' => 2,
+                'current_key'   => 0,
             ],[
                 'user_id'   => $user_id,
                 'game_id'   => $game_id,
@@ -271,6 +262,7 @@ class KeyGame extends Fomobase
         {
             $keyRecordM->save([
                 'status' => 2,
+                'current_key'   => 0,
             ],[
                 'id' => $id,
             ]);
@@ -282,6 +274,7 @@ class KeyGame extends Fomobase
         {
             $keyRecordM->save([
                 'status' => 2,
+                'current_key'   => 0,
             ],[
                 'id' => $id,
             ]);
@@ -296,6 +289,12 @@ class KeyGame extends Fomobase
      */
     private function interimAward($coin_id,$game_id)
     {
+        //是否开启中期奖
+        $sysM = new \web\common\model\sys\SysParameterModel();
+        $is_node = $sysM->getValByName('is_mid_award');
+        if($is_node != 1)
+            return;
+
         $gameM = new \addons\fomo\model\Game();
         $pool_amount = $gameM->where('id',$game_id)->value('pool_total_amount');
         if($pool_amount < 200000)
@@ -353,9 +352,11 @@ class KeyGame extends Fomobase
     /**
      * 节点分红
      */
-    private function nodeIncome($coin_id,$game_id,$key_total_price,$is_node)
+    private function nodeIncome($coin_id,$game_id,$key_total_price)
     {
         //是否开启节点分红
+        $sysM = new \web\common\model\sys\SysParameterModel();
+        $is_node = $sysM->getValByName('is_node_award');
         if($is_node != 1)
             return;
 
@@ -817,7 +818,6 @@ class KeyGame extends Fomobase
     {
         //触手分红：邀请人逆推3代奖励
         $userM = new \addons\member\model\MemberAccountModel();
-        $balanceM = new \addons\member\model\Balance();
         $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
         $pid = $userM->getPID($user_id);
         if (!empty($pid)) {
@@ -844,14 +844,13 @@ class KeyGame extends Fomobase
                     continue;
 
                 //更新余额
-                $pidBalance = $balanceM->updateBalance($pid, $invite_amount, $coin_id, true);
+                $balanceS = new \addons\fomo\service\Balance();
+                $is_true = $balanceS->updateBalanceByBonus($pid,$invite_amount,$coin_id);
                 //添加分红记录
-                if ($pidBalance) {
+                if ($is_true) {
                     $rewardM = new \addons\fomo\model\RewardRecord();
-                    $before_amount = $pidBalance['before_amount'];
-                    $after_amount = $pidBalance['amount'];
-//                    $type = 3; //奖励类型 0=投注分红，1=胜利战队分红，2=胜利者分红，3=邀请分红
-//                    $remark = '推荐投注分红';
+                    $before_amount = 0;
+                    $after_amount = 0;
                     $rewardM->addRecord($pid, $coin_id, $before_amount, $invite_amount, $after_amount, $type, $game_id, $remark);
                     //分红值增加
                     $keyRecordM->where(['game_id' => $game_id, 'user_id' => $pid])->setInc('bonus_amount',$invite_amount);
