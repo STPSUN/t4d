@@ -18,7 +18,6 @@ class Crontab extends \web\common\controller\BaseController {
         $m = new \addons\eth\model\EthTradingOrder();
         $paramM = new \web\common\model\sys\SysParameterModel();
         $sys_address = $paramM->getValByName('out_address');
-//        echo $sys_address;exit();
         $filter = "address is not null";
         $list = $m->getRechargeByCoin(1);
 
