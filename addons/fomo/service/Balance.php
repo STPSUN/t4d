@@ -45,6 +45,7 @@ class Balance extends \web\index\controller\AddonIndexBase
             return false;
         }
 
+        $balanceM->commit();
         return true;
     }
 

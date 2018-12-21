@@ -36,9 +36,9 @@ class Game extends \web\index\controller\AddonIndexBase
 
         $key_limit = $confM->getValByName('key_limit');
         if($key_limit <= 0)
-            return true;
+            return false;
 
-        $data = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->field('id,current_key')->find();
+        $data = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->field('id,current_key,status')->find();
         if(empty($data))
         {
             if($key_num > $key_limit)
@@ -55,6 +55,16 @@ class Game extends \web\index\controller\AddonIndexBase
             return true;
         }else
         {
+            if($data['status'] == 2)
+            {
+                $keyRecordM->save([
+                    'status' => 1,
+                    'update_time' => NOW_DATETIME,
+                ],[
+                    'id' => $data['id'],
+                ]);
+            }
+
             $current_key = $data['current_key'];
             if($current_key >= $key_limit)
             {

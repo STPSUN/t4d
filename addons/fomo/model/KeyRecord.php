@@ -67,6 +67,7 @@ class KeyRecord extends \web\common\model\BaseModel{
             $data['limit_amount'] = $data['limit_amount'] + $limit_amount;
             $data['update_time'] = NOW_DATETIME;
             $data['status'] = 1;
+            $data['current_key'] = $data['current_key'] + $key_num;
             return $this->save($data);
         }else{
 //            $data['team_id'] = $team_id;
@@ -75,6 +76,7 @@ class KeyRecord extends \web\common\model\BaseModel{
             $data['key_num'] = $key_num;
             $data['limit_amount'] = $limit_amount;
             $data['update_time'] = NOW_DATETIME;
+            $data['current_key'] = $key_num;
             return $this->add($data);
         }
     }

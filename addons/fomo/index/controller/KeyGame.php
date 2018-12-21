@@ -90,23 +90,10 @@ class KeyGame extends Fomobase
             $confM = new \addons\fomo\model\Conf();
             $key_inc_amount = $confM->getValByName('key_inc_amount'); //key递增值
 
-            $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
-            $key_limit = $confM->getValByName('key_limit');
-            if($key_limit > 0)
-            {
-                $key_before = $keyRecordM->where(['game_id' => $game_id, 'user_id' => $user_id])->value('key_num');
-                if($key_before >= $key_limit)
-                {
-                    return $this->failData(lang('The purchase limit has been reached') . 0);
-                }
-
-                $total_key = $key_before + $key_num;
-                if($total_key > $key_limit)
-                {
-                    $buy_num = $key_limit - $key_before;
-                    return $this->failData(lang('The purchase limit has been reached') . $buy_num);
-                }
-            }
+            //可购买数量
+            $buy_num = $gameS->isBuyKey($game_id,$user_id,$key_num);
+            if($buy_num >= 0 && $buy_num != true)
+                return $this->failData(lang('The purchase limit has been reached') . $buy_num);
 
            try {
                 $gameM->startTrans();
@@ -161,6 +148,7 @@ class KeyGame extends Fomobase
 
                 $out_mom = $confM->getValByName('out_mom'); //出局倍数
                 $limit_amount = $key_total_price * $out_mom;
+                $keyRecordM = new \addons\fomo\model\KeyRecord();
                 $save_key = $keyRecordM->saveUserKey($user_id, $game_id, $key_num,$limit_amount);
                 if($save_key <= 0)
                 {
@@ -178,7 +166,7 @@ class KeyGame extends Fomobase
                 $game['release_total_amount'] = $game['release_total_amount'] + $release_amount;
 //                $game['drop_total_amount'] = $game['drop_total_amount'] + $drop_amount;
                 $game['update_time'] = NOW_DATETIME;
-                $game['key_total'] = $key_num;
+                $game['key_total'] = $game['key_total'] + $key_num;
                 $is_save = $gameM->save($game);
                 if($is_save <= 0)
                 {

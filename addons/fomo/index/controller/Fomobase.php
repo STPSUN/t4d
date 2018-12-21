@@ -170,7 +170,8 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         $rate = $maketM->getUsdtRateByCoinId(1);
         $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 8);
         $balanceM = new \addons\member\model\Balance();
-        $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id,2);
+        $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id,1);
+        $use_balance = $balanceM->getBalanceByCoinID($this->user_id,$coin_id,2);
 
 //        print_r($balance);exit();
 //        $sysM = new \web\common\model\sys\SysParameterModel();;
@@ -182,6 +183,9 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         $eth_balance = bcdiv($balance['amount'],$eth_rate,8);
         $data['balance'] = $balance['amount'];
         $data['eth_balance'] = $eth_balance;
+        $data['use_balance'] = $use_balance['amount'];
+        $use_eth_balance = empty($use_balance['amount']) ? 0 : bcdiv($use_balance['amount'],$eth_rate,8);
+        $data['use_eth_balance'] = $use_eth_balance;
         return $this->successData($data);
     }
     
