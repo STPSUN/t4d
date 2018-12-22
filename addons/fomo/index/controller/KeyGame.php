@@ -613,15 +613,15 @@ class KeyGame extends Fomobase
             $maketM = new \web\api\model\MarketModel();
             $rate = $maketM->getUsdtRateByCoinId($game['coin_id']);
             $game['rate'] = $rate;
-            $game['pool_total_cny'] = bcmul($game['pool_total_amount'], $rate, 8);
-            $game['release_total_cny'] = bcmul($game['release_total_amount'], $rate, 8);
+            $game['pool_total_cny'] = bcmul($game['pool_total_amount'], $rate, 2);
+            $game['release_total_cny'] = bcmul($game['release_total_amount'], $rate, 2);
             $game['end_game_time'] = $end_game_time;
 
             $keyRecordM = new \addons\fomo\model\KeyRecord();
             $game_total_keys = $keyRecordM->getSum("game_id = {$game['id']}", "key_num");
             $game['game_total_keys'] = $game_total_keys;
-            $game['game_total_keys_usdt'] = bcmul($game_total_keys, $rate, 8);
-            $game['total_amount_usdt'] = bcmul($game['total_amount'],$rate,8);
+            $game['game_total_keys_usdt'] = bcmul($game_total_keys, $rate, 4);
+            $game['total_amount_usdt'] = bcmul($game['total_amount'],$rate,4);
             return $this->successData($game);
         }
         //如果有已结束的 查询已结束的游戏与 开奖结果
@@ -632,15 +632,15 @@ class KeyGame extends Fomobase
             $maketM = new \web\api\model\MarketModel();
             $rate = $maketM->getUsdtRateByCoinId($game['coin_id']);
             $game['rate'] = $rate;
-            $game['pool_total_cny'] = bcmul($game['pool_total_amount'], $rate, 8);
-            $game['release_total_cny'] = bcmul($game['release_total_amount'], $rate, 8);
+            $game['pool_total_cny'] = bcmul($game['pool_total_amount'], $rate, 2);
+            $game['release_total_cny'] = bcmul($game['release_total_amount'], $rate, 2);
 
             $keyRecordM = new \addons\fomo\model\KeyRecord();
             $game_total_keys = $keyRecordM->getSum("game_id = {$game['id']}", "key_num");
             $game['game_total_keys'] = $game_total_keys;
-            $game['game_total_keys_usdt'] = bcmul($game_total_keys, $rate, 8);
+            $game['game_total_keys_usdt'] = bcmul($game_total_keys, $rate, 4);
 
-            $game['total_amount_usdt'] = bcmul($game['total_amount'],$rate,8);
+            $game['total_amount_usdt'] = bcmul($game['total_amount'],$rate,4);
 
             $recordM = new \addons\fomo\model\RewardRecord();
 //            $last_winner = $recordM->getGameWinner($game['id']);
