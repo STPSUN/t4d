@@ -613,6 +613,7 @@ class KeyGame extends Fomobase
             $maketM = new \web\api\model\MarketModel();
             $rate = $maketM->getUsdtRateByCoinId($game['coin_id']);
             $game['rate'] = $rate;
+            $game['pool_total_amount'] = round($game['pool_total_amount'],2);
             $game['pool_total_cny'] = bcmul($game['pool_total_amount'], $rate, 2);
             $game['release_total_cny'] = bcmul($game['release_total_amount'], $rate, 2);
             $game['end_game_time'] = $end_game_time;
