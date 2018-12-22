@@ -91,11 +91,11 @@ class KeyGame extends Fomobase
             $key_inc_amount = $confM->getValByName('key_inc_amount'); //key递增值
 
             //可购买数量
-            $buy_num = $gameS->isBuyKey($game_id,$user_id,$key_num);
-            if($buy_num >= 0 && $buy_num != true)
-                return $this->failData(lang('The purchase limit has been reached') . $buy_num);
+            $res = $gameS->isBuyKey($game_id,$user_id,$key_num);
+            if(!$res['res'])
+                return $this->failData(lang('The purchase limit has been reached') . $res['num']);
 
-           try {
+            try {
                 $gameM->startTrans();
 
                 //扣除用户余额
