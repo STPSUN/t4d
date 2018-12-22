@@ -159,13 +159,18 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             return $this->failData('系统繁忙，请稍后再试');
 
         $rewardM = new \addons\fomo\model\RewardRecord();
-        $data['invite_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id);
-        $data['other_reward'] = $rewardM->getTotalByType($this->user_id, $coin_id,'0,3,4,5,6,7,8');
+        $invite_reward = $rewardM->getTotalByType($this->user_id, $coin_id);
+        $data['invite_reward'] = round($invite_reward,2);
+        $other_reward = $rewardM->getTotalByType($this->user_id, $coin_id,'0,3,4,5,6,7,8');
+        $data['other_reward'] = round($other_reward,2);
         $data['all_reward'] = 0;
         if($game_id)
-            $data['all_reward'] = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
+        {
+            $all_reward = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
+            $data['all_reward'] = round($all_reward,2);
+        }
 
-        $data['all_reward'] = sprintf("%01.2f", $data['all_reward']);
+        $data['all_reward'] = round($data['all_reward'],2);
         $maketM = new \web\api\model\MarketModel();
         $rate = $maketM->getUsdtRateByCoinId(1);
         $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 2);
