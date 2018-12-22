@@ -229,7 +229,7 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
             $where['user_id'] = $this->user_id;
             $where['coin_id'] = $coin_id;
             $where['status'] = array('in','0,1');
-            $eops_num = $ethM->where($where)->whereTime('update_time','today')->sum('amount');
+            $eops_num = $ethM->where($where)->whereTime('update_time','today')->sum('eops_amount');
             if($eops_num >= $eops_limit)
             {
                 return $this->failData(lang('withdraw limit') . 0);
