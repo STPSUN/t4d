@@ -165,27 +165,27 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         if($game_id)
             $data['all_reward'] = $rewardM->getUserTotal($this->user_id, $coin_id, $game_id);
 
-        $data['all_reward'] = sprintf("%01.8f", $data['all_reward']);
+        $data['all_reward'] = sprintf("%01.2f", $data['all_reward']);
         $maketM = new \web\api\model\MarketModel();
         $rate = $maketM->getUsdtRateByCoinId(1);
-        $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 8);
+        $data['all_reward_cny'] = bcmul($data['all_reward'], $rate, 2);
         $balanceM = new \addons\member\model\Balance();
         $balance = $balanceM->getBalanceByCoinID($this->user_id, $coin_id,1);
         $use_balance = $balanceM->getBalanceByCoinID($this->user_id,$coin_id,2);
 
 //        print_r($balance);exit();
-//        $sysM = new \web\common\model\sys\SysParameterModel();;
+//        $sysM = new \web\common\model\sys\SysParameterModel();
 //        $eth_rate = $sysM->getValByName('eth_rate');
 
         $marketM = new \addons\financing\model\Market();
         $cny = $marketM->getDetailByCoinName('ETH','cny');
-        $eth_rate = bcdiv($cny,7,4);
-        $eth_balance = bcdiv($balance['amount'],$eth_rate,8);
-        $data['balance'] = $balance['amount'];
-        $data['eth_balance'] = $eth_balance;
-        $data['use_balance'] = $use_balance['amount'];
-        $use_eth_balance = empty($use_balance['amount']) ? 0 : bcdiv($use_balance['amount'],$eth_rate,8);
-        $data['use_eth_balance'] = $use_eth_balance;
+        $eth_rate = bcdiv($cny,7,2);
+        $eth_balance = bcdiv($balance['amount'],$eth_rate,2);
+        $data['balance'] = round($balance['amount'],2);
+        $data['eth_balance'] = round($eth_balance,4);
+        $data['use_balance'] = round($use_balance['amount'],2);
+        $use_eth_balance = empty($use_balance['amount']) ? 0 : bcdiv($use_balance['amount'],$eth_rate,4);
+        $data['use_eth_balance'] = round($use_eth_balance,4);
         return $this->successData($data);
     }
     
