@@ -434,6 +434,11 @@ class KeyGame extends Fomobase
     private function wholeDividend($coin_id,$game_id,$key_total_price)
     {
         $confM = new \addons\fomo\model\Conf();
+        //是否开启全网分红
+        $is_whole_award = $confM->getValByName('is_whole_award');
+        if($is_whole_award != 1)
+            return;
+
         $sequeueM = new \addons\fomo\model\BonusSequeue();
         $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
         $whole_rate = $confM->getValByName('whole_rate'); //全网分红比率
@@ -806,6 +811,11 @@ class KeyGame extends Fomobase
      */
     private function parentDividend($user_id, $conf_rate, $amount, $coin_id, $type, $game_id, $remark)
     {
+        $sysM = new \addons\fomo\model\Conf();
+        $is_parent_award = $sysM->getValByName('is_parent_award');
+        if($is_parent_award != 1)
+            return;
+
         //触手分红：邀请人逆推3代奖励
         $userM = new \addons\member\model\MemberAccountModel();
         $keyRecordM = new \addons\fomo\model\KeyRecord(); //用户key记录
