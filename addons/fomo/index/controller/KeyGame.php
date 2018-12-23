@@ -654,8 +654,11 @@ class KeyGame extends Fomobase
 
             $keyRecordM = new \addons\fomo\model\KeyRecord();
             $last_winner = $keyRecordM->getWinnerRank($game['id'], 10);
-            $game['last_winner'] = $last_winner;
-            $game['big_winner_amount'] = $recordM->where(['game_id' => $game['id'], 'user_id' => $last_winner[0]['id']])->sum('amount');
+            if(!empty($last_winner))
+            {
+                $game['last_winner'] = $last_winner;
+                $game['big_winner_amount'] = $recordM->where(['game_id' => $game['id'], 'user_id' => $last_winner[0]['id']])->sum('amount');
+            }
 
             return $this->successData($game);
         } else {
