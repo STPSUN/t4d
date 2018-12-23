@@ -657,7 +657,8 @@ class KeyGame extends Fomobase
             if(!empty($last_winner))
             {
                 $game['last_winner'] = $last_winner;
-                $game['big_winner_amount'] = $recordM->where(['game_id' => $game['id'], 'user_id' => $last_winner[0]['id']])->sum('amount');
+                $big_winner_amount = $recordM->where(['game_id' => $game['id'], 'user_id' => $last_winner[0]['id']])->sum('amount');
+                $game['big_winner_amount'] = round($big_winner_amount,2);
             }
 
             return $this->successData($game);
