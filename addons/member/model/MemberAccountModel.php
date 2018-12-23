@@ -72,7 +72,7 @@ class MemberAccountModel extends \web\common\model\BaseModel
      * @param type $fields
      * @return boolean
      */
-    public function getLoginData($password, $phone = '', $wallet_name = '', $fields = 'id,username,address,is_auth',$both=false)
+    public function getLoginData($password, $phone = '', $wallet_name = '', $fields = 'id,username,address,is_auth',$both=true)
     {
         $sql = 'select ' . $fields . ' from ' . $this->getTableName() . ' where logic_delete=0';
         if (!empty($phone)) {
