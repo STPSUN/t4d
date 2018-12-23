@@ -79,7 +79,7 @@ class MemberAccountModel extends \web\common\model\BaseModel
             if($both){
                 $sql .= ' and (phone=\'' . $phone . '\' or username=\''.$phone.'\')';
             }else{
-                $sql .= ' and phone=\'' . $phone . '\'';
+                $sql .= ' and username=\'' . $phone . '\'';
             }
         } else if (!empty($wallet_name)) {
             $sql .= ' and wallet_name=\'' . $wallet_name . '\'';

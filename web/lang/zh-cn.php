@@ -68,7 +68,7 @@ return[
 	'Get verification code'      	   => '获取验证码',
 	'Phone verification code'      	   => '手机验证码',
 	'content7'                         => '请输入手机验证码',
-	'Please enter your phone number'   => '请输入您的手机号码',
+	'Please enter your phone number'   => '请输入您的账号',
 	'Please enter your password'       => '请输入您的密码',
 	'Please enter the correct phone number'=>'请输入正确的手机号码',
 	'Please enter a password of 8 or more digits'=>'请输入8位或8位以上密码',

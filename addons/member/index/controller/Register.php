@@ -56,8 +56,8 @@ class Register extends \web\index\controller\AddonIndexBase {
             }
             $counte_code = $m->hasRegsterPhone($data['phone']);
 
-            if ($counte_code > 0) {
-                return $this->failJSON('此手机号已被注册,请直接登录或尝试找回密码');
+            if ($counte_code >= 3) {
+                return $this->failJSON('此手机号已注册3个账号');
             }
             $m->startTrans();
             try {

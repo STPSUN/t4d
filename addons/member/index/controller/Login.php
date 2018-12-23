@@ -8,17 +8,17 @@ class Login extends \web\index\controller\AddonIndexBase {
     public function index(){
         if(IS_POST){
             try{
-                $phone = $this->_post('phone');
+                $useranme = $this->_post('username');
                 $password = $this->_post('password');
-                if (empty($phone)) {
-                    return $this->failData('手机号不能为空');
+                if (empty($useranme)) {
+                    return $this->failData('用户名不能为空');
                 }
                 if (empty($password)) {
                     return $this->failData('密码不能为空');
                 }
                 
                 $m = new \addons\member\model\MemberAccountModel();
-                $res = $m->getLoginData($password,$phone,'','id,username,address,invite_code,is_frozen');
+                $res = $m->getLoginData($password,$useranme,'','id,username,address,invite_code,is_frozen');
                 if ($res) {
                     if($res['is_frozen'] == 1){
                         return $this->failData('账号异常');
