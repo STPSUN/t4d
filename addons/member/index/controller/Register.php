@@ -56,7 +56,7 @@ class Register extends \web\index\controller\AddonIndexBase {
             }
             $counte_code = $m->hasRegsterPhone($data['phone']);
 
-            if ($counte_code >= 31) {
+            if ($counte_code >= 3) {
                 return $this->failJSON('此手机号已注册3个账号');
             }
             $m->startTrans();
