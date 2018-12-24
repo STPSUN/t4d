@@ -44,6 +44,6 @@ class BonusSequeue extends \web\common\model\BaseModel{
     
     public function getUnSendData(){
         $where['status'] = 0;
-        return $this->where($where)->field('id,user_id,coin_id,amount,game_id,scene,type,status,update_time')->limit(2000)->select();
+        return $this->where($where)->field('id,user_id,coin_id,amount,game_id,scene,type,status,update_time')->limit(5000)->select();
     }
 }
