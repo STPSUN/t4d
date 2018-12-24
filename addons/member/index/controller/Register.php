@@ -198,11 +198,9 @@ class Register extends \web\index\controller\AddonIndexBase {
             if($area == '86')
             {
                 $res = \addons\member\utils\Sms::send($phone);
-                $data['phone'] = $phone;
             }else
             {
                 $res = \addons\member\utils\Sms::sendForeign($sendPhone);
-                $data['phone'] = $sendPhone;
             }
 
 //            $res['success'] = true;
@@ -211,7 +209,7 @@ class Register extends \web\index\controller\AddonIndexBase {
             if(!empty($res['code'])){
                 //保存验证码
                 $pass_time = date('Y-m-d H:i:s',$time);
-//                $data['phone'] = $sendPhone;
+                $data['phone'] = $phone;
                 $data['code'] = $res['code'];
                 $data['type'] = $type;
                 $data['pass_time'] = $pass_time; //过期时间
