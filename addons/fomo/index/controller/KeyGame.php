@@ -292,6 +292,7 @@ class KeyGame extends Fomobase
         $keyRecordM = new \addons\fomo\model\KeyRecord();
         $sequeueM = new \addons\fomo\model\BonusSequeue();
         $data = $keyRecordM->getMaxWinner($game_id);
+
         foreach ($data as $key=>$v)
         {
             if($key < 10)
@@ -303,6 +304,7 @@ class KeyGame extends Fomobase
 
                 $grant_amount += $amount;
                 $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+                $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
             }else if($key < 20)
             {
                 //封顶限制
@@ -312,6 +314,7 @@ class KeyGame extends Fomobase
 
                 $grant_amount += $amount;
                 $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+                $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
             }else if($key < 50)
             {
                 //封顶限制
@@ -321,6 +324,7 @@ class KeyGame extends Fomobase
 
                 $grant_amount += $amount;
                 $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+                $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
             }else
             {
                 //封顶限制
@@ -330,6 +334,7 @@ class KeyGame extends Fomobase
 
                 $grant_amount += $amount;
                 $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,8,$game_id);
+                $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
             }
         }
 
@@ -344,6 +349,7 @@ class KeyGame extends Fomobase
     {
         //是否开启节点分红
         $sysM = new \web\common\model\sys\SysParameterModel();
+        $keyRecordM = new \addons\fomo\model\KeyRecord();
         $is_node = $sysM->getValByName('is_node_award');
         if($is_node != 1)
             return;
@@ -367,6 +373,8 @@ class KeyGame extends Fomobase
                 continue;
 
             $sequeueM->addSequeue($v['user_id'],$coin_id,$amount,1,7,$game_id);
+            $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
+
         }
     }
 
@@ -470,6 +478,7 @@ class KeyGame extends Fomobase
                 continue;
 
             $sequeueM->addSequeue($v['user_id'], $coin_id, $amount, 1, 0, $game_id);
+            $keyRecordM->where('id',$v['id'])->setInc('bonus_amount',$amount);
         }
     }
 
@@ -713,6 +722,11 @@ class KeyGame extends Fomobase
                 $amount = bcdiv($amount,$num,8);
             }
 
+            //封顶限制
+            $amount = $this->limitAmount2($amount,$v['id']);
+            if(!$amount)
+                continue;
+
             //添加队列 scene = 2 ,type=0
             $type = 1;
             $scene = 5; //奖金池-大赢家分红
@@ -795,6 +809,10 @@ class KeyGame extends Fomobase
 
         $pool_parent_amount = $this->countRate($amount, $rate);
         foreach ($user_list as $v) {
+            //封顶限制
+            $pool_parent_amount = $this->limitAmount2($pool_parent_amount,$v['id']);
+            if(!$pool_parent_amount)
+                continue;
             //添加队列 scene = 2 ,type=0
             $type = 1;
             $scene = 6; //奖金池触手分红
@@ -907,10 +925,16 @@ class KeyGame extends Fomobase
                 $amount = $this->countRate($total_amount,10);
                 $amount = bcdiv($amount,$num,8);
             }
+
+            //封顶限制
+            $amount = $this->limitAmount2($amount,$v['id']);
+            if(!$amount)
+                continue;
             //添加队列 scene = 2 ,type=0
             $type = 1;
             $scene = 4; //奖金池触手分红
             $queueM->addSequeue($v['user_id'], $coin_id, $amount, $type, $scene, $game_id);
+            $keyRecordM->where(['game_id' => $game_id, 'user_id' => $v['user_id']])->setInc('bonus_amount',$amount);
         }
     }
 
