@@ -34,27 +34,40 @@ class Crontab extends \web\common\controller\Controller{
                         if($data['type'] == 1){
                             $res = $this->sendT3d($data['user_id'],$data['coin_id'],$data['amount'], $data['game_id'], $data['scene']);
                         }
+
                         if(!$res)
-                            return json($this->failData('发放失败'));
+                        {
+                            $queueM->rollback();
+                            return json($this->failData('false'));
+                        }
 
                         //更新发放状态
                         $data['status'] = 1;
                         $data['update_time'] = NOW_DATETIME;
-                        $queueM->save($data);
+                        $queueM->save([
+                            'status' => 1,
+                            'update_time' => NOW_DATETIME,
+                        ],[
+                            'id' => $data['id'],
+                        ]);
 
                         $queueM->commit();
+
                     } catch (\Exception $ex) {
                         $queueM->rollback();
                         return json($this->failData($ex->getMessage()) );
                     }
                 }
 
-                echo '处理成功';
+                echo 'success';
             }catch (\Exception $e)
             {
-                echo '处理失败';
+                echo 'false';
                 return json($this->failData($e->getMessage()) );
             }
+        }else
+        {
+            echo 'ok';
         }
     }
 
@@ -71,9 +84,9 @@ class Crontab extends \web\common\controller\Controller{
         $rewardM = new \addons\fomo\model\RewardRecord();
         $balanceS = new \addons\fomo\service\Balance();
 
-        $amount = $this->limitAmount($user_id,$game_id,$amount);
-        if(!$amount)
-            return true;
+//        $amount = $this->limitAmount($user_id,$game_id,$amount);
+//        if(!$amount)
+//            return true;
 
         //全网分红
         if($scene == 0)
