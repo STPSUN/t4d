@@ -56,7 +56,7 @@ class Register extends \web\index\controller\AddonIndexBase {
             }
             $counte_code = $m->hasRegsterPhone($data['phone']);
 
-            if ($counte_code >= 3) {
+            if ($counte_code >= 31) {
                 return $this->failJSON('此手机号已注册3个账号');
             }
             $m->startTrans();
@@ -195,14 +195,23 @@ class Register extends \web\index\controller\AddonIndexBase {
         try{
             $sendPhone = "{$area} $phone";
             //发送验证码
-            $res = \addons\member\utils\Sms::send($phone);
+            if($area == '86')
+            {
+                $res = \addons\member\utils\Sms::send($phone);
+                $data['phone'] = $phone;
+            }else
+            {
+                $res = \addons\member\utils\Sms::sendForeign($sendPhone);
+                $data['phone'] = $sendPhone;
+            }
+
 //            $res['success'] = true;
 //            $res['message'] = '短信发送成功';
 //            $res['code'] = '1111';
             if(!empty($res['code'])){
                 //保存验证码
                 $pass_time = date('Y-m-d H:i:s',$time);
-                $data['phone'] = $phone;
+//                $data['phone'] = $sendPhone;
                 $data['code'] = $res['code'];
                 $data['type'] = $type;
                 $data['pass_time'] = $pass_time; //过期时间

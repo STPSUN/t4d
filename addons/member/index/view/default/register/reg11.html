@@ -1,36 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
-    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
-    <title>{:lang('register')}</title>
-
-    <link href="__CSS__/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>注册</title>
     <link rel="stylesheet" href="__CSS__/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="__CSS__/common.css">
     <link rel="stylesheet" type="text/css" href="__CSS__/register.css">
-    <link rel="stylesheet" type="text/css" href="__CSS__/animate.css">
-    <link rel="stylesheet" type="text/css" href="__CSS__/intlTelInput.css">
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <link rel="stylesheet" href="__CSS__/style.css">
+    <link rel="stylesheet"  href="__CSS__/animate.css">
+    <link rel="stylesheet"  href="__CSS__/intlTelInput.css">
     <style>
-        body{
-            background: url('__IMG__/bg_f3d.jpg') 50% no-repeat;
-            background-size: cover;
+        .form-box{
+            width: 100%;
+            padding: 20px 10px;
+            overflow: hidden;
         }
-        *{
-            color: #ffffff;
+        .form-box .input-box{
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
         }
-        .reg_input{
-            text-align: left;height: 2rem
+        .form-box .input-box .input{
+            width: 100%;
+            padding: 0 20px;
+            height: 40px;
+            font-size: 14px;
+            color: #333;;
+            text-align: center;
+            background: none;
+            border: none;
         }
-        .country-name{
-            color: #000!important;
+        .form-box .input-box .btn{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;;
+            padding: 0 5px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            border: none;
+            cursor: pointer;
         }
-        .get-code ,.submit_btn{background: #05bdee !important;border:none !important;}
     </style>
 </head>
-<body>
-
+<body style="background-color: #2e3338">
 {include file="$PUBLIC_HEADER"/}
 <div class="container">
     <div style="margin: 10% auto 1rem;color:#fff" id="back_content">
@@ -40,86 +64,65 @@
         <span class="glyphicon glyphicon-menu-left"></span>
         <a class="text-white" onclick="closePage()">{:lang('return')}</a>
     </div>
-    <div style="position: relative;" class="mg-t-2">
-        <form id="form1" class="ui-form" method="post">
-            <div class="col-xs-12 col-md-6 mg-ct" id="list_content" style="position: absolute;left: 50%;transform: translateX(-50%);">
-                <div class="bg-white radius-5 mg-ct-1" style="box-shadow: 0 1px 1px rgba(0, 0, 0, .05);border: 1px solid #D1D1D9;">
+    <div class="form-box">
+        <form id="form1" class="ui-form"  method="post">
 
-                    <div class="pd-2 flex-box flex-ver-ct flex-align-jtf  " style="border-bottom: 1px solid #D1D1D9">
-                        <div class="size-3">{:lang('Register an account')}</div>
-                        <div>{:lang('or')} <a class="js_login" style="color: #05bdee !important;">{:lang('login')}</a></div>
+        <div class="input-box">
+            <input type="text" id="username" name="username" placeholder="{:lang('Please enter the user name')}" class="input">
+        </div>
+        <!--<div class="input-box">-->
+            <!--<input type="text" id="phone" name="phone" placeholder="{:lang('Please enter the phone number')}" class="input">-->
+        <!--</div>-->
+        <!--<div class="input-box">-->
+            <!--<input type="text" id="code"  name="verify_code" placeholder="{:lang('content7')}" class="input">-->
+            <!--<a class="btn btn-purp" style="width: 100px" id="get_auth_code_btn" onclick="getSms(this)">获取验证码</a>-->
+        <!--</div>-->
+            <div class="input-box">
+                <div class="get_auth_code">
+                    <div class="get_auth_code_btn get-code" id="get_auth_code_btn" onclick="getSms(this)">{:lang('Get verification code')}</div>
+                    <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
+                        <input type="tel" id="phone" name="phone" placeholder="{:lang('Please enter the phone number')}" class="w-90 size-105 reg_input">
+                        <img src="__IMG__/yes.png" class="iconimg hide" >
                     </div>
-                    <div class="pd-2">
-                        <div>
-                            <div>{:lang('User name')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input type="text" id="username" name="username" placeholder="{:lang('Please enter the user name')}" class="w-90 size-105 reg_input">
-                                <img src="__IMG__/yes.png" class="iconimg hide" >
-                            </div>
-                        </div>
-                        <div class="mg-t-1">
-                            <div>{:lang('Password')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input type="password" id="password" name="password" placeholder="{:lang('Please enter the password')}" class="w-90 size-105 reg_input">
-                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
-                            </div>
-                        </div>
-                        <div class="mg-t-1">
-                            <div>{:lang('Confirm password')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input type="password" id="password1" name="password1" placeholder="{:lang('Please confirm the password')}" class="w-90 size-105 reg_input">
-                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
-                            </div>
-                        </div>
-                        <div class="mg-t-1">
-                            <div>{:lang('Trade password')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input type="password" id="pay_password" name="pay_password" placeholder="{:lang('content6')}" maxlength="6" class="w-90 size-105 reg_input">
-                                <!--<img src="__IMG__/hide.png" class="iconimg" onclick="onShowPass(this)">-->
-                            </div>
-                        </div>
-                        <div class="mg-t-1">
-                            <div>{:lang('Referral Code')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input value="{$invite_code}" type="text" id="invite_code" name="inviter_code" placeholder="{:lang('Please enter the referral code')}" class="w-90 size-105 reg_input">
-                                <img src="__IMG__/yes.png" class="iconimg hide" >
-                            </div>
-                        </div>
-
-                        <div class="mg-t-1">
-                            <div>{:lang('Phone number')}</div>
-                            <div class="get_auth_code">
-                                <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                    <input type="tel" id="phone" name="phone" placeholder="{:lang('Please enter the phone number')}" class="w-90 size-105 reg_input">
-                                    <img src="__IMG__/yes.png" class="iconimg hide" >
-                                </div>
-                                <div class="get_auth_code_btn get-code" id="get_auth_code_btn" onclick="getSms(this)">{:lang('Get verification code')}</div>
-                            </div>
-                        </div>
-                        <div class="mg-t-1">
-                            <div>{:lang('Phone verification code')}</div>
-                            <div class="flex-box flex-ver-ct btn btn-default btn-lg btn-block">
-                                <input type="number" id="code" name="verify_code" placeholder="{:lang('content7')}" class="w-90 size-105 reg_input">
-                                <img src="__IMG__/yes.png" class="iconimg hide" >
-                            </div>
-                        </div>
-                        <div class="btn btn-block btn-lg btn-primary mg-t-2 submit_btn">{:lang('register')}</div>
-                        <div id="msg" class="toast"></div>
-
-                        <input type="hidden" id="area" name="area" value="86" class="w-90 size-105 reg_input">
                     </div>
-                </div>
             </div>
+
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder="{:lang('Please enter the password')}" class="input">
+        </div>
+        <div class="input-box">
+            <input type="password" id="password1" name="password1" placeholder="{:lang('Please confirm the password')}" class="input">
+        </div>
+            <div class="input-box">
+                <input type="password" id="pay_password" name="pay_password" placeholder="{:lang('content6')}" class="input">
+            </div>
+        <div class="input-box">
+            <input value="{$invite_code}" type="text" id="inviter_code" name="inviter_code" placeholder="{:lang('Please enter the referral code')}" class="input">
+        </div>
+            <button type="button" style="background: #d5cfcf;" class="btn btn-block btn-lg ticketProcess submit_btn"><svg class="svg-inline-sm fa-ethereum fa-w-10" aria-hidden="true" data-prefix="fab" data-icon="ethereum" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg><trans oldtip="register" newtip="注册"> 注册</trans></button>
+            <input type="hidden" id="area" name="area" value="86" class="w-90 size-105 reg_input">
         </form>
     </div>
 </div>
-</body>
+<!--script-->
+<!--<script src="__JS__/jquery.min.js"></script>-->
+<!--<script src="__JS__/bootstrap.min.js"></script>-->
 <script type="text/javascript" src="__STATIC__/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="__STATIC__/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="__STATIC__/js/common.js"></script>
 <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
 <script type="text/javascript" src="__STATIC__/js/intlTelInput.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="__STATIC__/jquery/jquery.form.js"></script>
+<script>
+    var curHref = window.location.href;
+    if(curHref.indexOf('from') > -1){
+        var fromVal = curHref.split('from=')[1];
+        if(fromVal === 'f3d'){
+            $('.btn').addClass('btn-purp');
+        } else {
+            $('.btn').addClass('btn-gren');
+        }
+    }
+
     var isWaiting = false;
     var countyCode = 86;
     var smsCode = '';
@@ -194,18 +197,19 @@
     }
     function getSms(el){
         var phone = $("#phone").val();
+        console.log('phone'+phone);
         // if ( !isPhone(phone) ) return;
         if(!verifyPhone(phone))
             return;
         if (isWaiting) return;
         var _el=el;
-        var area = $("#area").val();
+//        var area = $("#area").val();
 
         telephone = {
             phone:phone,
             time:"{$time}",
             area :countyCode
-        }
+        };
         $.ajax({
             url :getURL('Register/sms'),
             data:telephone,
@@ -253,7 +257,7 @@
                 }
             })
         }
-    })
+    });
 
 
 
@@ -312,4 +316,5 @@
         location.href = "{:url('index/index')}";
     }
 </script>
+</body>
 </html>

@@ -27,7 +27,10 @@ class Sms{
      * @param type $phone
      */
     public static function send($phone){
-        self::_init();
+//        self::_init();
+        self::$api_id = "C64943733";
+        self::$api_key = "a16d47de56ff2ffb4e36054126d42a6a";
+        self::$target_url = "http://106.ihuyi.cn/webservice/sms.php?method=Submit";
         if (empty($phone)) {
             self::$data['success'] = false;
             self::$data['message']='手机号码不能为空';
@@ -59,6 +62,43 @@ class Sms{
         }
         return self::$data;
     }
+
+    public static function sendForeign($phone){
+        self::$api_id = "I12618757";
+        self::$api_key = "ace94b4fbf33729fab1e0f57149f6172";
+        self::$target_url = "http://api.isms.ihuyi.com/webservice/isms.php?method=Submit";
+        if (empty($phone)) {
+            self::$data['success'] = false;
+            self::$data['message']='手机号码不能为空';
+            return self::$data;
+        }
+//        if (!preg_match("/^1[34578]{1}\d{9}$/", $phone)) {
+//            self::$data['success'] = false;
+//            self::$data['message']='请输入正确的手机号';
+//            return self::$data;
+//        }
+        $code = self::random(6,1);//验证码
+        $post_data = array(
+            'account' => self::$api_id,
+            'password'  => self::$api_key,
+            'mobile' => $phone,
+            'content' => rawurlencode("Your verification code is $code")
+        );
+        $post_data = self::makeData($post_data);
+        $res = self::Post($post_data, self::$target_url);
+        $res = self::xml_to_array($res);
+        $res = $res['SubmitResult'];
+        if($res['code'] != 2){
+            self::$data['message'] = 'errormsg:'.$res['msg'];
+            self::$data['success'] = false;
+        }else{
+            self::$data['code'] = $code;
+            self::$data['message'] = "验证码发送成功，请注意查收";
+            self::$data['success'] = true;
+        }
+        return self::$data;
+    }
+
     
     /**
      * 组成url 参数

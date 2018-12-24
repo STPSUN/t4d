@@ -13,7 +13,7 @@
     <div class="form-box">
         <div class="input-box">
             <input type="hidden" name="coin_id" value="{$coin_id}" />
-            <input type="number" placeholder="{:lang('Please enter the transfer amount')}" class="input required" name="amount" id="amount" />
+            <input type="text" placeholder="{:lang('Please enter the transfer amount')}" class="input required" name="amount" id="amount" onkeyup="this.value=this.value.replace(/\D|^0/g,'')"/>
             <hr>
             <input type="text" placeholder="请输入对方账户" class="input required" name="username" id="username" />
             <!--<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈ <span id="eth_amount"></span></h3>-->
