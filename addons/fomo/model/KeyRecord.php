@@ -156,7 +156,7 @@ class KeyRecord extends \web\common\model\BaseModel{
      */
     public function getWinner($game_id,$winner_num)
     {
-        $data = $this->where(['game_id' => $game_id, 'status' => 1])->field('user_id')->order(['winner' => 'asc', 'key_num' => 'desc'])->limit($winner_num)->select();
+        $data = $this->where(['game_id' => $game_id, 'status' => 1])->field('user_id,id')->order(['winner' => 'asc', 'key_num' => 'desc'])->limit($winner_num)->select();
 
         return $data;
     }
