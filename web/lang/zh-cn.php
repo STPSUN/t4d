@@ -119,5 +119,5 @@ return[
     'transfer'   => '转账',
     'Please enter the transfer amount'   => '请输入转账金额',
     'The upper limit of key of the authority has been reached'   => '已达到当局key的上限',
-
+    'ore pool'   => '矿池',
 ];

@@ -95,6 +95,7 @@ class Register extends \web\index\controller\AddonIndexBase {
                 return $this->failJSON($ex->getMessage());
             }
         } else{
+            exit();
             $this->assign('time', 60*3);//验证码过期时间 秒
             $this->assign('id','');
             $this->assign('title','');

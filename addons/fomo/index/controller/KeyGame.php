@@ -48,7 +48,7 @@ class KeyGame extends Fomobase
 
     public function buy()
     {
-//        return $this->failData('系统临时维护升级，请耐心等待');
+        return $this->failData();
         if (IS_POST) {
             $user_id = $this->user_id;
             //投注 需要验证

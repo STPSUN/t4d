@@ -334,12 +334,13 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
     }
 
     /**
-     * 转账
-     */
+    * 转账
+    */
     public function transfer()
     {
         if(IS_POST)
         {
+            return $this->failData('转账暂未开放');
             $user_id = $this->user_id;
             if($user_id <= 0){
                 return $this->failData(lang('Not logged in'));
@@ -412,5 +413,88 @@ class Fomobase extends \web\index\controller\AddonIndexBase{
         }
     }
 
+    /**
+     * 矿池
+     */
+    public function orepool()
+    {
+        if(IS_POST)
+        {
+            $user_id = $this->user_id;
+            if($user_id <= 0){
+                return $this->failData(lang('Not logged in'));
+            }
+
+            $amount = $this->_post('amount');
+            $coin_id = $this->_post('coin_id');
+            $pool_account = $this->_post('pool_account');
+
+            $poolM = new \addons\member\model\MemberTransferPool();
+            $order_num = $poolM->where(['user_id' => $this->user_id, 'coin_id' => $coin_id, 'status' => 1])->find();
+            if(!empty($order_num))
+            {
+                return $this->failData(lang('Please wait for approval before withdrawing cash again'));
+            }
+
+            $sysM = new \web\common\model\sys\SysParameterModel();
+            $is_pool = $sysM->getValByName('is_pool_tax');
+            $tax = 0;
+            $total_amount = $amount;
+            if($is_pool == 1)
+            {
+                $transfer_rate = $sysM->getValByName('pool_tax');
+                if(!empty($transfer_rate)){
+                    $tax = $amount * $transfer_rate / 100;
+                }
+                $total_amount += $tax; //用户资产扣除总额
+            }
+
+            $balanceM = new \addons\member\model\Balance();
+            $balance = $balanceM->getBalanceByCoinID($user_id,$coin_id,2);
+            if($balance['amount'] < $total_amount)
+                return $this->failData(lang('Lack of balance'));
+
+            $recordM = new \addons\member\model\TradingRecord();
+
+            $balanceM->startTrans();
+            try
+            {
+                $is_save = $balanceM->updateBalance($user_id,$total_amount,$coin_id,false,2);
+                if(!$is_save)
+                {
+                    $balanceM->rollback();
+                    return $this->failData('系统繁忙，请稍后再试，#1');
+                }
+
+                $recordM->addRecord($user_id,$coin_id,$total_amount,0,0,11,false,$user_id,'','','矿池提币');
+                $pool_data = [
+                    'user_id'   => $user_id,
+                    'pool_account' => $pool_account,
+                    'amount'    => $amount,
+                    'tax'       => $tax,
+                    'coin_id'   => $coin_id,
+                    'update_time' => NOW_DATETIME
+                ];
+                $poolM->add($pool_data);
+            }catch (\Exception $e)
+            {
+                $balanceM->rollback();
+                return $this->failData($e->getMessage());
+            }
+
+            $balanceM->commit();
+            return $this->successData(1);
+        }else
+        {
+            $marketM = new \addons\financing\model\Market();
+            $cny = $marketM->getDetailByCoinName('ETH','cny');
+            $eth_rate = bcdiv($cny,7,4);
+            $this->assign('eth_rate',$eth_rate);
+            $this->assign('coin_id',$this->_get('coin_id'));
+            $this->assign('id','0');
+            $this->setLoadDataAction('');
+            return $this->fetch('public/orePool');
+        }
+    }
     
 }

@@ -266,9 +266,19 @@
             }
         }, ['提交', '取消']);
     });
+
+    $('#pool_btn').on('click', function () {
+        var url = getURL('fomobase/orePool', {coin_id:coin_id}, 'fomo');
+        openBarWin('提币', layerWidth, 250, url, function (data) {
+            if(data){
+                location.reload();
+            }else{
+                alert(data.message)
+            }
+        }, ['提交', '取消']);
+    });
     {/if}
-    
-    
+
 
 </script>
 {/block}
